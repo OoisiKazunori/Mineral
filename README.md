@@ -1,2 +1,2 @@
-# CyberJack2
-U22に向けてチームで制作中
+# Mineral
+Mineralの開発リポジトリです
