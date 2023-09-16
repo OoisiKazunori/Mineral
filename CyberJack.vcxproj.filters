@@ -159,6 +159,7 @@
     <ClCompile Include="Game\Enemy\MineTsumuri.cpp" />
     <ClCompile Include="Game\Tutorial.cpp" />
     <ClCompile Include="Game\Transition.cpp" />
+    <ClCompile Include="Game\VFX\SlapSmokeEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -343,6 +344,7 @@
     <ClInclude Include="Game\Transition.h" />
     <ClInclude Include="Game\ResultFlag.h" />
     <ClInclude Include="Game\EnemyScore.h" />
+    <ClInclude Include="Game\VFX\SlapSmokeEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
