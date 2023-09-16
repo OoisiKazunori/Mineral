@@ -222,6 +222,10 @@ void GameScene::Update()
 	SlapSmokeEffect::DebugImGui();
 	if (m_player->GetIsDaipanTrigger())
 	{
+		//使うかも
+		//m_player->GetMineralAffectRange();
+		//m_player->GetMineralAffectStrongRange();
+
 		m_slapEffect[m_slapEffectIndex].Init(
 			m_player->GetPosZeroY() + KazMath::Vec3<float>(0.0f,5.0f,0.0f),
 			m_player->GetMineralAffectStrongRange() + 30.0f,
