@@ -6,15 +6,33 @@ void EnemyRoute::Setting()
 	m_routes.resize(static_cast<int>(ROUTE_ID::MAX));
 
 	//ルートAを設定。
-	std::vector<KazMath::Vec3<float>> route = { KazMath::Vec3<float>(-103.0f, 0.0f, 277.0f), KazMath::Vec3<float>(14.0f, 0.0f, 11.0f), KazMath::Vec3<float>(87.0f, 0.0f, 98.0f), KazMath::Vec3<float>(167.0f, 0.0f, 104.0f) };
+	std::vector<KazMath::Vec3<float>> route;
+	route.emplace_back(KazMath::Vec3<float>(-87.0f, 0.0f, 207.0f));
+	route.emplace_back(KazMath::Vec3<float>(19.0f, 0.0f, -21.0f));
+	route.emplace_back(KazMath::Vec3<float>(90.0f, 0.0f, 119.0f));
+	route.emplace_back(KazMath::Vec3<float>(170.0f, 0.0f, 106.0f));
 	m_routes[static_cast<int>(ROUTE_ID::A)] = route;
 
 	//ルートBを設定。
-	route = { KazMath::Vec3<float>(-295.0f, 0.0f, 212.0f), KazMath::Vec3<float>(-242.0f, 0.0f, 56.0f), KazMath::Vec3<float>(-221.0f, 0.0f, -119.0f), KazMath::Vec3<float>(-11.0f, 0.0f, -137.0f), KazMath::Vec3<float>(11.0f, 0.0f, 9.0f), KazMath::Vec3<float>(98.0f, 0.0f, 112.0f), KazMath::Vec3<float>(167.0f, 0.0f, 104.0f) };
+	route = {};
+	route.emplace_back(KazMath::Vec3<float>(-266.0f, 0.0f, 113.0f));
+	route.emplace_back(KazMath::Vec3<float>(-260.0f, 0.0f, -176.0f));
+	route.emplace_back(KazMath::Vec3<float>(-23.0f, 0.0f, -154.0f));
+	route.emplace_back(KazMath::Vec3<float>(9.0f, 0.0f, -4.0f));
+	route.emplace_back(KazMath::Vec3<float>(90.0f, 0.0f, 119.0f));
+	route.emplace_back(KazMath::Vec3<float>(170.0f, 0.0f, 106.0f));
 	m_routes[static_cast<int>(ROUTE_ID::B)] = route;
 
 	//ルートCを設定。
-	route = { KazMath::Vec3<float>(-128.0f, 0.0f, -462.0f), KazMath::Vec3<float>(-313.0f, 0.0f, -222.0f), KazMath::Vec3<float>(-190.0f, 0.0f, -166.0f), KazMath::Vec3<float>(-17.0f, 0.0f, -124.0f), KazMath::Vec3<float>(14.0f, 0.0f, 14.0f), KazMath::Vec3<float>(92.0f, 0.0f, 107.0f), KazMath::Vec3<float>(167.0f, 0.0f, 104.0f) };
+	route = {};
+	route.emplace_back(KazMath::Vec3<float>(-201.0f, 0.0f, -363.0f));
+	route.emplace_back(KazMath::Vec3<float>(-320.0f, 0.0f, -204.0f));
+	route.emplace_back(KazMath::Vec3<float>(-227.0f, 0.0f, -134.0f));
+	route.emplace_back(KazMath::Vec3<float>(-53.0f, 0.0f, -164.0f));
+	route.emplace_back(KazMath::Vec3<float>(15.0f, 0.0f, 0.0f));
+	route.emplace_back(KazMath::Vec3<float>(9.0f, 0.0f, -3.0f));
+	route.emplace_back(KazMath::Vec3<float>(90.0f, 0.0f, 119.0f));
+	route.emplace_back(KazMath::Vec3<float>(170.0f, 0.0f, 106.0f));
 	m_routes[static_cast<int>(ROUTE_ID::C)] = route;
 
 }

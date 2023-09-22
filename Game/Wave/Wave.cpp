@@ -34,6 +34,7 @@ Wave::Wave(int arg_dayTime, int arg_nightTime, std::vector<int> arg_tree, std::v
 
 void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 {
+
 	//ƒ{ƒŠƒ…[ƒ€’²®
 	WaveMgr::Instance()->m_BGM.source->SetVolume(WaveMgr::Instance()->volume);
 

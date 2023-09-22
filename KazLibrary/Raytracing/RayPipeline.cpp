@@ -354,14 +354,14 @@ namespace Raytracing {
 		//UAVのバリアを貼る。
 		UAVBarrier({ GBufferMgr::Instance()->GetLensFlareBuffer() , GBufferMgr::Instance()->GetRayTracingBuffer() });
 
-		//レンズフレア用のテクスチャにガウシアンブラーをかけてフレアを表現する。
-		GBufferMgr::Instance()->ApplyLensFlareBlur();
+		////レンズフレア用のテクスチャにガウシアンブラーをかけてフレアを表現する。
+		//GBufferMgr::Instance()->ApplyLensFlareBlur();
 
-		//レンズフレアをかける。
-		m_lensFlare->Apply();
+		////レンズフレアをかける。
+		//m_lensFlare->Apply();
 
-		//シーン情報にレンズフレアを合成する。
-		GBufferMgr::Instance()->ComposeLensFlareAndScene();
+		////シーン情報にレンズフレアを合成する。
+		//GBufferMgr::Instance()->ComposeLensFlareAndScene();
 
 		//UAVのバリアを貼る。
 		UAVBarrier({ GBufferMgr::Instance()->GetLensFlareBuffer() , GBufferMgr::Instance()->GetRayTracingBuffer() });
