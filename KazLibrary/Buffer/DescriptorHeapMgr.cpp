@@ -79,17 +79,10 @@ void DescriptorHeapMgr::CreateBufferView(RESOURCE_HANDLE HANDLE, const D3D12_SHA
 void DescriptorHeapMgr::CreateBufferView(RESOURCE_HANDLE HANDLE, const D3D12_UNORDERED_ACCESS_VIEW_DESC& BUFFER_VIEW, ID3D12Resource* ADDRESS, ID3D12Resource* COUNTER_RESOURCE)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE heapHandle;
-	if (isSafeToUseThisHandle(HANDLE))
-	{
-		heapHandle = heaps->GetCPUDescriptorHandleForHeapStart();
-		heapHandle.ptr += shaderResourceHeapIncreSize * static_cast<UINT64>(HANDLE);
-		DirectX12Device::Instance()->dev->CreateUnorderedAccessView(ADDRESS, COUNTER_RESOURCE, &BUFFER_VIEW, heapHandle);
-		usedHandle[HANDLE] = true;
-	}
-	else
-	{
-		ErrorCheck("既に使われた、もしくはデスクリプタヒープの範囲外の場所でアンオーダーリソースビューを作成しようとしています");
-	}
+	heapHandle = heaps->GetCPUDescriptorHandleForHeapStart();
+	heapHandle.ptr += shaderResourceHeapIncreSize * static_cast<UINT64>(HANDLE);
+	DirectX12Device::Instance()->dev->CreateUnorderedAccessView(ADDRESS, COUNTER_RESOURCE, &BUFFER_VIEW, heapHandle);
+	usedHandle[HANDLE] = true;
 }
 
 void DescriptorHeapMgr::Release(RESOURCE_HANDLE HANDLE)

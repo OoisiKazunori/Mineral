@@ -25,7 +25,7 @@ int main()
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif // DEBUG
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	//DebugLayer
 	Microsoft::WRL::ComPtr<ID3D12Debug1> debug1;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debug1))))
@@ -36,11 +36,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0));
 		spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1));
-		//spDebugController1->EnableDebugLayer();
-		//spDebugController1->SetEnableGPUBasedValidation(true);
+		spDebugController1->EnableDebugLayer();
+		spDebugController1->SetEnableGPUBasedValidation(true);
 	}
-
-#endif
+//#endif
 	//CheckDirectXError
 	int CheckWinError = 0;
 	bool CheckMessageFlag = true;
@@ -62,8 +61,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		return 0;
 	}
 
-#ifdef _DEBUG
-	/*Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
+//#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
 	DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&infoQueue));
 
 	D3D12_MESSAGE_ID denyIds[] = {
@@ -77,8 +76,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	filter.DenyList.pIDList = denyIds;
 	filter.DenyList.NumSeverities = _countof(severities);
 	filter.DenyList.pSeverityList = severities;
-	infoQueue->PushStorageFilter(&filter);*/
-#endif 
+	infoQueue->PushStorageFilter(&filter);
+//#endif 
 
 	MyImgui imgui;
 	imgui.Create(winApi.hwnd);

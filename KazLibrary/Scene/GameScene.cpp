@@ -129,6 +129,11 @@ GameScene::GameScene()
 
 	NumberFont::Instance()->Load();
 	Tutorial::Instance()->setting();
+
+	for (auto& obj : m_slapEffect)
+	{
+		obj = std::make_unique<SlapSmokeEffect>();
+	}
 }
 
 GameScene::~GameScene()
@@ -226,24 +231,21 @@ void GameScene::Update()
 		//m_player->GetMineralAffectRange();
 		//m_player->GetMineralAffectStrongRange();
 
-		m_slapEffect[m_slapEffectIndex].Init(
-			m_player->GetPosZeroY() + KazMath::Vec3<float>(0.0f,5.0f,0.0f),
-			m_player->GetMineralAffectStrongRange() + 30.0f,
-			m_player->GetIsStrongDaipan()
-			);
+		++m_slapEffectIndex;
 		if (m_slapEffect.size() <= m_slapEffectIndex)
 		{
 			m_slapEffectIndex = 0;
 		}
-		else
-		{
-			++m_slapEffectIndex;
-		}
+		m_slapEffect[m_slapEffectIndex]->Init(
+			m_player->GetPosZeroY() + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f),
+			m_player->GetMineralAffectStrongRange() + 30.0f,
+			m_player->GetIsStrongDaipan()
+		);
 	}
 	//煙エフェクト
 	for (auto& obj : m_slapEffect)
 	{
-		obj.Update();
+		obj->Update();
 	}
 
 	//ミネラルのターゲットを更新。
@@ -357,7 +359,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	//煙エフェクト
 	for (auto& obj : m_slapEffect)
 	{
-		obj.Draw(arg_rasterize, arg_blasVec);
+		obj->Draw(arg_rasterize, arg_blasVec);
 	}
 
 	//ImGui::Begin("UI");
