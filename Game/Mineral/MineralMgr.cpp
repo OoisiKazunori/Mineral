@@ -138,19 +138,20 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 				if (index->GetHaveMaterial()) {
 
 					//建築材料が足りていなかったら。
-					if (BuildingMgr::Instance()->IsFullMaterialWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex())) {
+					//if (BuildingMgr::Instance()->IsFullMaterialWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex())) {
 
 						//材料を足す。
-						BuildingMgr::Instance()->AddMaterialWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex());
-						index->EraseTheMaterial();
+						//BuildingMgr::Instance()->AddMaterialWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex());
+						//index->EraseTheMaterial();
+						index->Build(BuildingMgr::Instance()->GetWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex()));
 
-					}
-					else {
+					//}
+					//else {
 
 						//地面に置く。
 						//index->DropMaterial();
 
-					}
+					//}
 
 				}
 			}

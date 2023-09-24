@@ -10,6 +10,7 @@
 #include "../Game/Enemy/MineTsumuri.h"
 #include "../Game/Building/BuildingMgr.h"
 #include "../Game/Tutorial.h"
+#include "../Game/Building/Wall.h"
 
 Mineral::Mineral()
 {
@@ -19,6 +20,7 @@ Mineral::Mineral()
 	m_isGathering = false;
 	m_canGathering = false;
 	m_isGoToGetMaterial = false;
+	m_isGoToArchitecture = false;
 	m_gravity = 0;
 	m_mineralID = MEDIUM;
 
@@ -56,6 +58,7 @@ void Mineral::Init() {
 	m_isGathering = false;
 	m_canGathering = false;
 	m_isGoToGetMaterial = false;
+	m_isGoToArchitecture = false;
 	m_isAttack = false;
 	m_gravity = 0;
 	m_mineralID = MEDIUM;
@@ -75,6 +78,7 @@ void Mineral::Generate(std::weak_ptr<Mineral> arg_thisMineral, KazMath::Vec3<flo
 	m_isDrawSurpised = false;
 	m_canGathering = false;
 	m_isGoToGetMaterial = false;
+	m_isGoToArchitecture = false;
 	m_gravity = 0;
 	m_breakUpVec = {};
 	m_attackReactionVec = {};
@@ -170,6 +174,47 @@ void Mineral::Update(std::weak_ptr<Player> arg_player, std::vector<std::pair<Kaz
 		if (distance <= HAVE_DISTANCE) {
 
 			HaveMaterial(m_haveMaterial);
+
+		}
+
+	}
+	//建築に行く状態だったら
+	else if (m_isGoToArchitecture && !m_targetWall.expired()) {
+
+		//建材の方向に移動させる。
+		++m_moveSpan;
+		if (m_randomMoveSpan <= m_moveSpan) {
+
+			//追尾する。
+			m_moveVec = (m_targetWall.lock()->GetPosZeroY() - GetPosZeroY()).GetNormal();
+			m_moveVec.y = 1.0f;
+			m_moveVec.Normalize();
+			m_moveVec *= MOVE_SPEED[static_cast<int>(m_mineralID)];
+
+			m_moveSpan = 0;
+			if (move_span_count < MOVE_SPAN_COUNT_MAX)
+			{
+				move_span_count++;
+			}
+			else
+			{
+				move_span_count = 0;
+
+				if (arg_moveSECount < 1) {
+					SoundManager::Instance()->SoundPlayerWave(walk, 0);
+				}
+			}
+		}
+
+		//一定以上近づいたら持つ。
+		float distance = (m_targetWall.lock()->GetPosZeroY() - GetPosZeroY()).Length();
+		const float HAVE_DISTANCE = 1.0f;
+		if (distance <= HAVE_DISTANCE) {
+
+			m_targetWall.lock()->AddMaterial();
+			m_targetWall.reset();
+			m_isGoToArchitecture = false;
+			EraseTheMaterial();
 
 		}
 
@@ -798,6 +843,14 @@ void Mineral::EraseTheMaterial()
 {
 	m_haveMaterial.lock()->Init();
 	m_haveMaterial.reset();
+}
+
+void Mineral::Build(std::weak_ptr<Wall> arg_targetWall)
+{
+
+	m_targetWall = arg_targetWall;
+	m_isGoToArchitecture = true;
+
 }
 
 float Mineral::GetCollisionScale() {

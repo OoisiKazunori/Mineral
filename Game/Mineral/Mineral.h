@@ -8,6 +8,7 @@ class MineKuji;
 class MineTsumuri;
 class DestructibleTree;
 class BuildingMaterial;
+class Wall;
 
 class Mineral {
 
@@ -70,6 +71,8 @@ private:
 	//建材を運んでいる時
 	std::weak_ptr<BuildingMaterial> m_haveMaterial;
 	bool m_isGoToGetMaterial;
+	bool m_isGoToArchitecture;
+	std::weak_ptr<Wall> m_targetWall;
 
 	//サイズ関係 描画
 	const float MINERAL_DRAW_SIZE_BIG = 7.0f;
@@ -148,6 +151,8 @@ public:
 	//マテリアルを落とす。
 	void DropMaterial();
 	void EraseTheMaterial();
+
+	void Build(std::weak_ptr<Wall> arg_targetWall);
 
 	bool GetIsAlive() { return m_isAlive; }
 	bool GetIsGathering() { return m_isGathering; }
