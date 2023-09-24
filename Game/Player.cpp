@@ -57,6 +57,7 @@ void Player::Init()
 	m_isWaveHand = false;
 	m_daipanStatus = NONE;
 	m_daipanStartPosY = 0;
+	m_stanGravity = 0;
 	m_daipanTimer = 0;
 	m_daipanReturnTimer = 0;
 	m_daipanStrongTimer = 0.0f;
@@ -93,7 +94,7 @@ void Player::Update()
 	}
 
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_G)) {
-		m_hp = std::clamp(m_hp - 1.0f, 0.0f, 100000.0f);
+		Damage(1000);
 	}
 
 	//座標を保存しておく。
@@ -193,8 +194,21 @@ void Player::Update()
 
 		}
 
-		//座標をデフォルトの位置に補間する。
-		m_transform.pos.y += (DEFAULT_Y - m_transform.pos.y) / 3.0f;
+		//プレイヤーがスタン中だったら
+		if (m_hp <= 0) {
+
+			m_stanGravity += STAN_GRAVITY;
+			m_transform.pos.y = std::clamp(m_transform.pos.y - m_stanGravity, 2.0f, DEFAULT_Y);
+
+		}
+		else {
+
+			//座標をデフォルトの位置に補間する。
+			m_transform.pos.y += (DEFAULT_Y - m_transform.pos.y) / 3.0f;
+
+			m_stanGravity = 0;
+
+		}
 
 		//なにもない時のみ台パン座標を保存する。
 		//m_daipanPos += (m_transform.pos - m_daipanPos) / 3.0f;

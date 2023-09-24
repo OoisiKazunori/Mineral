@@ -74,6 +74,8 @@ private:
 	//Y軸関連
 	const float DEFAULT_Y = 30.0f;
 	const float DAIPAN_Y = DEFAULT_Y + 10.0f;
+	float m_stanGravity;
+	const float STAN_GRAVITY = 0.3f;
 
 	//ミネラルを集合させる範囲
 	const float MINERAL_AFFECT_RANGE = 60.0f;

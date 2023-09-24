@@ -153,7 +153,7 @@ void mainRayGen()
         payloadData.m_rayID = 3;
         
         //レイを撃つ
-        CastRay(payloadData, worldColor.xyz, float3(0, 1, 0), 100.0f, MISS_LIGHTING, RAY_FLAG_NONE, gRtScene, 0x01);
+        CastRay(payloadData, worldColor.xyz + normalColor.xyz, float3(0, 1, 0), 100.0f, MISS_LIGHTING, RAY_FLAG_NONE, gRtScene, 0x01);
                 
         if (payloadData.m_color.x <= 0.9f)
         {
@@ -169,30 +169,6 @@ void mainRayGen()
     float4 final = float4(0, 0, 0, 1);
     //SecondaryPass(dir, emissiveColor, worldColor, materialInfo, normalColor, albedoColor, gRtScene, cameraEyePos, final);
     final = albedoColor;
-    
-    //描画されているけど水中！だったら水中っぽい見た目にする。
-    if (cameraEyePos.m_eye.y < 0 && worldColor.y < 0)
-    {
-        float perOfSea = 0.5f;
-        final = float4(albedoColor.xyz, 1) * perOfSea;
-        final += float4(SEA_BASE, 1) * (1.0f - perOfSea);
-    }
-    //なにも描画されていないところでは空の色を取得。
-    else if (length(worldColor.xyz) < 0.1f && length(normalColor.xyz) < 0.1f)
-    {
-        
-        //final.xyz = GetSkyColor(dir);
-        float3 mieColor = float3(0, 0, 0);
-        final.xyz = AtmosphericScattering(dir * 15000.0f, mieColor);
-        lensFlareTexture[launchIndex.xy].xyz += mieColor * 0.1f;
-        
-        //下方向を向いていたら海を描画
-        if ((cameraEyePos.m_eye + dir * 1000).y < 0)
-        {
-            final.xyz = SEA_BASE;
-        }
-        
-    }
     
     //合成の結果を入れる。
     finalColor[launchIndex.xy] = final;
