@@ -92,6 +92,10 @@ void Player::Update()
 		m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, m_forwardQ, 0.2f);
 	}
 
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_G)) {
+		m_hp = std::clamp(m_hp - 1.0f, 0.0f, 100000.0f);
+	}
+
 	//À•W‚ğ•Û‘¶‚µ‚Ä‚¨‚­B
 	m_oldTransform = m_transform;
 

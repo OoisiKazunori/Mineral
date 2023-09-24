@@ -360,8 +360,8 @@ namespace Raytracing {
 		////レンズフレアをかける。
 		//m_lensFlare->Apply();
 
-		////シーン情報にレンズフレアを合成する。
-		//GBufferMgr::Instance()->ComposeLensFlareAndScene();
+		//シーン情報にレンズフレアを合成する。
+		GBufferMgr::Instance()->ComposeLensFlareAndScene();
 
 		//UAVのバリアを貼る。
 		UAVBarrier({ GBufferMgr::Instance()->GetLensFlareBuffer() , GBufferMgr::Instance()->GetRayTracingBuffer() });
