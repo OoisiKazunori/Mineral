@@ -128,6 +128,7 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 			if (index->GetIsAttack()) continue;
 			if (!index->GetIsGathering()) continue;
 			if (index->GetIsGatheringTrigger()) continue;
+			if (index->GetIsGoToGetMaterial()) continue;
 
 
 			int targetIndex = arg_mineralTarget.lock()->GetCanTarget();
@@ -166,7 +167,7 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 			}
 			else if (targetIndex == 4) {
 				if (index->GetHaveMaterial()) continue;
-				index->HaveMaterial(arg_mineralTarget.lock()->GetTargetMaterial());
+				index->GoToGetMaterial(arg_mineralTarget.lock()->GetTargetMaterial());
 				break;
 			}
 			else if (targetIndex == 6) {

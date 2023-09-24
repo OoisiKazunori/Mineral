@@ -139,6 +139,40 @@ void Mineral::Update(std::weak_ptr<Player> arg_player, std::vector<std::pair<Kaz
 	//マテリアルを取りに行く状態だったら
 	else if (m_isGoToGetMaterial) {
 
+		//建材の方向に移動させる。
+		++m_moveSpan;
+		if (m_randomMoveSpan <= m_moveSpan) {
+
+			//追尾する。
+			m_moveVec = (m_haveMaterial.lock()->GetPosZeroY() - GetPosZeroY()).GetNormal();
+			m_moveVec.y = 1.0f;
+			m_moveVec.Normalize();
+			m_moveVec *= MOVE_SPEED[static_cast<int>(m_mineralID)];
+
+			m_moveSpan = 0;
+			if (move_span_count < MOVE_SPAN_COUNT_MAX)
+			{
+				move_span_count++;
+			}
+			else
+			{
+				move_span_count = 0;
+
+				if (arg_moveSECount < 1) {
+					SoundManager::Instance()->SoundPlayerWave(walk, 0);
+				}
+			}
+		}
+
+		//一定以上近づいたら持つ。
+		float distance = (m_haveMaterial.lock()->GetPosZeroY() - GetPosZeroY()).Length();
+		const float HAVE_DISTANCE = 1.0f;
+		if (distance <= HAVE_DISTANCE) {
+
+			HaveMaterial(m_haveMaterial);
+
+		}
+
 	}
 	//隊列になっていたら追尾する。
 	else if (m_isGathering && m_canGathering) {
@@ -168,7 +202,7 @@ void Mineral::Update(std::weak_ptr<Player> arg_player, std::vector<std::pair<Kaz
 	}
 
 	//マテリアルを持っている状態だったら
-	if (!m_haveMaterial.expired()) {
+	if (!m_haveMaterial.expired() && !m_isGoToGetMaterial) {
 		UpdateHaveMaterial(arg_player);
 	}
 
@@ -738,11 +772,18 @@ void Mineral::HaveMaterial(std::weak_ptr<BuildingMaterial> arg_material)
 	SoundManager::Instance()->SoundPlayerWave(have_material_se, 0);
 	m_haveMaterial = arg_material;
 	m_haveMaterial.lock()->Held();
+	m_isGoToGetMaterial = false;
 
 	if (Tutorial::Instance()->tutorial_num == 9)
 	{
 		Tutorial::Instance()->tree_carry_count++;
 	}
+}
+
+void Mineral::GoToGetMaterial(std::weak_ptr<BuildingMaterial> arg_material)
+{
+	m_isGoToGetMaterial = true;
+	m_haveMaterial = arg_material;
 }
 
 void Mineral::DropMaterial()

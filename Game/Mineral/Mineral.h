@@ -143,6 +143,7 @@ public:
 
 	//マテリアルを持つ。
 	void HaveMaterial(std::weak_ptr<BuildingMaterial> arg_material);
+	void GoToGetMaterial(std::weak_ptr<BuildingMaterial> arg_material);
 
 	//マテリアルを落とす。
 	void DropMaterial();
@@ -153,6 +154,7 @@ public:
 	bool GetIsGatheringTrigger() { return !m_isOldGathering && m_isGathering; }
 	bool GetIsAttack() { return m_isAttack; }
 	bool GetHaveMaterial() { return !m_haveMaterial.expired(); }
+	bool GetIsGoToGetMaterial() { return m_isGoToGetMaterial; }
 	MINERAL_ID GetMineralID() { return m_mineralID; }
 	KazMath::Vec3<float> GetPos() { return m_transform.pos; }
 	KazMath::Vec3<float> GetPosZeroY() { return KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z); }
