@@ -111,7 +111,7 @@ void Rock::Update(std::weak_ptr<Player> arg_player, std::vector<std::pair<KazMat
 	if (m_canCollision && arg_player.lock()->GetIsDaipanTrigger()) {
 
 		//当たり判定チェック
-		bool isHit = Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length() <= arg_player.lock()->GetMineralAffectStrongRange() + m_transform.scale.x;
+		bool isHit = Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length() <= arg_player.lock()->GetMineralAffectStrongRange() + m_transform.scale.x * 2.0f;
 		if (isHit) {
 
 			//ベクトルチェック。
