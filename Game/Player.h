@@ -16,6 +16,7 @@ private:
 
 	KazMath::Transform3D m_oldTransform;
 	KazMath::Transform3D m_transform;
+	KazMath::Transform3D m_drawTransform;
 	KazMath::Vec3<float> m_daipanPos;	//台パン中にカメラを固定するための座標
 	KazMath::Vec3<float> m_forwardVec;			//正面ベクトル
 	DirectX::XMVECTOR m_forwardQ;
@@ -90,6 +91,9 @@ private:
 
 	//ミネラル解散関連。
 	bool m_isBreakUp;
+	bool m_isOldBreakUp;
+	bool m_isWaveHand;
+	float m_waveHandTimer;
 
 	//立ち絵をかえるタイマー
 	int m_damageChangeDadanUITimer;
