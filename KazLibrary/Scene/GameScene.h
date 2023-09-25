@@ -10,6 +10,7 @@
 #include"../Game/Render/BasicDraw.h"
 #include"../Game/DrawCallSet.h"
 #include"../Game/DrawCallUISet.h"
+#include"../Game/VFX/SlapSmokeEffect.h"
 
 class Player;
 class MineralMgr;
@@ -92,6 +93,10 @@ private:
 	KazMath::Vec2<float> UI_DEF_RETRY_SCALE = KazMath::Vec2<float>(100.0f, 50.0f);
 	KazMath::Vec2<float> UI_MAX_TITLE_SCALE = KazMath::Vec2<float>(100.0f, 50.0f) * 1.3f;
 	KazMath::Vec2<float> UI_MAX_RETRY_SCALE = KazMath::Vec2<float>(100.0f, 50.0f) * 1.3f;
+
+	//煙エフェクト
+	std::array<std::unique_ptr<SlapSmokeEffect>,10> m_slapEffect;
+	int m_slapEffectIndex;
 public:
 	GameScene();
 	~GameScene();

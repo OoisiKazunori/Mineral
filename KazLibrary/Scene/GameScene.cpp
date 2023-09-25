@@ -131,6 +131,12 @@ GameScene::GameScene()
 	Tutorial::Instance()->setting();
 
 	Tutorial::Instance()->is_tutorial = false;
+
+	for (auto& obj : m_slapEffect)
+	{
+		obj = std::make_unique<SlapSmokeEffect>();
+	}
+
 }
 
 GameScene::~GameScene()
@@ -186,7 +192,7 @@ void GameScene::Init()
 	EnemyScore::Instance()->m_score = 0;
 
 
-
+	m_slapEffectIndex = 0;
 }
 
 void GameScene::PreInit()
@@ -199,6 +205,7 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
+
 }
 
 void GameScene::Update()
@@ -219,6 +226,30 @@ void GameScene::Update()
 
 	//敵を更新。
 	m_enemyMgr->Update(m_goldCore, m_player);
+	//デバック用の処理
+	SlapSmokeEffect::DebugImGui();
+	if (m_player->GetIsDaipanTrigger())
+	{
+		//使うかも
+		//m_player->GetMineralAffectRange();
+		//m_player->GetMineralAffectStrongRange();
+
+		++m_slapEffectIndex;
+		if (m_slapEffect.size() <= m_slapEffectIndex)
+		{
+			m_slapEffectIndex = 0;
+		}
+		m_slapEffect[m_slapEffectIndex]->Init(
+			m_player->GetPosZeroY() + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f),
+			m_player->GetMineralAffectStrongRange() + 30.0f,
+			m_player->GetIsStrongDaipan()
+		);
+	}
+	//煙エフェクト
+	for (auto& obj : m_slapEffect)
+	{
+		obj->Update();
+	}
 
 	//ミネラルのターゲットを更新。
 	m_mineralTarget->Update(m_player->GetPosZeroY(), m_player->GetMineralAffectRange(), m_enemyMgr);
@@ -327,6 +358,12 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_line.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
+
+	//煙エフェクト
+	for (auto& obj : m_slapEffect)
+	{
+		obj->Draw(arg_rasterize, arg_blasVec);
+	}
 
 	//ImGui::Begin("UI");
 

@@ -12,7 +12,6 @@
 
 Player::Player()
 {
-
 	m_model.LoadOutline("Resource/Player/", "Hand.gltf", true);
 
 	m_attackModel.LoadOutline("Resource/Player/", "HandAttack.gltf", true);
@@ -549,7 +548,7 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 		m_attackModel.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10);
 	}
 	else {
-		m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10);
+		m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, KazMath::Color(255, 255, 255, 255));
 	}
 
 	//プレイヤーの台パンの範囲を描画
