@@ -1,5 +1,6 @@
 #pragma once
 #include "../Game/DrawCallSet.h"
+#include "../Game/DrawCallUISet.h"
 #include "../KazLibrary/Sound/SoundManager.h"
 
 class Core {
@@ -17,6 +18,23 @@ private:
 	int m_hp;
 	const int MAX_HP = 25;
 	const float SCALE = 10.0f;
+
+	//コアがダメージを受けた時関連の変数
+	DrawCallUISet m_coreDamageUI;
+	enum class UISTATE {
+		APPEAR,
+		EXIT,
+	}m_uiState;
+	int m_uiAppearCount;
+	const int UI_APPEAR_COUNT = 2;
+	float m_damageUITimer;
+	const float APPEAR_TIME = 20.0f;
+	const float EXIT_TIME = 40.0f;
+	bool m_isActiveDamageUI;
+
+	//再度ダメージのUIを出すまでのタイマー
+	int m_damageUIAgainTimer;
+	const int DAMAGEUI_AGAIN_TIMER = 60 * 2;
 
 public:
 

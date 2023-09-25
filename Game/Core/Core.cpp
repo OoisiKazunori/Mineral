@@ -19,6 +19,9 @@ Core::Core()
 	wall_break02.volume = 0.1f;
 	damage = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Object_Damage.wav");
 	damage.volume = 0.04f;
+	m_coreDamageUI.Load("Resource/UI/CoreDamageUI.png");
+	m_coreDamageUI.m_transform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f };
+	m_coreDamageUI.m_transform.scale = { 375.0f, 200.0f };
 
 }
 
@@ -26,6 +29,12 @@ void Core::Init()
 {
 
 	m_hp = MAX_HP;
+	m_uiAppearCount = 0;
+	m_damageUITimer = 0.0f;
+	m_uiState = UISTATE::APPEAR;
+	m_isActiveDamageUI = false;
+	m_coreDamageUI.m_color.color.a = 0;
+	m_damageUIAgainTimer = 0;
 
 	/*オカモトゾーン*/
 	isDrawHpBox = false;
@@ -51,6 +60,70 @@ void Core::Update()
 	{
 		m_hp = MAX_HP;
 	}
+
+
+	//「コアがダメージを受けています」の表示の更新
+	if (m_isActiveDamageUI) {
+
+		switch (m_uiState)
+		{
+		case Core::UISTATE::APPEAR:
+		{
+
+			//タイマーを更新。
+			m_damageUITimer = std::clamp(m_damageUITimer + 1.0f, 0.0f, APPEAR_TIME);
+
+			//イージングを計算。
+			float easingAmount = EasingMaker(Out, Exp, m_damageUITimer / APPEAR_TIME);
+			m_coreDamageUI.m_color.color.a = static_cast<int>(255 * easingAmount);
+
+			//タイマーが規定値を超えていたら。
+			if (APPEAR_TIME <= m_damageUITimer) {
+
+				m_damageUITimer = 0.0f;
+				m_uiState = UISTATE::EXIT;
+
+			}
+
+
+		}
+		break;
+		case Core::UISTATE::EXIT:
+		{
+
+			//タイマーを更新。
+			m_damageUITimer = std::clamp(m_damageUITimer + 1.0f, 0.0f, EXIT_TIME);
+
+			//イージングを計算。
+			float easingAmount = EasingMaker(In, Quart, m_damageUITimer / EXIT_TIME);
+			m_coreDamageUI.m_color.color.a = static_cast<int>(255 - 255 * easingAmount);
+
+			//タイマーが規定値を超えていたら。
+			if (EXIT_TIME <= m_damageUITimer) {
+
+				m_damageUITimer = 0.0f;
+				m_uiState = UISTATE::APPEAR;
+				++m_uiAppearCount;
+				if (UI_APPEAR_COUNT <= m_uiAppearCount) {
+
+					m_isActiveDamageUI = false;
+
+				}
+
+			}
+
+
+		}
+		break;
+		default:
+			break;
+		}
+
+
+	}
+
+	m_damageUIAgainTimer = std::clamp(m_damageUIAgainTimer - 1, 0, DAMAGEUI_AGAIN_TIMER);
+
 
 	/*オカモトゾーン*/
 	if (isDrawHpBox)
@@ -103,6 +176,8 @@ void Core::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 	crownTransform.pos += m_crownPos;
 	m_crownModel.Draw(arg_rasterize, arg_blasVec, crownTransform);
 
+	m_coreDamageUI.Draw(arg_rasterize);
+
 	if (!TitleFlag::Instance()->m_isTitle && !Tutorial::Instance()->is_tutorial) {
 
 		/*オカモトゾーン*/
@@ -129,4 +204,15 @@ void Core::Damage(int arg_damage)
 	/*オカモトゾーン*/
 
 	m_hp = std::clamp(m_hp - arg_damage, 0, MAX_HP);
+
+	if (!m_isActiveDamageUI && m_damageUIAgainTimer <= 0) {
+
+		m_isActiveDamageUI = true;
+		m_uiState = UISTATE::APPEAR;
+		m_damageUITimer = 0.0f;
+		m_uiAppearCount = 0;
+
+		m_damageUIAgainTimer = DAMAGEUI_AGAIN_TIMER;
+
+	}
 }
