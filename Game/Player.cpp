@@ -70,6 +70,7 @@ void Player::Init()
 	m_mineralCenterPos.y = 0.0f;
 	m_oldTransform = m_transform;
 	m_forwardQ = DirectX::XMQuaternionIdentity();
+	m_daipanQ = DirectX::XMQuaternionIdentity();
 	m_daipanReturnTimer = 0.0f;
 	m_hp = HP;
 	m_damageShake = 0;
@@ -90,7 +91,7 @@ void Player::Update()
 
 	//回転を元に戻す。
 	if (!m_isWaveHand) {
-		m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, m_forwardQ, 0.2f);
+		m_baseQ = m_forwardQ;
 	}
 
 	//座標を保存しておく。
@@ -215,6 +216,7 @@ void Player::Update()
 		m_daipanStartPosY = 0.0f;
 		m_daipanStrongTimer = 0.0f;
 		m_daipanShakePos = {};
+		m_daipanQ = DirectX::XMQuaternionIdentity();
 
 		break;
 	case Player::CHARGE:
@@ -229,7 +231,7 @@ void Player::Update()
 
 		//チャージされた分だけ上に傾ける。
 		m_daipanXAngle = -heightRate * DirectX::XM_PIDIV4;
-		m_transform.quaternion = DirectX::XMQuaternionMultiply(m_transform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 1,0,0 }, m_transform.quaternion).ConvertXMVECTOR(), m_daipanXAngle));
+		m_daipanQ = DirectX::XMQuaternionRotationAxis(TransformVec3({ 1,0,0 }, m_baseQ).ConvertXMVECTOR(), m_daipanXAngle);
 
 		//リリースされた瞬間だったら
 		if (m_isOldInputDaipan && !m_isInputDaipan) {
@@ -248,7 +250,7 @@ void Player::Update()
 
 			//シェイク量を計算
 			m_daipanShakePos = { KazMath::Rand(-DAIPAN_SHAKE_POS, DAIPAN_SHAKE_POS),KazMath::Rand(-DAIPAN_SHAKE_POS, DAIPAN_SHAKE_POS),KazMath::Rand(-DAIPAN_SHAKE_POS, DAIPAN_SHAKE_POS) };
-			m_transform.quaternion = m_forwardQ;
+			m_daipanQ = DirectX::XMQuaternionIdentity();
 
 		}
 
@@ -275,7 +277,7 @@ void Player::Update()
 
 		//台パンのX軸回転ももとに戻す。
 		float nowXAngle = m_daipanXAngle - (m_daipanXAngle * easingAmount);
-		m_transform.quaternion = DirectX::XMQuaternionMultiply(m_transform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 1,0,0 }, m_transform.quaternion).ConvertXMVECTOR(), nowXAngle));
+		m_daipanQ = DirectX::XMQuaternionRotationAxis(TransformVec3({ 1,0,0 }, m_baseQ).ConvertXMVECTOR(), nowXAngle);
 
 
 		//タイマーが上限に達したら通常状態に戻す。
@@ -360,7 +362,7 @@ void Player::Update()
 
 	}
 	//右方向
-	KazMath::Vec3<float> rightVec = TransformVec3({ 1,0,0 }, m_transform.quaternion);
+	KazMath::Vec3<float> rightVec = TransformVec3({ 1,0,0 }, m_baseQ);
 	rayResult = StageCollision::Instance()->m_stageCollision.CheckHitRay(m_transform.pos, rightVec);
 	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
@@ -384,8 +386,11 @@ void Player::Update()
 		m_damageShake = 0.0f;
 	}
 
+
+	m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, m_baseQ, 0.2f);
 	m_drawTransform = m_transform;
 	m_drawTransform.quaternion = m_transform.quaternion;
+	m_drawTransform.quaternion = DirectX::XMQuaternionMultiply(m_drawTransform.quaternion, m_daipanQ);
 
 	//シェイクをかける。
 	m_drawTransform.pos += m_daipanShakePos;

@@ -20,6 +20,8 @@ private:
 	KazMath::Vec3<float> m_daipanPos;	//台パン中にカメラを固定するための座標
 	KazMath::Vec3<float> m_forwardVec;			//正面ベクトル
 	DirectX::XMVECTOR m_forwardQ;
+	DirectX::XMVECTOR m_baseQ;
+	DirectX::XMVECTOR m_daipanQ;
 
 	//隊列関連
 	KazMath::Vec3<float> m_mineralCenterBasePos;	//ミネラルの中心座標。隊列を移動させる時に使う。
