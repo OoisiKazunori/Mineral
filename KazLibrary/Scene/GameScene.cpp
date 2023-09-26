@@ -258,7 +258,7 @@ void GameScene::Update()
 	m_goldCore->Update();
 
 	//破壊可能オブジェクトを更新。
-	DestructibleObjectMgr::Instance()->Update();
+	DestructibleObjectMgr::Instance()->Update(m_player);
 
 	//建築物の素材を更新。
 	BuildingMaterialMgr::Instance()->Update();

@@ -5,6 +5,7 @@
 #include <array>
 
 class DestructibleTree;
+class Player;
 
 class DestructibleObjectMgr : public ISingleton<DestructibleObjectMgr>{
 
@@ -23,7 +24,7 @@ public:
 	void DebugGenerate();
 	void GenerateTree(KazMath::Vec3<float> arg_pos);
 
-	void Update();
+	void Update(std::weak_ptr<Player> arg_player);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

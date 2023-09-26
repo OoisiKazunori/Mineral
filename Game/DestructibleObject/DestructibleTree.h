@@ -2,6 +2,8 @@
 #include "../Game/DrawCallSet.h"
 #include "../KazLibrary/Sound/SoundManager.h"
 
+class Player;
+
 class DestructibleTree {
 
 private:
@@ -23,7 +25,7 @@ public:
 
 	void Init();
 
-	void Update();
+	void Update(std::weak_ptr<Player> arg_player);
 
 	void Generate(KazMath::Vec3<float> arg_generatePos);
 

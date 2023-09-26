@@ -1,5 +1,6 @@
 #include "DestructibleObjectMgr.h"
 #include "DestructibleTree.h"
+#include "../Game/Player.h"
 
 void DestructibleObjectMgr::Setting()
 {
@@ -45,14 +46,14 @@ void DestructibleObjectMgr::GenerateTree(KazMath::Vec3<float> arg_pos)
 
 }
 
-void DestructibleObjectMgr::Update()
+void DestructibleObjectMgr::Update(std::weak_ptr<Player> arg_player)
 {
 
 	for (auto& index : m_trees) {
 
 		if (!index->GetIsActive()) continue;
 
-		index->Update();
+		index->Update(arg_player);
 
 	}
 
