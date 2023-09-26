@@ -219,7 +219,7 @@ void GameScene::Update()
 	m_player->Update();
 
 	//ミネラルを更新。
-	MineralMgr::Instance()->Update(m_player, m_mineralTarget);
+	MineralMgr::Instance()->Update(m_player, m_mineralTarget, m_enemyMgr);
 
 	//岩を更新。
 	RockMgr::Instance()->Update(m_player);

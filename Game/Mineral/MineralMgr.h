@@ -10,6 +10,7 @@
 class Mineral;
 class Player;
 class MineralTarget;
+class EnemyMgr;
 
 class MineralMgr : public ISingleton<MineralMgr> {
 
@@ -30,7 +31,7 @@ public:
 
 	void Init();
 
-	void Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralTarget> arg_mineralTarget);
+	void Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralTarget> arg_mineralTarget, std::weak_ptr<EnemyMgr> arg_enemyMgr);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

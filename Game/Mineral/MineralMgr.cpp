@@ -4,6 +4,13 @@
 #include "../Game/DestructibleObject/DestructibleObjectMgr.h"
 #include "../Player.h"
 #include "../Building/BuildingMgr.h"
+#include "../Enemy/EnemyMgr.h"
+#include "../DestructibleObject/DestructibleTree.h"
+#include "../DestructibleObject/DestructibleObjectMgr.h"
+#include "../BuildingMaterial/BuildingMaterial.h"
+#include "../BuildingMaterial/BuildingMaterialMgr.h"
+#include "../Rock/Rock.h"
+#include "../Rock/RockMgr.h"
 
 void MineralMgr::Setting() {
 
@@ -62,7 +69,7 @@ void MineralMgr::Generate(KazMath::Vec3<float>& arg_pos, KazMath::Vec3<float>& a
 
 }
 
-void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralTarget> arg_mineralTarget) {
+void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralTarget> arg_mineralTarget, std::weak_ptr<EnemyMgr> arg_enemyMgr) {
 
 	moveSECount = 0;
 
@@ -143,7 +150,7 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 						//材料を足す。
 						//BuildingMgr::Instance()->AddMaterialWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex());
 						//index->EraseTheMaterial();
-						index->Build(BuildingMgr::Instance()->GetWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex()));
+					index->Build(BuildingMgr::Instance()->GetWall(arg_mineralTarget.lock()->GetTargetBuilidngIndex()));
 
 					//}
 					//else {
@@ -176,6 +183,70 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 			}
 
 		}
+
+	}
+
+
+	//追従していないミネラルを自動行動させる処理
+	for (auto& mineralIndex : m_minerals) {
+
+		if (!mineralIndex->GetIsAlive()) continue;
+		if (mineralIndex->GetIsGathering()) continue;
+		if (mineralIndex->GetIsAttack()) continue;
+
+		//ここまで通るのは生成されていて、追従していなくて、攻撃していないミネラル。
+
+		//探索範囲
+		const float SEARCH_RANGE = 30.0f;
+
+		//敵がいたら自動攻撃の処理
+		{
+
+			//ミネクジの最短距離
+			float mineKujiDistance = 0.0f;
+			int minekujiIndex = arg_enemyMgr.lock()->GetTargetMineKujiIndex(mineralIndex->GetPosZeroY(), SEARCH_RANGE, mineKujiDistance);
+
+			//ミネクジの最短距離
+			float mineTsumuriDistance = 0.0f;
+			int mineTsumuriIndex = arg_enemyMgr.lock()->GetTargetMineTsumuriIndex(mineralIndex->GetPosZeroY(), SEARCH_RANGE, mineTsumuriDistance);
+
+			//探索範囲内に敵は居るか？
+			bool isNearEnemy = minekujiIndex != -1 || mineTsumuriIndex != -1;
+
+			//探索範囲に敵がいるのなら、近くにいるのはミネクジか？ミネツムリか？
+			if (isNearEnemy) {
+
+				bool isMineKuji = false;
+
+				//どちらか一方のインデックスが-1だったら
+				if (minekujiIndex == -1) {
+					isMineKuji = false;
+				}
+				else if (mineTsumuriIndex == -1) {
+					isMineKuji = true;
+				}
+				//どちらにも値が入っていたら。
+				else {
+
+					//値の小さいほうを優先する。
+					isMineKuji = mineKujiDistance < mineTsumuriDistance;
+
+				}
+
+				//敵を攻撃する。
+				if (isMineKuji) {
+					mineralIndex->Attack(arg_enemyMgr.lock()->GetMineKuji(minekujiIndex));
+				}
+				else {
+					mineralIndex->Attack(arg_enemyMgr.lock()->GetMineTsumuri(mineTsumuriIndex));
+				}
+
+				continue;
+
+			}
+
+		}
+
 
 	}
 

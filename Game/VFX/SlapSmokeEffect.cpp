@@ -141,7 +141,7 @@ void SlapSmokeEffect::Particle::Update()
 
 void SlapSmokeEffect::Particle::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	if (0 < m_transform.scale.x) {
-		m_smokeRender.Draw(arg_rasterize, arg_blasVec, m_transform);
-	}
+	//if (0 < m_transform.scale.x) {
+	//	m_smokeRender.Draw(arg_rasterize, arg_blasVec, m_transform);
+	//}
 }
