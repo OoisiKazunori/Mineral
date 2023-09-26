@@ -84,6 +84,8 @@ public:
 	DrawCallSet m_numberModel;
 	KazMath::Transform3D m_numberModelTransform;
 
+	bool m_isKnockBackTrigger;
+
 	//ƒƒbƒVƒ…‚Ì“–‚½‚è”»’è
 	std::array<DrawCallSet, 3> m_meshCollisionModel;
 	std::array<MeshCollision, 3> m_meshCollider;
@@ -115,5 +117,7 @@ public:
 	bool GetIsBuild() { return m_isBuild; }
 	KazMath::Vec3<float> GetPosZeroY();
 	KazMath::Vec3<float> GetScale() { return m_transform.scale; }
+
+	bool GetIsKnockBackTrigger() { return m_isKnockBackTrigger; }
 
 };

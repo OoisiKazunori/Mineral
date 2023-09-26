@@ -29,6 +29,9 @@ public:
 	void GenerateMinekuji(EnemyRoute::ROUTE_ID arg_routeID, bool arg_isTutorialEnemy = false);
 	void GenerateMinetsumuri(EnemyRoute::ROUTE_ID arg_routeID, bool arg_isKing);
 
+	//ノックバック判定
+	void CheckNockBack(KazMath::Vec3<float> arg_wallPos, float arg_scale);
+
 	void Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);

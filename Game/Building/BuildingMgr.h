@@ -7,6 +7,7 @@
 
 class Wall;
 class Player;
+class EnemyMgr;
 
 class BuildingMgr : public ISingleton<BuildingMgr> {
 
@@ -41,5 +42,9 @@ public:
 	void AddMaterialWall(int arg_index);
 	bool IsFullMaterialWall(int arg_index);
 	bool GetIsBuildWall(int arg_index);
+
+	bool GetIsKnockBackWall(int arg_index);
+
+	void CheckNockBack(std::weak_ptr<EnemyMgr> arg_enemyMgr);
 
 };

@@ -73,6 +73,41 @@ void EnemyMgr::DebugGenerate()
 
 }
 
+void EnemyMgr::CheckNockBack(KazMath::Vec3<float> arg_wallPos, float arg_scale)
+{
+
+	//ミネクジのノックバック
+	for (auto& index : m_minekujis) {
+
+		if (!index->GetIsActive()) continue;
+
+		//当たり判定を行う。
+		float distance = KazMath::Vec3<float>(index->GetPos() - arg_wallPos).Length();
+		if (distance <= index->GetScale().x + arg_scale) {
+
+			index->KnockBack();
+
+		}
+
+	}
+
+	//ミネツムリのノックバック
+	for (auto& index : m_minetsumuri) {
+
+		if (!index->GetIsActive()) continue;
+
+		//当たり判定を行う。
+		float distance = KazMath::Vec3<float>(index->GetPos() - arg_wallPos).Length();
+		if (distance <= index->GetScale().x + arg_scale) {
+
+			index->KnockBack();
+
+		}
+
+	}
+
+}
+
 void EnemyMgr::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player)
 {
 

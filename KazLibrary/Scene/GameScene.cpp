@@ -318,6 +318,9 @@ void GameScene::Update()
 
 	}
 
+	//建築物と敵のノックバック判定
+	BuildingMgr::Instance()->CheckNockBack(m_enemyMgr);
+
 	//タイトルの更新処理
 	UpdateTitle();
 

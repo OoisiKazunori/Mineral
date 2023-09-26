@@ -108,6 +108,10 @@ private:
 	//出現地点をランダム化
 	const float RANDOM_SPAWN_RANGE = 20.0f;
 
+	//ノックバック
+	KazMath::Vec3<float> m_knockBackVec;
+	const float KNOCKBACK_SPEED = 5.0f;
+
 
 public:
 
@@ -141,6 +145,8 @@ public:
 	KazMath::Vec3<float> GetPosZeroY() { return KazMath::Vec3<float>(m_transform.pos.x, 0.0f, m_transform.pos.z); }
 	KazMath::Vec3<float> GetScale() { return m_transform.scale; }
 	KazMath::Vec3<float> GetTargetScale() { return KazMath::Vec3<float>(10.0f, 10.0f, 10.0f); }
+
+	void KnockBack();
 
 private:
 

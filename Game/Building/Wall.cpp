@@ -50,6 +50,7 @@ void Wall::Init()
 	m_isBuild = false;
 	m_isReady = false;
 	m_isOldReady = false;
+	m_isKnockBackTrigger = false;
 	m_materialCounter = 0;
 	m_sineWaveTimer = 0.0f;
 	m_easingTimer = EXIT_EASING_TIMER;
@@ -79,6 +80,7 @@ void Wall::Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int 
 	Init();
 
 	m_isActive = true;
+	m_isKnockBackTrigger = false;
 	m_rotateY = arg_rotateY;
 	m_initRotateY = arg_rotateY;
 	m_boxTransform.rotation.y = arg_rotateY;
@@ -89,7 +91,7 @@ void Wall::Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int 
 void Wall::Update(std::weak_ptr<Player> arg_player)
 {
 
-
+	m_isKnockBackTrigger = false;
 
 	/*オカモトゾーン*/
 	if (isDrawHpBox)
@@ -166,6 +168,8 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 
 				m_easingTimer = 0.0f;
 				m_buildStatus = BUILD_STATUS::COMPLETE;
+
+				m_isKnockBackTrigger = true;
 
 				ShakeMgr::Instance()->m_shakeAmount = 5.0f;
 

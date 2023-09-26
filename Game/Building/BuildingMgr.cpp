@@ -1,5 +1,6 @@
 #include "BuildingMgr.h"
 #include "Wall.h"
+#include "../Game/Enemy/EnemyMgr.h"
 
 void BuildingMgr::Setting()
 {
@@ -135,6 +136,24 @@ bool BuildingMgr::IsFullMaterialWall(int arg_index)
 bool BuildingMgr::GetIsBuildWall(int arg_index) {
 
 	return m_walls[arg_index]->GetIsBuild();
+}
+
+bool BuildingMgr::GetIsKnockBackWall(int arg_index)
+{
+	return m_walls[arg_index]->GetIsKnockBackTrigger();
+}
+
+void BuildingMgr::CheckNockBack(std::weak_ptr<EnemyMgr> arg_enemyMgr)
+{
+
+	for (auto& wallIndex : m_walls) {
+
+		if (!wallIndex->GetIsKnockBackTrigger()) continue;
+
+		arg_enemyMgr.lock()->CheckNockBack(wallIndex->GetPosZeroY(), 20.0f);
+
+	}
+
 }
 
 MeshCollision::CheckHitResult BuildingMgr::CheckHitWall(KazMath::Vec3<float> arg_rayPos, KazMath::Vec3<float> arg_rayDir, float arg_rayLength, int& arg_wallIndex) {

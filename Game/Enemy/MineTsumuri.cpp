@@ -69,6 +69,7 @@ void MineTsumuri::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg
 	m_gravity = 0.0f;
 	m_attackedScale = 0.0f;
 	m_oldTransform = m_transform;
+	m_knockBackVec = {};
 
 	m_coreMoveSpeed = 0.0f;
 	m_coreMoveDelayTimer = 0.0f;
@@ -921,20 +922,34 @@ KazMath::Vec3<float> MineTsumuri::SearchRoute()
 
 }
 
+void MineTsumuri::KnockBack()
+{
+
+	//ノックバックする方向を求める。
+	m_knockBackVec = KazMath::Vec3<float>(m_oldTransform.pos - m_transform.pos).GetNormal();
+	m_knockBackVec *= KNOCKBACK_SPEED;
+
+}
+
 void MineTsumuri::Move() {
 
 	using namespace KazMath;
 
-	//ミネクジがコアに向かって行く移動を計算する。
-	if (0 < m_coreMoveSpeed) {
+	//ノックバック中は動かさない。
+	if (m_knockBackVec.Length() <= 0.0f) {
 
-		Vec3<float> moveDir = SearchRoute();
-		m_transform.pos += moveDir * m_coreMoveSpeed;
-		m_coreMoveSpeed -= m_coreMoveSpeed / 15.0f;
+		//ミネクジがコアに向かって行く移動を計算する。
+		if (0 < m_coreMoveSpeed) {
 
-	}
-	else if (m_coreMoveSpeed < 0.01f) {
-		m_coreMoveSpeed = 0.0f;
+			Vec3<float> moveDir = SearchRoute();
+			m_transform.pos += moveDir * m_coreMoveSpeed;
+			m_coreMoveSpeed -= m_coreMoveSpeed / 15.0f;
+
+		}
+		else if (m_coreMoveSpeed < 0.01f) {
+			m_coreMoveSpeed = 0.0f;
+		}
+
 	}
 
 	//攻撃の反動を与える。
@@ -960,6 +975,19 @@ void MineTsumuri::Move() {
 	else {
 
 		m_attackedReactionVec = {};
+
+	}
+
+	//ノックバック
+	if (0.01f < m_knockBackVec.Length()) {
+
+		m_transform.pos += m_knockBackVec;
+		m_knockBackVec -= m_knockBackVec / 5.0f;
+
+	}
+	else {
+
+		m_knockBackVec = {};
 
 	}
 
@@ -1049,6 +1077,9 @@ void MineTsumuri::CheckHit(std::weak_ptr<Player> arg_player) {
 void MineTsumuri::Rotation(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player) {
 
 	if (m_inShell) return;
+
+	//ノックバック中は回転させない。
+	if (0 < m_knockBackVec.Length()) return;
 
 	//傾ける。
 	KazMath::Vec3<float> nowPos = m_transform.pos;

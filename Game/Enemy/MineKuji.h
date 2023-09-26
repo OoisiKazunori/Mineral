@@ -82,6 +82,10 @@ private:
 	//出現地点をランダム化
 	const float RANDOM_SPAWN_RANGE = 20.0f;
 
+	//ノックバック
+	KazMath::Vec3<float> m_knockBackVec;
+	const float KNOCKBACK_SPEED = 5.0f;
+
 
 public:
 
@@ -119,6 +123,8 @@ public:
 	KazMath::Vec3<float> GetTargetScale() { return KazMath::Vec3<float>(10.0f, 10.0f, 10.0f); }
 
 	void CounterOverlap(KazMath::Vec3<float> arg_centerPos, KazMath::Vec3<float> arg_mineralPos, float arg_scale);
+
+	void KnockBack();
 
 private:
 
