@@ -56,6 +56,8 @@ void BuildingMaterialMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::Bl
 
 	for (auto& index : m_materials) {
 
+		if (!index->GetIsActive()) continue;
+
 		index->Draw(arg_rasterize, arg_blasVec);
 
 	}

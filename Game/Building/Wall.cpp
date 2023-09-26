@@ -294,33 +294,44 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
-	KazMath::Transform3D modelTransform = m_transform;
-	modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
+	//î†Çï`âÊ
+	if (m_isActive && !m_isBuild) {
 
-	KazMath::Transform3D boxTransform = m_boxTransform;
-	boxTransform.scale += KazMath::Vec3<float>(std::sin(m_sineWaveTimer) * BOX_SINE_WAVE_SCALE, std::sin(m_sineWaveTimer) * BOX_SINE_WAVE_SCALE, std::sin(m_sineWaveTimer) * BOX_SINE_WAVE_SCALE);
 
-	if (!m_isActive) {
+		KazMath::Transform3D boxTransform = m_boxTransform;
+		boxTransform.scale += KazMath::Vec3<float>(std::sin(m_sineWaveTimer) * BOX_SINE_WAVE_SCALE, std::sin(m_sineWaveTimer) * BOX_SINE_WAVE_SCALE, std::sin(m_sineWaveTimer) * BOX_SINE_WAVE_SCALE);
 
-		boxTransform.pos = { 0,-10000,0 };
-		boxTransform.scale = { 0,0,0 };
-
-		modelTransform.pos = { 0,-10000,0 };
-		modelTransform.scale = { 0,0,0 };
+		DessolveOutline outline;
+		outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
+		m_buildingBoxModel.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+		m_buildingBoxModel.m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+		m_buildingBoxModel.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		m_buildingBoxModel.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+		m_buildingBoxModel.Draw(arg_rasterize, arg_blasVec, boxTransform);
 
 	}
 
-	if (m_noreadyStatus == NOREADY_STATUS::STAY) {
-		boxTransform = m_boxTransform;
+	//çÚé©ëÃÇï`âÊ
+	if (m_isActive) {
+
+
+		DessolveOutline outline;
+		outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
+		m_model[m_modelIndex].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+		m_model[m_modelIndex].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+		m_model[m_modelIndex].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		m_model[m_modelIndex].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+
+		KazMath::Transform3D modelTransform = m_transform;
+		modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
+		m_model[m_modelIndex].Draw(arg_rasterize, arg_blasVec, modelTransform);
+
 	}
 
-	if (m_isBuild) {
-		boxTransform.scale = { 0,0,0 };
-	}
-
+	//écÇËÇÃåöçﬁêîÇÃï`âÊ	
 	if (m_isReady && !m_isBuild) {
 
-		m_numberModelTransform.pos = boxTransform.pos;
+		m_numberModelTransform.pos = m_boxTransform.pos;
 		m_numberModelTransform.pos.y += 30.0f;
 		m_numberModelTransform.scale.x = 5.0f;
 		m_numberModelTransform.scale.z = 5.0f;
@@ -329,7 +340,7 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 	}
 	else {
 
-		m_numberModelTransform.pos = boxTransform.pos;
+		m_numberModelTransform.pos = m_boxTransform.pos;
 		m_numberModelTransform.pos.y += 30.0f;
 		m_numberModelTransform.scale.x = 5.0f;
 		m_numberModelTransform.scale.z = 5.0f;
@@ -340,24 +351,12 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 			m_numberModelTransform.scale.z = 0.0f;
 		}
 	}
-
 	m_numberModel.m_model.materialBuffer.front().front() = NumberFont::Instance()->m_font[MATERIAL_COUNT - m_materialCounter];
-
 	DessolveOutline outline;
 	outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
-	m_buildingBoxModel.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
-	m_buildingBoxModel.m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
-	m_buildingBoxModel.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-	m_buildingBoxModel.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
-
-	m_model[m_modelIndex].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
-	m_model[m_modelIndex].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
-	m_model[m_modelIndex].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-	m_model[m_modelIndex].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
-
-	m_model[m_modelIndex].Draw(arg_rasterize, arg_blasVec, modelTransform);
-	m_buildingBoxModel.Draw(arg_rasterize, arg_blasVec, boxTransform);
 	m_numberModel.Draw(arg_rasterize, arg_blasVec, m_numberModelTransform, 0, false);
+
+
 
 	/*ÉIÉJÉÇÉgÉ]Å[Éì*/
 	m_hpBoxTransform.pos = m_transform.pos;

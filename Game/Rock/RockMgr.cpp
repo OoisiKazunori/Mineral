@@ -97,7 +97,7 @@ void RockMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& ar
 
 	for (auto& index : m_rocks) {
 
-		//if (!index->GetIsAlive()) continue;
+		if (!index->GetIsAlive()) continue;
 
 		index->Draw(arg_rasterize, arg_blasVec);
 

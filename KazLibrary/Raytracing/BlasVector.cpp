@@ -14,15 +14,13 @@ namespace Raytracing
 		m_instanceDesc.resize(0);
 	}
 
-	void BlasVector::Add(std::weak_ptr<Blas> arg_refBlas, const DirectX::XMMATRIX& arg_worldMat, int arg_instanceIndex, bool arg_isAddRef)
+	void BlasVector::Add(std::weak_ptr<Blas> arg_refBlas, const DirectX::XMMATRIX& arg_worldMat, int arg_instanceIndex)
 	{
 
 		/*===== TlasÇ…ìoò^Ç∑ÇÈÇΩÇﬂÇ…îzóÒÇ…í«â¡Ç∑ÇÈ =====*/
 
 		//éQè∆Çí«â¡ÇµÇƒÅB
-		if (arg_isAddRef) {
-			m_refBlas.emplace_back(arg_refBlas);
-		}
+		m_refBlas.emplace_back(arg_refBlas);
 		int hitGroupSize = static_cast<int>(m_refBlas.size()) - 1;
 
 

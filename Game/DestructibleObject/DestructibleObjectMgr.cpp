@@ -63,6 +63,8 @@ void DestructibleObjectMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::
 
 	for (auto& index : m_trees) {
 
+		if (!index->GetIsActive()) continue;
+
 		index->Draw(arg_rasterize, arg_blasVec);
 
 	}

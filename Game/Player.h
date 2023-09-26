@@ -12,7 +12,6 @@ private:
 	SoundData down;
 	//プレイヤー描画関連
 	DrawCallSet m_model;
-	DrawCallSet m_model2;
 	DrawCallSet m_attackModel;
 
 	KazMath::Transform3D m_oldTransform;

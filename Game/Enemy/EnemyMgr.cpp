@@ -113,10 +113,14 @@ void EnemyMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 
 	for (auto& index : m_minekujis) {
 
+		if (!index->GetIsActive()) continue;
+
 		index->Draw(arg_rasterize, arg_blasVec);
 
 	}
 	for (auto& index : m_minetsumuri) {
+
+		if (!index->GetIsActive()) continue;
 
 		index->Draw(arg_rasterize, arg_blasVec);
 

@@ -186,7 +186,7 @@ void MineralMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector&
 
 	for (auto& index : m_minerals) {
 
-		//if (!index->GetIsAlive()) continue;
+		if (!index->GetIsAlive()) continue;
 
 		index->Draw(arg_rasterize, arg_blasVec);
 
