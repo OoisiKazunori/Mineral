@@ -219,20 +219,20 @@ namespace Raytracing {
 		if (blasRefCount == 0) return;
 
 		//Blasの参照数がパイプラインに含まれているBlasの数を上回ったらシェーダーテーブルを再構築する。
-		if (m_numBlas < blasRefCount) {
+		//if (m_numBlas < blasRefCount) {
 
 			//再構築。
 			ConstructionShaderTable(arg_blacVector, arg_dispatchX, arg_dispatchY);
 
 			m_numBlas = blasRefCount;
 
-		}
-		else {
+		//}
+		//else {
 
-			//再構築せずにBlasの情報を更新。
-			MapHitGroupInfo(arg_blacVector);
+		//	//再構築せずにBlasの情報を更新。
+		//	MapHitGroupInfo(arg_blacVector);
 
-		}
+		//}
 
 	}
 
@@ -245,15 +245,15 @@ namespace Raytracing {
 		const auto ShaderRecordAlignment = D3D12_RAYTRACING_SHADER_RECORD_BYTE_ALIGNMENT;
 
 		//RayGenerationシェーダーではローカルルートシグネチャ未使用。
-		m_raygenRecordSize += D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES;
+		m_raygenRecordSize = D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES;
 		m_raygenRecordSize = RoundUp(m_raygenRecordSize, ShaderRecordAlignment);
 
 		//Missシェーダーではローカルルートシグネチャ未使用。
-		m_missRecordSize += D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES;
+		m_missRecordSize = D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES;
 		m_missRecordSize = RoundUp(m_missRecordSize, ShaderRecordAlignment);
 
 		//ヒットグループでは、保存されているヒットグループの中から最大のサイズのものでデータを確保する。
-		m_hitgroupRecordSize += D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES;
+		m_hitgroupRecordSize = D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES;
 		m_hitgroupRecordSize += GetLargestDataSizeInHitGroup();
 		m_hitgroupRecordSize = RoundUp(m_hitgroupRecordSize, ShaderRecordAlignment);
 
@@ -284,9 +284,9 @@ namespace Raytracing {
 			D3D12_HEAP_TYPE_UPLOAD,
 			L"ShaderTable0");
 		m_shaderTalbeMapAddress = nullptr;
-		m_shaderTable->Map(0, nullptr, &m_shaderTalbeMapAddress);
+		HRESULT result = m_shaderTable->Map(0, nullptr, &m_shaderTalbeMapAddress);
 
-		m_stateObject.As(&m_rtsoProps);
+		result = m_stateObject.As(&m_rtsoProps);
 
 		//シェーダーテーブルを書き込み、レイを設定する。
 		WriteShadetTalbeAndSettingRay(arg_blacVector, arg_dispatchX, arg_dispatchY);
