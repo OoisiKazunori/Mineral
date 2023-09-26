@@ -48,4 +48,6 @@ public:
 	std::weak_ptr<MineTsumuri> GetMineTsumuri(int arg_index);
 	bool GetIsMineking(int arg_index);
 
+	int GetAliveEnemyCount();
+
 };

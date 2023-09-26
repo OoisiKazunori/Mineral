@@ -303,3 +303,28 @@ bool EnemyMgr::GetIsMineking(int arg_index)
 {
 	return m_minetsumuri[arg_index]->GetIsMineking();
 }
+
+int EnemyMgr::GetAliveEnemyCount()
+{
+
+	int enemyCount = 0;
+
+	for (auto& index : m_minekujis) {
+
+		if (!index->GetIsActive()) continue;
+
+		++enemyCount;
+
+	}
+
+
+	for (auto& index : m_minetsumuri) {
+
+		if (!index->GetIsActive()) continue;
+
+		++enemyCount;
+
+	}
+
+	return enemyCount;
+}
