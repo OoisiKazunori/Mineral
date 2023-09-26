@@ -247,6 +247,57 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 
 		}
 
+		//‹ß‚­‚É–Ø‚ª‚ ‚Á‚½‚ç‚Ìˆ—
+		{
+
+			float treeDistance = 0.0f;
+			int treeIndex = DestructibleObjectMgr::Instance()->GetTargetTreeIndex(mineralIndex->GetPosZeroY(), SEARCH_RANGE, treeDistance);
+
+			//‹ß‚­‚É–Ø‚ª‡‚Á‚½‚ç
+			if (treeIndex != -1) {
+
+				mineralIndex->Attack(DestructibleObjectMgr::Instance()->GetTree(treeIndex));
+
+				continue;
+
+			}
+
+		}
+
+		//‹ß‚­‚ÉŠâ‚ª‚ ‚Á‚½ê‡‚Ìˆ—
+		{
+
+			float rockDistance = 0.0f;
+			int rockIndex = RockMgr::Instance()->GetTargetRockIndex(mineralIndex->GetPosZeroY(), SEARCH_RANGE, rockDistance);
+
+			//‹ß‚­‚É–Ø‚ª‡‚Á‚½‚ç
+			if (rockIndex != -1) {
+
+				mineralIndex->Attack(RockMgr::Instance()->GetRock(rockIndex));
+
+				continue;
+
+			}
+
+		}
+
+		//‹ß‚­‚ÉŒšÞ‚ª‚ ‚Á‚½ê‡‚Ìˆ—
+		if(!mineralIndex->GetHaveMaterial()){
+
+			float materialDistance = 0.0f;
+			int materialIndex = BuildingMaterialMgr::Instance()->GetTargetMaterialIndex(mineralIndex->GetPosZeroY(), SEARCH_RANGE, materialDistance);
+
+			//‹ß‚­‚É–Ø‚ª‡‚Á‚½‚ç
+			if (materialIndex != -1) {
+
+				mineralIndex->HaveMaterial(BuildingMaterialMgr::Instance()->GetMaterial(materialIndex));
+
+				continue;
+
+			}
+
+		}
+
 
 	}
 
