@@ -543,12 +543,14 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 {
 
 	//プレイヤー本体を描画
-	m_drawTransform.scale = { 9.0f, 9.0f, 9.0f };
-	if (m_isDaipanStrong && m_daipanStatus != NONE) {
-		m_attackModel.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10);
-	}
-	else {
-		m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, KazMath::Color(255, 255, 255, 255));
+	if (KeyBoradInputManager::Instance()->InputState(DIK_P)) {
+		m_drawTransform.scale = { 9.0f, 9.0f, 9.0f };
+		if (m_isDaipanStrong && m_daipanStatus != NONE) {
+			m_attackModel.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10);
+		}
+		else {
+			m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, KazMath::Color(255, 255, 255, 255));
+		}
 	}
 
 	//プレイヤーの台パンの範囲を描画

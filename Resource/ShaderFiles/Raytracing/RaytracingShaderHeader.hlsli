@@ -225,7 +225,7 @@ void LightingPass(inout float arg_bright, inout float arg_pointlightBright, floa
         }
         
         //レイトレの結果の影情報を書き込む。
-        arg_bright += payloadData.m_color.x * bright;
+        arg_bright += 1.0f * bright;
         
     }
     
@@ -268,7 +268,7 @@ void LightingPass(inout float arg_bright, inout float arg_pointlightBright, floa
 
                
             //レイトレの結果の影情報を書き込む。
-                arg_pointlightBright += payloadData.m_color.x * (bright * arg_lightData.m_pointLight[index].m_pad.x);
+                arg_pointlightBright += 1.0f * (bright * arg_lightData.m_pointLight[index].m_pad.x);
                 
             }
         

@@ -114,7 +114,7 @@ const D3D12_GPU_DESCRIPTOR_HANDLE DescriptorHeapMgr::GetGpuDescriptorView(RESOUR
 	else
 	{
 		gpuDescHandle.ptr = UINT64(-1);
-		ErrorCheck("作成されていないビューを取ろうとしています");
+		ErrorCheck("作成されていないビューを取ろうとしています\n");
 		return gpuDescHandle;
 	}
 }
@@ -131,7 +131,7 @@ const D3D12_CPU_DESCRIPTOR_HANDLE DescriptorHeapMgr::GetCpuDescriptorView(RESOUR
 	else
 	{
 		cpuDescHandle.ptr = UINT64(-1);
-		ErrorCheck("作成されていないビューを取ろうとしています");
+		ErrorCheck("作成されていないビューを取ろうとしています\n");
 		return cpuDescHandle;
 	}
 }
