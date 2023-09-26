@@ -82,11 +82,11 @@ void DrawCallSet::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	}
 	m_model.extraBufferArray[3] = m_boneIdentity;
 	arg_rasterize.ObjectRender(m_model);
-	if (m_isDrawRaytracing) {
-		for (auto& index : m_model.m_raytracingData.m_blas)
-		{
-			arg_blasVec.Add(index, arg_transform.GetMat(), arg_instanceID);
-		}
-	}
+	//if (m_isDrawRaytracing) {
+	//	for (auto& index : m_model.m_raytracingData.m_blas)
+	//	{
+	//		arg_blasVec.Add(index, arg_transform.GetMat(), arg_instanceID);
+	//	}
+	//}
 
 }

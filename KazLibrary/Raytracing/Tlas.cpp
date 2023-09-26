@@ -28,7 +28,7 @@ namespace Raytracing {
 		if (nowInstanceCount <= 0) return;
 
 		//Tlasに組み込むInstanceの数が、現在のTlasの許容Instance数を超えていたらバッファを再構築する。
-		if (m_instanceCapacity < nowInstanceCount) {
+		//if (m_instanceCapacity < nowInstanceCount) {
 
 			//許容量を更新。
 			m_instanceCapacity = nowInstanceCount;
@@ -36,13 +36,13 @@ namespace Raytracing {
 			//バッファを再構築。
 			ReBuildTlas(arg_blasVector);
 
-		}
-		else {
+		//}
+		//else {
 
 			//バッファを更新。
-			UpdateTlas(arg_blasVector);
+		//	UpdateTlas(arg_blasVector);
 
-		}
+		//}
 
 	}
 
@@ -58,8 +58,8 @@ namespace Raytracing {
 			D3D12_RESOURCE_FLAG_NONE,
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			D3D12_HEAP_TYPE_UPLOAD);
-		m_instanceDescBuffer->SetName(L"InstanceDescBuffer");
-		m_instanceDescBuffer->Map(0, nullptr, &m_instanceDescMapAddress_);
+		HRESULT result = m_instanceDescBuffer->SetName(L"InstanceDescBuffer");
+		result = m_instanceDescBuffer->Map(0, nullptr, &m_instanceDescMapAddress_);
 
 		//生成したバッファにデータを書き込む。
 		WriteToMemory(m_instanceDescMapAddress_, arg_blasVector.GetInstanceData(), instanceDescSize);

@@ -337,33 +337,33 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	PIXBeginEvent(DirectX12CmdList::Instance()->cmdList.Get(), 0, "UI");
 
 
-	WaveMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	//WaveMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
 
 	PIXEndEvent(DirectX12CmdList::Instance()->cmdList.Get());
 
 	m_player->Draw(arg_rasterize, arg_blasVec);
-	MineralMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
-	RockMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
-	m_mineralTarget->Draw(arg_rasterize, arg_blasVec, m_enemyMgr);
-	m_enemyMgr->Draw(arg_rasterize, arg_blasVec);
-	m_goldCore->Draw(arg_rasterize, arg_blasVec);
-	DestructibleObjectMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
-	BuildingMaterialMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
-	BuildingMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	//MineralMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	//RockMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	//m_mineralTarget->Draw(arg_rasterize, arg_blasVec, m_enemyMgr);
+	//m_enemyMgr->Draw(arg_rasterize, arg_blasVec);
+	//m_goldCore->Draw(arg_rasterize, arg_blasVec);
+	//DestructibleObjectMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	//BuildingMaterialMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	//BuildingMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
-	m_ground.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
-	m_fence.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
-	m_tree.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
-	m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
-	m_line.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_ground.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_fence.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_tree.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_line.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
 
-	//煙エフェクト
-	for (auto& obj : m_slapEffect)
-	{
-		obj->Draw(arg_rasterize, arg_blasVec);
-	}
+	////煙エフェクト
+	//for (auto& obj : m_slapEffect)
+	//{
+	//	obj->Draw(arg_rasterize, arg_blasVec);
+	//}
 
 	//ImGui::Begin("UI");
 

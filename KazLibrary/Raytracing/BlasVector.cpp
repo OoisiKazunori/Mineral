@@ -14,14 +14,16 @@ namespace Raytracing
 		m_instanceDesc.resize(0);
 	}
 
-	void BlasVector::Add(std::weak_ptr<Blas> arg_refBlas, const DirectX::XMMATRIX& arg_worldMat, int arg_instanceIndex)
+	void BlasVector::Add(std::weak_ptr<Blas> arg_refBlas, const DirectX::XMMATRIX& arg_worldMat, int arg_instanceIndex, bool arg_isAddRef)
 	{
 
 		/*===== TlasÇ…ìoò^Ç∑ÇÈÇΩÇﬂÇ…îzóÒÇ…í«â¡Ç∑ÇÈ =====*/
 
 		//éQè∆Çí«â¡ÇµÇƒÅB
-		int hitGroupSize = static_cast<int>(m_refBlas.size());
-		m_refBlas.emplace_back(arg_refBlas);
+		if (arg_isAddRef) {
+			m_refBlas.emplace_back(arg_refBlas);
+		}
+		int hitGroupSize = static_cast<int>(m_refBlas.size()) - 1;
 
 
 		D3D12_RAYTRACING_INSTANCE_DESC instanceDesc;

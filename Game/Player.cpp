@@ -13,6 +13,7 @@
 Player::Player()
 {
 	m_model.LoadOutline("Resource/Player/", "Hand.gltf", true);
+	m_model2.LoadOutline("Resource/Player/", "Hand.gltf", true);
 
 	m_attackModel.LoadOutline("Resource/Player/", "HandAttack.gltf", true);
 
@@ -494,6 +495,12 @@ void Player::Update()
 	m_model.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
 	m_model.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
+	m_model2.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+
+	m_model2.m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+	m_model2.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+	m_model2.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+
 	outline.m_outline = KazMath::Vec4<float>(0.1f, 0, 0, 1);
 	m_attackModel.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
 
@@ -542,6 +549,14 @@ void Player::Update()
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
+	auto transfrom = m_drawTransform;
+	transfrom.pos.z += 10.0f;
+	m_model2.Draw(arg_rasterize, arg_blasVec, transfrom, 10, true, KazMath::Color(255, 255, 255, 255));
+	for (auto& index : m_model2.m_model.m_raytracingData.m_blas)
+	{
+		arg_blasVec.Add(index, transfrom.GetMat(), 10, true);
+	}
+
 	//プレイヤー本体を描画
 	if (KeyBoradInputManager::Instance()->InputState(DIK_P)) {
 		m_drawTransform.scale = { 9.0f, 9.0f, 9.0f };
@@ -550,6 +565,10 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 		}
 		else {
 			m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, KazMath::Color(255, 255, 255, 255));
+			for (auto& index : m_model.m_model.m_raytracingData.m_blas)
+			{
+				arg_blasVec.Add(index, m_drawTransform.GetMat(), 10, true);
+			}
 		}
 	}
 
@@ -563,7 +582,7 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 		transform.scale = { MINERAL_AFFECT_RANGE,MINERAL_AFFECT_RANGE,MINERAL_AFFECT_RANGE };
 
 	}
-	m_daipanModel.Draw(arg_rasterize, arg_blasVec, transform);
+	//m_daipanModel.Draw(arg_rasterize, arg_blasVec, transform);
 
 
 	std::vector<D3D12_RESOURCE_BARRIER> barrier;
