@@ -38,7 +38,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 
 	//1ウェーブ目 -----------------------------------------------------------------------------------------
-	dayTime = 600;		//日中の時間 フレーム数
+	dayTime = 60;		//日中の時間 フレーム数
 	nightTime = 1800;	//夜の時間 フレーム数
 	tree = { 1,2,3 };		//有効化時に生成される木のIndex 1スタート
 	rock = {  };		//有効化時に生成される岩のIndex 1スタート
@@ -57,6 +57,21 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	m_waves.emplace_back(m_wave1);
 
 
+	//2ウェーブ目 -----------------------------------------------------------------------------------------
+	dayTime = 18;		//日中の時間 フレーム数
+	nightTime = 3200;	//夜の時間 フレーム数
+	tree = { 4 };		//有効化時に生成される木の数
+	rock = {  };		//有効化時に生成される岩の数
+	mineralRock = { 3 };		//有効化時に生成されるミネラル岩の数
+	//敵を追加していく。
+	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
+	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
+	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
+	//ウェーブを追加。
+	m_waves.emplace_back(std::make_shared<Wave>(dayTime, nightTime, tree, rock, mineralRock, enemyInfo, m_core));
+	enemyInfo.clear();
+
+
 	////2ウェーブ目 -----------------------------------------------------------------------------------------
 	//dayTime = 1800;		//日中の時間 フレーム数
 	//nightTime = 3200;	//夜の時間 フレーム数
@@ -70,13 +85,15 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 1440);
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 1620);
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 1800);
-
+	
 	//enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 0);
 	//enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 180);
 	//enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 360);
 	////ウェーブを追加。
 	//m_waves.emplace_back(std::make_shared<Wave>(dayTime, nightTime, tree, rock, mineralRock, enemyInfo, m_core));
 	//enemyInfo.clear();
+
+
 
 
 	////3ウェーブ目 -----------------------------------------------------------------------------------------

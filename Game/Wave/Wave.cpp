@@ -30,6 +30,7 @@ Wave::Wave(int arg_dayTime, int arg_nightTime, std::vector<int> arg_tree, std::v
 	//BGM用
 	volume_up = false;
 	volume_down = true;
+	m_isPlayNiwatori = false;
 }
 
 void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
@@ -160,7 +161,10 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 			//時間が終わったWaveを無効化する。
 			if (m_nighTime <= m_nowTime) {
-				//SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
+				if (!m_isPlayNiwatori) {
+					SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
+					m_isPlayNiwatori = true;
+				}
 				Invalidate(arg_enemyMgr);
 				if (Tutorial::Instance()->is_tutorial)
 				{
@@ -239,6 +243,7 @@ void Wave::Active()
 	//ウェーブを有効化。
 	m_isActiveWave = true;
 	m_isNight = false;
+	m_isPlayNiwatori = false;
 	m_nowTime = 0;
 
 

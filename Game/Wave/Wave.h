@@ -38,6 +38,7 @@ private:
 	bool m_isNight;
 	bool m_isActiveWave;
 	std::vector<EnemyWaveInfo> m_enemyWaveInfo;	//“G‚ğ—N‚©‚¹‚éƒtƒŒ[ƒ€”
+	bool m_isPlayNiwatori;
 
 public:
 
