@@ -61,7 +61,7 @@ void SlapSmokeEffect::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_r
 
 void SlapSmokeEffect::Update()
 {
-	std::vector<CoordinateSpaceMatData>matArray;
+	int index = 0;
 	for (auto& obj : m_particleArray)
 	{
 		obj.Update();
@@ -70,15 +70,21 @@ void SlapSmokeEffect::Update()
 			CameraMgr::Instance()->GetViewMatrix(),
 			CameraMgr::Instance()->GetPerspectiveMatProjection()
 		);
-		matArray.emplace_back(data);
+		m_matArray[index] = data;
+		++index;
 	}
-	m_smokeWorldMatBuffer.bufferWrapper->TransData(matArray.data(), sizeof(CoordinateSpaceMatData) * PARTICLE_MAX_NUM);
+	m_smokeWorldMatBuffer.bufferWrapper->TransData(m_matArray.data(), sizeof(CoordinateSpaceMatData) * PARTICLE_MAX_NUM);
 	m_smokeWorldMatVRAMBuffer.bufferWrapper->CopyBuffer(m_smokeWorldMatBuffer.bufferWrapper->GetBuffer());
 }
 
 void SlapSmokeEffect::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	arg_rasterize.ObjectRender(m_drawSmokeRender);
+	for (auto& obj : m_matArray)
+	{
+		arg_blasVec.Add(m_drawSmokeRender.m_raytracingData.m_blas[0], obj.m_world, 0);
+	}
+
 	//for (auto& obj : m_particleArray)
 	//{
 	//	obj.Draw(arg_rasterize, arg_blasVec);

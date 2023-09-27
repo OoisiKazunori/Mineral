@@ -27,5 +27,7 @@ private:
 	KazBufferHelper::BufferData m_smokeWorldMatVRAMBuffer;
 	DrawFuncData::DrawCallData m_drawSmokeRender;
 
+	std::array<CoordinateSpaceMatData, PARTICLE_MAX_NUM>m_matArray;
+
 };
 
