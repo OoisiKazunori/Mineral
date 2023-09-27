@@ -38,6 +38,8 @@ private:
 	DrawCallSet m_rock;
 	DrawCallSet m_tree;
 	DrawCallSet m_line;
+	
+	DrawCallSet m_puddle;
 
 	DrawCallUISet m_titleLogoUI;
 	DrawCallUISet m_titleBackGroundUI;

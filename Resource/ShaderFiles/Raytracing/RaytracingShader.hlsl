@@ -45,11 +45,11 @@ void mainRayGen()
     {
         bright += length(emissiveColor.xyz);
     }
-    //反射屈折するオブジェクトのライティングは切る。
-    else if (MATERIAL_REFLECT == materialInfo.y || MATERIAL_REFRACT == materialInfo.y)
-    {
-        bright = 1.0f;
-    }
+    ////反射屈折するオブジェクトのライティングは切る。
+    //else if (MATERIAL_REFLECT == materialInfo.y || MATERIAL_REFRACT == materialInfo.y)
+    //{
+    //    bright = 1.0f;
+    //}
     //ライティングを行う。
     else
     {
@@ -126,7 +126,7 @@ void mainRayGen()
         {
         
             //アルベドにライトの色をかける。
-            float3 lightColor = float3(1,1,1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
+            float3 lightColor = float3(1, 1, 1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
             albedoColor.xyz *= lightColor * clamp(bright, 0.0f, 1.0f);
             
         }
@@ -169,6 +169,29 @@ void mainRayGen()
     float4 final = float4(0, 0, 0, 1);
     //SecondaryPass(dir, emissiveColor, worldColor, materialInfo, normalColor, albedoColor, gRtScene, cameraEyePos, final);
     final = albedoColor;
+    
+    float4 reflectColor = float4(0, 0, 0, 0);
+    if (materialInfo.a == 1)
+    {
+        
+        //レイの方向を決める。
+        float3 cameraDir = normalize(worldColor.xyz - cameraEyePos.m_eye);
+        float3 reflectDir = reflect(cameraDir, normalColor.xyz);
+        
+        //レイを打つ。
+        Payload reflectPayload;
+        reflectPayload.m_color = float3(0, 0, 0);
+        reflectPayload.m_rayID = 0;
+        CastRay(reflectPayload, worldColor.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+        
+        if (reflectPayload.m_color.x != -1.0f)
+        {
+            
+            final.xyz = reflectPayload.m_color;
+            
+        }
+        
+    }
     
     //合成の結果を入れる。
     finalColor[launchIndex.xy] = final;
@@ -291,10 +314,60 @@ void checkHitRayMS(inout Payload payload)
             //反射先のライティングを行う。
             float bright = 0;
             float pointlightBright = 0;
-            const float REFLECTION_DEADLINE = 10000.0f;
-            bool isFar = REFLECTION_DEADLINE < length(cameraEyePos.m_eye - vtx.pos.xyz);
-            LightingPass(bright, pointlightBright, float4(WorldRayOrigin(), 1.0f), float4(vtx.normal, 1.0f), lightData, DispatchRaysIndex(), gRtScene, isFar);
-            payload.m_color *= clamp(bright, 0.3f, 1.0f);
+            LightingPass(bright, pointlightBright, float4(vtx.pos, 1.0f), float4(vtx.normal, 1.0f), lightData, DispatchRaysIndex(), gRtScene, false);
+            
+            //夜のときのディレクショナルライトのY 絶対値
+            const float NIGHT_DIRLIGHT_Y = 0.4472f;
+            //昼のときのディレクショナルライトのY 絶対値
+            const float DAY_DIRLIGHT_Y = 0.894f;
+            const float DIRLIGHT_Y_CHANGE_AMOUNT = abs(DAY_DIRLIGHT_Y - NIGHT_DIRLIGHT_Y);
+            
+            //夜を基準とした時の現在の昼の割合
+            float dayRate = (abs(lightData.m_dirLight.m_dir.y) - NIGHT_DIRLIGHT_Y) / DIRLIGHT_Y_CHANGE_AMOUNT;
+    
+            //ポイントライトの色
+            float3 pointLightColor = float3(0.93f, 0.67f, 0.64f) * (pointlightBright);
+    
+            //ライトの明るさが0だったら影の色をアルベドに設定。
+            float3 nonLightAlbedo = payload.m_color.xyz;
+            const float3 NIGHT_LIGHT_COLOR = float3(0.18f, 0.30f, 0.42f);
+            const float3 DAY_GROUND_COLOR = float3(0.45f, 0.60f, 0.44f);
+            //カスの色
+            if (abs(nonLightAlbedo.x - 0.24f) <= 0.2f && vtx.pos.y < 1.0f)
+            {
+        
+                const float3 NIGHT_SHADOW_COLOR = float3(0.10f, 0.12f, 0.18f);
+                const float3 DAY_SHADOW_COLOR = float3(0.24f, 0.15f, 0.17f);
+                payload.m_color.xyz = DAY_SHADOW_COLOR * dayRate + NIGHT_SHADOW_COLOR * (1.0f - dayRate);
+                nonLightAlbedo = payload.m_color.xyz;
+        
+            }
+            else if (bright <= 0.0f)
+            {
+        
+        
+                const float3 NIGHT_SHADOW_COLOR = float3(0.10f, 0.12f, 0.18f);
+                const float3 DAY_SHADOW_COLOR = float3(0.24f, 0.15f, 0.17f);
+                payload.m_color.xyz = DAY_SHADOW_COLOR * dayRate + NIGHT_SHADOW_COLOR * (1.0f - dayRate);
+        
+        
+            }
+            else
+            {
+        
+              //アルベドにライトの色をかける。
+              float3 lightColor = float3(1, 1, 1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
+             payload.m_color.xyz *= lightColor * clamp(bright, 0.0f, 1.0f);
+            
+            }
+    
+            //ポイントライトの明るさを足す。
+            if (0 < pointlightBright)
+            {
+        
+                payload.m_color.xyz += nonLightAlbedo * pointLightColor;
+        
+            }
 
         }
     }

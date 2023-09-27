@@ -175,7 +175,7 @@ namespace DrawFunc
 
 		arg_callData.extraBufferArray[0].bufferWrapper->TransData(&transData, sizeof(CoordinateSpaceMatData));
 
-		arg_callData.extraBufferArray[1].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
+		arg_callData.extraBufferArray[2].bufferWrapper->TransData(&arg_color.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
 	}
 	
 	static void DrawModelDisolve(DrawFuncData::DrawCallData& arg_callData, KazMath::Transform3D& arg_transform, const KazMath::Color& arg_color = KazMath::Color(255, 255, 255, 255))

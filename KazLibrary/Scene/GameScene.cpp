@@ -71,6 +71,7 @@ GameScene::GameScene()
 	m_tree.Load("Resource/Stage/", "Stage_Tree.gltf");
 	m_rock.Load("Resource/Stage/", "Stage_Rock.gltf");
 	m_line.Load("Resource/Stage/", "Line.gltf");
+	m_puddle.Load("Resource/Puddle/", "puddle.gltf");
 
 	//タイトルロゴをロード
 	m_titleLogoUI.Load("Resource/Title/TitleLogo.png");
@@ -130,7 +131,7 @@ GameScene::GameScene()
 	NumberFont::Instance()->Load();
 	Tutorial::Instance()->setting();
 
-	Tutorial::Instance()->is_tutorial = false;
+	//Tutorial::Instance()->is_tutorial = false;
 
 	for (auto& obj : m_slapEffect)
 	{
@@ -355,11 +356,25 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	BuildingMaterialMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 	BuildingMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 
+	static UINT reflection = 1;
+	m_puddle.m_model.extraBufferArray[1].bufferWrapper->TransData(&reflection, sizeof(UINT));
+
 	m_ground.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_fence.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_tree.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_line.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+
+
+	static KazMath::Transform3D transform;
+	static int a = 0;
+	if (a == 0) {
+		transform.pos = { -360.0f, 2.5f, -207.0f };
+		transform.scale = { 30.0f, 30.0f, 30.0f };
+		++a;
+	}
+
+	m_puddle.Draw(arg_rasterize, arg_blasVec, transform);
 
 
 	//煙エフェクト
@@ -368,34 +383,34 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		obj->Draw(arg_rasterize, arg_blasVec);
 	}
 
-	//ImGui::Begin("UI");
+	//ImGui::Begin("PUDDLE");
 
-	//////ImGui::DragFloat("POS_X", &BuildingMgr::Instance()->GetWall(2).lock()->m_initPos.x, 1.0f);
-	//////ImGui::DragFloat("POS_Y", &BuildingMgr::Instance()->GetWall(2).lock()->m_initPos.y, 1.0f);
-	//////ImGui::DragFloat("POS_Z", &BuildingMgr::Instance()->GetWall(2).lock()->m_initPos.z, 1.0f);
-	//////ImGui::DragFloat("SCALE_X", &BuildingMgr::Instance()->GetWall(0).lock()->m_transform.scale.x, 0.01f);
-	//////ImGui::DragFloat("SCALE_Y", &BuildingMgr::Instance()->GetWall(0).lock()->m_transform.scale.y, 0.01f);
-	//////ImGui::DragFloat("SCALE_Z", &BuildingMgr::Instance()->GetWall(0).lock()->m_transform.scale.z, 0.01f);
-	//////ImGui::DragFloat("ROTATE_X", &BuildingMgr::Instance()->GetWall(0).lock()->m_transform.rotation.x, 0.1f);
-	//////ImGui::DragFloat("ROTATE_Y", &BuildingMgr::Instance()->GetWall(2).lock()->m_rotateY, 0.1f);
-	//////ImGui::DragFloat("ROTATE_Z", &BuildingMgr::Instance()->GetWall(0).lock()->m_transform.rotation.z, 0.1f);
+	//ImGui::DragFloat("POS_X", &transform.pos.x, 1.0f);
+	//ImGui::DragFloat("POS_Y", &transform.pos.y, 1.0f);
+	//ImGui::DragFloat("POS_Z", &transform.pos.z, 1.0f);
+	//ImGui::DragFloat("SCALE_X", &transform.scale.x, 0.01f);
+	//ImGui::DragFloat("SCALE_Y", &transform.scale.y, 0.01f);
+	//ImGui::DragFloat("SCALE_Z", &transform.scale.z, 0.01f);
+	//ImGui::DragFloat("ROTATE_X", &transform.rotation.x, 0.1f);
+	//ImGui::DragFloat("ROTATE_Y", &transform.rotation.y, 0.1f);
+	//ImGui::DragFloat("ROTATE_Z", &transform.rotation.z, 0.1f);
 
-	//////ImGui::Text(" ");
+	//ImGui::Text(" ");
 
 
-	////KazMath::Vec2<float> baseDayPos = { 1280.0f / 2.0f, 200.0f };
-	////KazMath::Vec2<float> baseMineralPos = { 1280.0f / 2.0f, 300.0f };
-	////KazMath::Vec2<float> baseEnemyScorePos = { 1280.0f / 2.0f, 400.0f };
-	////KazMath::Vec2<float> baseTotalScorePos = { 1280.0f / 2.0f, 500.0f };
+	//////KazMath::Vec2<float> baseDayPos = { 1280.0f / 2.0f, 200.0f };
+	//////KazMath::Vec2<float> baseMineralPos = { 1280.0f / 2.0f, 300.0f };
+	//////KazMath::Vec2<float> baseEnemyScorePos = { 1280.0f / 2.0f, 400.0f };
+	//////KazMath::Vec2<float> baseTotalScorePos = { 1280.0f / 2.0f, 500.0f };
 
-	////ImGui::DragFloat("EyeDistance", &m_cameraEyeDistance, 1.0f);
-	//ImGui::DragFloat("TITLE_UI_X", &baseEnemyScorePos.x, 1.0f);
-	//ImGui::DragFloat("TITLE_UI_Y", &baseEnemyScorePos.y, 1.0f);
-	//ImGui::DragFloat("RETRY_UI_X", &baseTotalScorePos.x, 1.0f);
-	//ImGui::DragFloat("RETRY_UI_Y", &baseTotalScorePos.y, 1.0f);
-	//ImGui::DragFloat("FONT_SIZE", &fontScale, 0.1f);
-	//ImGui::DragFloat("GYOKAN", &gyokan, 0.1f);
-	////ImGui::SliderFloat("UI_Z", &GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.z, 0.0f, 1.0f);  
+	//////ImGui::DragFloat("EyeDistance", &m_cameraEyeDistance, 1.0f);
+	////ImGui::DragFloat("TITLE_UI_X", &baseEnemyScorePos.x, 1.0f);
+	////ImGui::DragFloat("TITLE_UI_Y", &baseEnemyScorePos.y, 1.0f);
+	////ImGui::DragFloat("RETRY_UI_X", &baseTotalScorePos.x, 1.0f);
+	////ImGui::DragFloat("RETRY_UI_Y", &baseTotalScorePos.y, 1.0f);
+	////ImGui::DragFloat("FONT_SIZE", &fontScale, 0.1f);
+	////ImGui::DragFloat("GYOKAN", &gyokan, 0.1f);
+	//////ImGui::SliderFloat("UI_Z", &GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.z, 0.0f, 1.0f);  
 
 	//ImGui::End();
 
