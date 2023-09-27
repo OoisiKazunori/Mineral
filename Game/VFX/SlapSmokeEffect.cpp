@@ -70,6 +70,7 @@ void SlapSmokeEffect::Update()
 			CameraMgr::Instance()->GetViewMatrix(),
 			CameraMgr::Instance()->GetPerspectiveMatProjection()
 		);
+		data.m_rotaion = DirectX::XMMatrixIdentity();
 		m_matArray[index] = data;
 		++index;
 	}

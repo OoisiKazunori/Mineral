@@ -40,6 +40,7 @@ void BulidSmokeEmitter::Update()
 			CameraMgr::Instance()->GetViewMatrix(),
 			CameraMgr::Instance()->GetPerspectiveMatProjection()
 		);
+		data.m_rotaion = DirectX::XMMatrixIdentity();
 		matArray.emplace_back(data);
 	}
 	m_smokeWorldMatBuffer.bufferWrapper->TransData(matArray.data(), sizeof(CoordinateSpaceMatData)* PARTICLE_MAX_NUM);

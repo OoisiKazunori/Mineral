@@ -71,10 +71,10 @@ GBufferOutput PSDefferdMain(PosUvNormalTangentBinormalOutput input) : SV_TARGET
     }
 
     GBufferOutput output;
-    output.albedo = texColor * color;
+    output.albedo = texColor;
     output.normal = float4(normal, 1.0f);
     output.metalnessRoughness = float4(mrColor.xyz, raytracingId);
     output.world = float4(input.worldPos, 1.0f);
-    output.emissive = float4(0, 0, 0, 1);
+    output.emissive = EmissiveTex.Sample(smp, input.uv);
     return output;
 }
