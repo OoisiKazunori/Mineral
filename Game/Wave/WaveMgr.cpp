@@ -45,8 +45,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	mineralRock = { 1 };		//有効化時に生成されるミネラル岩のIndex 1スタート
 	//敵を追加していく。
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
+	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
+	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINETSUMURI, 180);
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	//enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINETSUMURI, 0);
@@ -65,8 +65,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	mineralRock = { 3 };		//有効化時に生成されるミネラル岩の数
 	//敵を追加していく。
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
+	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
+	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	//ウェーブを追加。
 	m_waves.emplace_back(std::make_shared<Wave>(dayTime, nightTime, tree, rock, mineralRock, enemyInfo, m_core));
 	enemyInfo.clear();
@@ -308,11 +308,12 @@ void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 		//ボリュームを上げるフラグ
 		bool isNight = m_waves[m_nowWaveIndex]->GetIsNight();
+		bool isResult = ResultFlag::Instance()->m_isResult;
 		bool isActiveWave = m_waves[m_nowWaveIndex]->GetIsActiveWave();
 
 		//ボリュームを下げるフラグ
 
-		if (isNight && isActiveWave)
+		if ((isNight && isActiveWave) || isResult || GetIsFinishAllWave())
 		{
 			if (WaveMgr::Instance()->volume < 0.05f)
 			{
@@ -451,4 +452,14 @@ bool WaveMgr::GetIsNight()
 void WaveMgr::SetTime(int wave_index, int wave_time)
 {
 	m_waves[wave_index]->SetMNowTime(wave_time);
+}
+
+bool WaveMgr::IsFinalWave()
+{
+	return m_waves.back()->GetIsActiveWave();
+}
+
+bool WaveMgr::IsNextWave()
+{
+	return m_waveCount - 1 <= m_nowWaveIndex;
 }

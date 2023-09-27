@@ -126,7 +126,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 			//ŠÔ‚ªI‚í‚Á‚½Wave‚ğ–³Œø‰»‚·‚éB
 			if (m_nighTime <= m_nowTime) {
-				if (!m_isPlayNiwatori) {
+				if (!m_isPlayNiwatori && !WaveMgr::Instance()->IsNextWave()) {
 					SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
 					m_isPlayNiwatori = true;
 				}

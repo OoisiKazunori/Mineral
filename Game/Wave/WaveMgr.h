@@ -56,4 +56,9 @@ public:
 	int GetNowWaveIndex() { return m_nowWaveIndex; }
 	int GetWaveCount() { return m_nowWaveIndex; }
 
+	bool IsFinalWave();
+
+	//次のウェーブがあるか？
+	bool IsNextWave();
+
 };
