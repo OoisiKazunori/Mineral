@@ -8,6 +8,7 @@ class StageCollision : public ISingleton <StageCollision> {
 public:
 
 	MeshCollision m_stageCollision;
+	MeshCollision m_tutorialStageCollision;
 
 public:
 

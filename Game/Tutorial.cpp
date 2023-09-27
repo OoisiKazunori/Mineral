@@ -19,7 +19,7 @@ void Tutorial::setting()
 	tutorial_tex[10].Load("Resource/TutorialTex/UI_Tutorial11.png");
 	tutorial_tex[11].Load("Resource/TutorialTex/UI_Tutorial12.png");
 
-	is_tutorial = false;
+	is_tutorial = true;
 	tutorial_num = 0;
 	tex_transform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f };
 	tex_transform.scale = { 1280.0f, 720.0f };

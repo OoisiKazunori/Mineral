@@ -351,9 +351,15 @@ void Player::Update()
 
 	}
 
+	//当たり判定に使用する地形データ
+	MeshCollision checkHitData = StageCollision::Instance()->m_stageCollision;
+	if(Tutorial::Instance()->is_tutorial){
+		checkHitData = StageCollision::Instance()->m_tutorialStageCollision;
+	}
+
 	//当たり判定を計算。
 	const float RAY_LENGTH = 10.0f;
-	MeshCollision::CheckHitResult rayResult = StageCollision::Instance()->m_stageCollision.CheckHitRay(m_transform.pos, m_forwardVec);
+	MeshCollision::CheckHitResult rayResult = checkHitData.CheckHitRay(m_transform.pos, m_forwardVec);
 	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 		//押し戻し。
@@ -362,7 +368,7 @@ void Player::Update()
 	}
 	//右方向
 	KazMath::Vec3<float> rightVec = TransformVec3({ 1,0,0 }, m_baseQ);
-	rayResult = StageCollision::Instance()->m_stageCollision.CheckHitRay(m_transform.pos, rightVec);
+	rayResult = checkHitData.CheckHitRay(m_transform.pos, rightVec);
 	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 		//押し戻し。
@@ -370,7 +376,7 @@ void Player::Update()
 
 	}
 	//左方向
-	rayResult = StageCollision::Instance()->m_stageCollision.CheckHitRay(m_transform.pos, -rightVec);
+	rayResult = checkHitData.CheckHitRay(m_transform.pos, -rightVec);
 	if (rayResult.m_isHit && 0.0f < rayResult.m_distance && rayResult.m_distance <= RAY_LENGTH) {
 
 		//押し戻し。
