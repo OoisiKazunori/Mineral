@@ -192,6 +192,7 @@ void GameScene::Init()
 
 	EnemyScore::Instance()->m_score = 0;
 
+	m_resultStayTimer = 0;
 
 	m_slapEffectIndex = 0;
 }
@@ -295,6 +296,8 @@ void GameScene::Update()
 				ResultFlag::Instance()->m_isResult = true;
 				ResultFlag::Instance()->m_isDraw = true;
 				Transition::Instance()->Init();
+
+				m_resultStayTimer = 0;
 
 				//スコアを算出。
 				m_resultDayScore = 0;
@@ -595,41 +598,46 @@ void GameScene::UpdateResult()
 	//リザルト画面だったら。
 	if (ResultFlag::Instance()->m_isResult) {
 
-		if (KeyBoradInputManager::Instance()->InputState(DIK_W) ||
-			KeyBoradInputManager::Instance()->InputState(DIK_UP) ||
-			ControllerInputManager::Instance()->InputStickState(ControllerStickSide::LEFT_STICK, ControllerSide::UP_SIDE, 10000)) {
+		++m_resultStayTimer;
+		if (RESULT_STAY_TIMER <= m_resultStayTimer) {
 
-			m_selectResultNum = std::clamp(m_selectResultNum - 1, 0, 1);
+			if (KeyBoradInputManager::Instance()->InputState(DIK_W) ||
+				KeyBoradInputManager::Instance()->InputState(DIK_UP) ||
+				ControllerInputManager::Instance()->InputStickState(ControllerStickSide::LEFT_STICK, ControllerSide::UP_SIDE, 10000)) {
 
-		}
-
-		if (KeyBoradInputManager::Instance()->InputState(DIK_S) ||
-			KeyBoradInputManager::Instance()->InputState(DIK_DOWN) ||
-			ControllerInputManager::Instance()->InputStickState(ControllerStickSide::LEFT_STICK, ControllerSide::DOWN_SIDE, 10000)) {
-
-			m_selectResultNum = std::clamp(m_selectResultNum + 1, 0, 1);
-
-		}
-
-		//決定キーが入力されたら
-		if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE) ||
-			KeyBoradInputManager::Instance()->InputState(DIK_RETURN) ||
-			ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_A)) {
-
-			//Startを選択していたら。
-			if (m_selectResultNum == 0) {
-
-				//リトライ
-				m_isResultToGame = true;
-				m_titleLogoDeleteTimer = 0;
+				m_selectResultNum = std::clamp(m_selectResultNum - 1, 0, 1);
 
 			}
-			//Quitを選択していたら
-			else if (m_selectResultNum == 1) {
 
-				m_isResultToTitle = true;
-				m_titleLogoDeleteTimer = 0;
-				//Init();
+			if (KeyBoradInputManager::Instance()->InputState(DIK_S) ||
+				KeyBoradInputManager::Instance()->InputState(DIK_DOWN) ||
+				ControllerInputManager::Instance()->InputStickState(ControllerStickSide::LEFT_STICK, ControllerSide::DOWN_SIDE, 10000)) {
+
+				m_selectResultNum = std::clamp(m_selectResultNum + 1, 0, 1);
+
+			}
+
+			//決定キーが入力されたら
+			if (KeyBoradInputManager::Instance()->InputState(DIK_SPACE) ||
+				KeyBoradInputManager::Instance()->InputState(DIK_RETURN) ||
+				ControllerInputManager::Instance()->InputTrigger(XINPUT_GAMEPAD_A)) {
+
+				//Startを選択していたら。
+				if (m_selectResultNum == 0) {
+
+					//リトライ
+					m_isResultToGame = true;
+					m_titleLogoDeleteTimer = 0;
+
+				}
+				//Quitを選択していたら
+				else if (m_selectResultNum == 1) {
+
+					m_isResultToTitle = true;
+					m_titleLogoDeleteTimer = 0;
+					//Init();
+
+				}
 
 			}
 
