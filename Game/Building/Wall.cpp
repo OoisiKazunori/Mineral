@@ -48,6 +48,7 @@ void Wall::Init()
 
 	m_isActive = false;
 	m_isBuild = false;
+	m_isBuildTrigger = false;
 	m_isReady = false;
 	m_isOldReady = false;
 	m_isKnockBackTrigger = false;
@@ -220,7 +221,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 			m_easingTimer = 0.0f;
 			m_transform.rotation.y = m_rotateY + 360.0f * 2.0f;
 		}
-		//Ready‚ª‰ğœ‚³‚ê‚½uŠÔ‚¾‚Á‚½r‚ 
+		//Ready‚ª‰ğœ‚³‚ê‚½uŠÔ‚¾‚Á‚½‚ç
 		if (m_isOldReady && !m_isReady) {
 			m_noreadyStatus = NOREADY_STATUS::EXIT;
 			m_easingTimer = 0.0f;
@@ -272,6 +273,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 		if (MATERIAL_COUNT <= m_materialCounter) {
 			SoundManager::Instance()->SoundPlayerWave(wall_build, 0);
 			m_isBuild = true;
+			m_isBuildTrigger = true;
 			m_buildStatus = BUILD_STATUS::UPPER;
 			m_easingTimer = 0.0f;
 		}
