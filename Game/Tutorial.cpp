@@ -19,6 +19,8 @@ void Tutorial::setting()
 	tutorial_tex[10].Load("Resource/TutorialTex/UI_Tutorial11.png");
 	tutorial_tex[11].Load("Resource/TutorialTex/UI_Tutorial12.png");
 
+	m_tutorialArrow.Load("Resource/Stage/Tutorial/", "TutorialArrow.gltf");
+
 	is_tutorial = true;
 	tutorial_num = 0;
 	tex_transform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f };
@@ -161,4 +163,15 @@ void Tutorial::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 			tutorial_tex[i].Draw(arg_rasterize);
 		}
 	}
+
+	if (is_tutorial && tutorial_num == 1) {
+
+		KazMath::Transform3D transform;
+		transform.pos = { 50.0f, 0.0f, -122.0f };
+		transform.scale = { 5.0f, 10.0f, 5.0f };
+		transform.rotation.y = 45.0f;
+		m_tutorialArrow.Draw(arg_rasterize, arg_blasVec, transform);
+
+	}
+
 }

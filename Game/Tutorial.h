@@ -28,6 +28,8 @@ public:
 	float draw_timer;
 	float DRAW_TIME_MAX = 120.0f;
 
+	DrawCallSet m_tutorialArrow;
+
 	void setting();
 
 	void Update();

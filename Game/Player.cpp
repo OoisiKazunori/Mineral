@@ -510,10 +510,17 @@ void Player::Update()
 	//チュートリアルのとき
 	if (Tutorial::Instance()->is_tutorial && Tutorial::Instance()->tutorial_num == 1)
 	{
-		Tutorial::Instance()->move_amount += (m_oldTransform.pos - m_transform.pos).Length();
+
+		//矢印の座標
+		KazMath::Vec3<float> arrowPos = {50.0f, 0.0f, -122.0f};
+
+		//矢印の位置に来たと判断できる範囲。
+		const float ARROW_RANGE = 20.0f;
+
+		//Tutorial::Instance()->move_amount += (m_oldTransform.pos - m_transform.pos).Length();
 
 		//一定量動いたらチュートリアルを進める
-		if (Tutorial::Instance()->move_amount >= 400.0f)
+		if (KazMath::Vec3<float>(arrowPos - GetPosZeroY()).Length() <= ARROW_RANGE)
 		{
 			Tutorial::Instance()->is_next = true;
 		}
