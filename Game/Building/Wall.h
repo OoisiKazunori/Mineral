@@ -28,6 +28,7 @@ public:
 	bool m_isBuildTrigger;
 
 	int m_level;
+	int m_drawLevel;	//描画に使用するモデルを選択する用のレベル。 m_levelとほぼ一緒だが、エフェクトの見た目の関係でm_levelをインクリメントした後でする前のモデルを描画したい場合があるので追加。
 	const int MAX_LEVEL = 2;
 
 	/*オカモトゾーン*/

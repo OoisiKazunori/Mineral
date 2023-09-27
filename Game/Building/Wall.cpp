@@ -67,6 +67,7 @@ void Wall::Init()
 	m_hp = HP;
 
 	m_level = 0;
+	m_drawLevel = 0;
 	m_isBuildNow = false;
 
 	/*オカモトゾーン*/
@@ -90,6 +91,7 @@ void Wall::Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int 
 	Init();
 
 	m_level = 0;
+	m_drawLevel = 0;
 
 	m_isActive = true;
 	m_isKnockBackTrigger = false;
@@ -159,68 +161,194 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 	//建築したら
 	if (m_isBuild) {
 
-		switch (m_buildStatus)
-		{
-		case Wall::BUILD_STATUS::UPPER:
-		{
-			m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, UPPER_EASING_TIMER);
-			float easingAmount = EasingMaker(Out, Cubic, m_easingTimer / UPPER_EASING_TIMER);
-			m_transform.pos.y = m_initPos.y + UPPER_DISTANCE * easingAmount;
-			m_transform.scale = { 2.0f + easingAmount * 2.0f,2.0f + easingAmount * 2.0f ,2.0f + easingAmount * 2.0f };
-			if (UPPER_EASING_TIMER <= m_easingTimer) {
-				m_easingTimer = 0.0f;
-				m_buildStatus = BUILD_STATUS::STAY;
+		//レベルが0だったら(ブロックからレベル0への建築の処理)
+		if (m_level == 0) {
 
-			}
-			m_isBuildNow = true;
-		}
-		break;
-		case Wall::BUILD_STATUS::STAY:
-		{
-			m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, BUILD_STAY_EASING_TIMER);
-			if (BUILD_STAY_EASING_TIMER <= m_easingTimer) {
+			switch (m_buildStatus)
+			{
+			case Wall::BUILD_STATUS::UPPER:
+			{
+				m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, UPPER_EASING_TIMER);
+				float easingAmount = EasingMaker(Out, Cubic, m_easingTimer / UPPER_EASING_TIMER);
+				m_transform.pos.y = m_initPos.y + UPPER_DISTANCE * easingAmount;
+				m_transform.scale = { 2.0f + easingAmount * 2.0f,2.0f + easingAmount * 2.0f ,2.0f + easingAmount * 2.0f };
+				if (UPPER_EASING_TIMER <= m_easingTimer) {
+					m_easingTimer = 0.0f;
+					m_buildStatus = BUILD_STATUS::STAY;
 
-				m_easingTimer = 0.0f;
-				m_buildStatus = BUILD_STATUS::DOWN;
-
-			}
-			m_isBuildNow = true;
-		}
-		break;
-		case Wall::BUILD_STATUS::DOWN:
-		{
-			m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, DOWN_EASING_TIMER);
-			float easingAmount = EasingMaker(In, Exp, m_easingTimer / DOWN_EASING_TIMER);
-			m_transform.pos.y = m_initPos.y + UPPER_DISTANCE - (UPPER_DISTANCE * easingAmount);
-			if (DOWN_EASING_TIMER <= m_easingTimer) {
-				SoundManager::Instance()->SoundPlayerWave(wall_drop, 0);
-
-				m_easingTimer = 0.0f;
-				m_buildStatus = BUILD_STATUS::COMPLETE;
-
-				m_isKnockBackTrigger = true;
-
-				ShakeMgr::Instance()->m_shakeAmount = 5.0f;
-
-				m_wallTransform = m_transform;
-				m_meshCollider[m_modelIndex].Setting(m_meshCollisionModel[m_modelIndex].m_modelData->modelData[0].vertexData, m_wallTransform);
-
-				//チュートリアルを次に飛ばす
-				//次のチュートリアルに送る
-				if (Tutorial::Instance()->tutorial_num == 10)
-				{
-					Tutorial::Instance()->is_next = true;
 				}
+				m_isBuildNow = true;
 			}
-			m_isBuildNow = true;
-		}
-		break;
-		case Wall::BUILD_STATUS::COMPLETE:
-		{
-		}
-		break;
-		default:
 			break;
+			case Wall::BUILD_STATUS::STAY:
+			{
+				m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, BUILD_STAY_EASING_TIMER);
+				if (BUILD_STAY_EASING_TIMER <= m_easingTimer) {
+
+					m_easingTimer = 0.0f;
+					m_buildStatus = BUILD_STATUS::DOWN;
+
+				}
+				m_isBuildNow = true;
+			}
+			break;
+			case Wall::BUILD_STATUS::DOWN:
+			{
+				m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, DOWN_EASING_TIMER);
+				float easingAmount = EasingMaker(In, Exp, m_easingTimer / DOWN_EASING_TIMER);
+				m_transform.pos.y = m_initPos.y + UPPER_DISTANCE - (UPPER_DISTANCE * easingAmount);
+				if (DOWN_EASING_TIMER <= m_easingTimer) {
+					SoundManager::Instance()->SoundPlayerWave(wall_drop, 0);
+
+					m_easingTimer = 0.0f;
+					m_buildStatus = BUILD_STATUS::COMPLETE;
+
+					m_isKnockBackTrigger = true;
+
+					ShakeMgr::Instance()->m_shakeAmount = 5.0f;
+
+					m_wallTransform = m_transform;
+					m_meshCollider[m_modelIndex].Setting(m_meshCollisionModel[m_modelIndex].m_modelData->modelData[0].vertexData, m_wallTransform);
+
+					//チュートリアルを次に飛ばす
+					//次のチュートリアルに送る
+					if (Tutorial::Instance()->tutorial_num == 10)
+					{
+						Tutorial::Instance()->is_next = true;
+					}
+				}
+				m_isBuildNow = true;
+			}
+			break;
+			case Wall::BUILD_STATUS::COMPLETE:
+			{
+			}
+			break;
+			default:
+				break;
+			}
+
+		}
+		//それ以外のレベルだったら
+		else {
+
+			switch (m_buildStatus)
+			{
+			case Wall::BUILD_STATUS::UPPER:
+			{
+				m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, UPPER_EASING_TIMER);
+				float easingAmount = EasingMaker(Out, Cubic, m_easingTimer / UPPER_EASING_TIMER);
+				m_transform.pos.y = (m_initPos.y + UPPER_DISTANCE) * easingAmount;
+				//m_transform.scale = { 2.0f + easingAmount * 2.0f,2.0f + easingAmount * 2.0f ,2.0f + easingAmount * 2.0f };
+
+				//建築物の見た目をいい感じに変えるために上昇中に拡縮をかける。
+				{
+
+					const float HALF_TIMER = UPPER_EASING_TIMER / 5.0f;
+
+					//イージングタイマーが前半戦だったら
+					if (m_easingTimer < HALF_TIMER) {
+
+						//前半のイージングタイマーを計算。
+						float smallEasingAmount = EasingMaker(In, Quart, m_easingTimer / HALF_TIMER);
+
+						//スケールを小さくする。
+						float scale = 4.0f - smallEasingAmount * 4.0f;
+						m_transform.scale = { scale ,scale ,scale };
+
+					}
+					//ちょうどタイマーど真ん中だったら
+					else if (m_easingTimer == HALF_TIMER) {
+
+						//見た目のレベルを適用する。
+						m_drawLevel = m_level;
+
+					}
+					//後半戦だったら大きさを元に戻す。
+					else {
+
+						//前半のイージングタイマーを計算。
+						float smallEasingAmount = EasingMaker(Out, Quart, (m_easingTimer - HALF_TIMER) / (UPPER_EASING_TIMER - HALF_TIMER));
+
+						//スケールを小さくする。
+						float scale = smallEasingAmount * 4.0f;
+						m_transform.scale = { scale ,scale ,scale };
+
+					}
+
+				}
+
+
+				if (UPPER_EASING_TIMER <= m_easingTimer) {
+					m_easingTimer = 0.0f;
+					m_buildStatus = BUILD_STATUS::STAY;
+
+					m_transform.scale = { 4.0f, 4.0f, 4.0f };
+
+				}
+				m_isBuildNow = true;
+			}
+			break;
+			case Wall::BUILD_STATUS::STAY:
+			{
+				m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, BUILD_STAY_EASING_TIMER);
+				if (BUILD_STAY_EASING_TIMER <= m_easingTimer) {
+
+					m_easingTimer = 0.0f;
+					m_buildStatus = BUILD_STATUS::DOWN;
+
+				}
+				m_isBuildNow = true;
+			}
+			break;
+			case Wall::BUILD_STATUS::DOWN:
+			{
+				m_easingTimer = std::clamp(m_easingTimer + 1.0f, 0.0f, DOWN_EASING_TIMER);
+				float easingAmount = EasingMaker(In, Exp, m_easingTimer / DOWN_EASING_TIMER);
+				m_transform.pos.y = m_initPos.y + UPPER_DISTANCE - (UPPER_DISTANCE * easingAmount);
+				if (DOWN_EASING_TIMER <= m_easingTimer) {
+					SoundManager::Instance()->SoundPlayerWave(wall_drop, 0);
+
+					m_easingTimer = 0.0f;
+					m_buildStatus = BUILD_STATUS::COMPLETE;
+
+					m_isKnockBackTrigger = true;
+
+					ShakeMgr::Instance()->m_shakeAmount = 5.0f;
+
+					m_wallTransform = m_transform;
+					m_meshCollider[m_modelIndex].Setting(m_meshCollisionModel[m_modelIndex].m_modelData->modelData[0].vertexData, m_wallTransform);
+
+					//チュートリアルを次に飛ばす
+					//次のチュートリアルに送る
+					if (Tutorial::Instance()->tutorial_num == 10)
+					{
+						Tutorial::Instance()->is_next = true;
+					}
+				}
+				m_isBuildNow = true;
+			}
+			break;
+			case Wall::BUILD_STATUS::COMPLETE:
+			{
+			}
+			break;
+			default:
+				break;
+			}
+
+		}
+
+		//建材数がマックスになったら次のレベルへ。
+		if (MATERIAL_COUNT <= m_materialCounter && m_level < MAX_LEVEL) {
+
+			SoundManager::Instance()->SoundPlayerWave(wall_build, 0);
+			m_isBuildTrigger = true;
+			m_buildStatus = BUILD_STATUS::UPPER;
+			m_easingTimer = 0.0f;
+			m_materialCounter = 0;
+			++m_level;
+
 		}
 
 		//Y軸回転を元に戻す。
@@ -301,6 +429,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 
 			//建築されていない状態からの建築なので、レベルを0に設定
 			m_level = 0;
+			m_drawLevel = 0;
 
 		}
 
@@ -349,15 +478,15 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 
 		DessolveOutline outline;
 		outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
-		m_model[m_modelIndex][m_level].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
-		m_model[m_modelIndex][m_level].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
-		m_model[m_modelIndex][m_level].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-		m_model[m_modelIndex][m_level].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 		KazMath::Transform3D modelTransform = m_transform;
 		modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
 		modelTransform.rotation.y += 180.0f;
-		m_model[m_modelIndex][m_level].Draw(arg_rasterize, arg_blasVec, modelTransform);
+		m_model[m_modelIndex][m_drawLevel].Draw(arg_rasterize, arg_blasVec, modelTransform);
 
 	}
 
