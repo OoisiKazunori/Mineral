@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -15,18 +15,13 @@
     "nodes" : [
         {
             "mesh" : 0,
-            "name" : "WallC3",
-            "translation" : [
-                0,
-                -0.029714467003941536,
-                -3.298048734664917
-            ]
+            "name" : "WallC3"
         }
     ],
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Wall",
+            "name" : "Wall.006",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -43,8 +38,8 @@
                 {
                     "attributes" : {
                         "POSITION" : 0,
-                        "NORMAL" : 1,
-                        "TEXCOORD_0" : 2
+                        "TEXCOORD_0" : 1,
+                        "NORMAL" : 2
                     },
                     "indices" : 3,
                     "material" : 0
@@ -69,30 +64,30 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 6194,
+            "count" : 6358,
             "max" : [
                 10.28657054901123,
-                6.729040622711182,
-                4.012425899505615
+                3.031196117401123,
+                0.7143771648406982
             ],
             "min" : [
                 -9.899352073669434,
-                1.1779570579528809,
-                2.7392897605895996
+                -2.5198874473571777,
+                -0.5587589740753174
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 6194,
-            "type" : "VEC3"
+            "count" : 6358,
+            "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 6194,
-            "type" : "VEC2"
+            "count" : 6358,
+            "type" : "VEC3"
         },
         {
             "bufferView" : 3,
@@ -104,23 +99,27 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 74328,
-            "byteOffset" : 0
+            "byteLength" : 76296,
+            "byteOffset" : 0,
+            "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 74328,
-            "byteOffset" : 74328
+            "byteLength" : 50864,
+            "byteOffset" : 76296,
+            "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 49552,
-            "byteOffset" : 148656
+            "byteLength" : 76296,
+            "byteOffset" : 127160,
+            "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 13080,
-            "byteOffset" : 198208
+            "byteOffset" : 203456,
+            "target" : 34963
         }
     ],
     "samplers" : [
@@ -131,7 +130,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 211288,
+            "byteLength" : 216536,
             "uri" : "WallC3.bin"
         }
     ]

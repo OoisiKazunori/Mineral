@@ -208,10 +208,10 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_B))
-	{
-		BuildingMgr::Instance()->Generate();
-	}
+	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_B))
+	//{
+	//	BuildingMgr::Instance()->Generate();
+	//}
 }
 
 void GameScene::Update()

@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -21,7 +21,7 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Wall",
+            "name" : "Wall.001",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -38,8 +38,8 @@
                 {
                     "attributes" : {
                         "POSITION" : 0,
-                        "NORMAL" : 1,
-                        "TEXCOORD_0" : 2
+                        "TEXCOORD_0" : 1,
+                        "NORMAL" : 2
                     },
                     "indices" : 3,
                     "material" : 0
@@ -64,15 +64,15 @@
         {
             "bufferView" : 0,
             "componentType" : 5126,
-            "count" : 2866,
+            "count" : 2908,
             "max" : [
                 4.6889872550964355,
-                6.699326038360596,
+                3.031196117401123,
                 0.6928462982177734
             ],
             "min" : [
                 -4.802300453186035,
-                1.1482425928115845,
+                -2.5198874473571777,
                 -0.5716161727905273
             ],
             "type" : "VEC3"
@@ -80,14 +80,14 @@
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 2866,
-            "type" : "VEC3"
+            "count" : 2908,
+            "type" : "VEC2"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 2866,
-            "type" : "VEC2"
+            "count" : 2908,
+            "type" : "VEC3"
         },
         {
             "bufferView" : 3,
@@ -99,23 +99,27 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 34392,
-            "byteOffset" : 0
+            "byteLength" : 34896,
+            "byteOffset" : 0,
+            "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 34392,
-            "byteOffset" : 34392
+            "byteLength" : 23264,
+            "byteOffset" : 34896,
+            "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 22928,
-            "byteOffset" : 68784
+            "byteLength" : 34896,
+            "byteOffset" : 58160,
+            "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 6072,
-            "byteOffset" : 91712
+            "byteOffset" : 93056,
+            "target" : 34963
         }
     ],
     "samplers" : [
@@ -126,7 +130,7 @@
     ],
     "buffers" : [
         {
-            "byteLength" : 97784,
+            "byteLength" : 99128,
             "uri" : "WallA3.bin"
         }
     ]

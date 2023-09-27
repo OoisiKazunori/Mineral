@@ -10,9 +10,15 @@
 Wall::Wall()
 {
 
-	m_model[0].LoadOutline("Resource/Building/Wall/", "WallA.gltf");
-	m_model[1].LoadOutline("Resource/Building/Wall/", "WallB.gltf");
-	m_model[2].LoadOutline("Resource/Building/Wall/", "WallC.gltf");
+	m_model[0][0].LoadOutline("Resource/Building/Wall/", "WallA.gltf");
+	m_model[0][1].LoadOutline("Resource/Building/Wall/", "WallA2.gltf");
+	m_model[0][2].LoadOutline("Resource/Building/Wall/", "WallA3.gltf");
+	m_model[1][0].LoadOutline("Resource/Building/Wall/", "WallB.gltf");
+	m_model[1][1].LoadOutline("Resource/Building/Wall/", "WallB2.gltf");
+	m_model[1][2].LoadOutline("Resource/Building/Wall/", "WallB3.gltf");
+	m_model[2][0].LoadOutline("Resource/Building/Wall/", "WallC.gltf");
+	m_model[2][1].LoadOutline("Resource/Building/Wall/", "WallC2.gltf");
+	m_model[2][2].LoadOutline("Resource/Building/Wall/", "WallC3.gltf");
 	m_buildingBoxModel.LoadOutline("Resource/Building/", "BuildingBox.gltf");
 	m_numberModel.LoadNoLighting("Resource/UI/NumFont/", "number.gltf");
 	/*オカモトゾーン*/
@@ -321,20 +327,29 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 
 	}
 
+	int debugLevel = 0;
+	if (KeyBoradInputManager::Instance()->InputState(DIK_1)) {
+		debugLevel = 1;
+	}
+	if (KeyBoradInputManager::Instance()->InputState(DIK_2)) {
+		debugLevel = 2;
+	}
+
 	//柵自体を描画
 	if (m_isActive) {
 
 
 		DessolveOutline outline;
 		outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
-		m_model[m_modelIndex].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
-		m_model[m_modelIndex].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
-		m_model[m_modelIndex].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-		m_model[m_modelIndex].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 		KazMath::Transform3D modelTransform = m_transform;
 		modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
-		m_model[m_modelIndex].Draw(arg_rasterize, arg_blasVec, modelTransform);
+		modelTransform.rotation.y += 180.0f;
+		m_model[m_modelIndex][debugLevel].Draw(arg_rasterize, arg_blasVec, modelTransform);
 
 	}
 

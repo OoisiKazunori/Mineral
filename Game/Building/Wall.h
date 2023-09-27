@@ -15,7 +15,7 @@ public:
 	SoundData damage;
 
 	//Šî–{î•ñ
-	std::array<DrawCallSet, 3> m_model;
+	std::array<std::array<DrawCallSet, 3>, 3> m_model;
 	int m_modelIndex;
 	DrawCallSet m_buildingBoxModel;
 	KazMath::Transform3D m_transform;

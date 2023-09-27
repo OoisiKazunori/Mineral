@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -38,9 +38,9 @@
                 {
                     "attributes" : {
                         "POSITION" : 0,
-                        "NORMAL" : 1,
-                        "TEXCOORD_0" : 2,
-                        "TEXCOORD_1" : 3
+                        "TEXCOORD_0" : 1,
+                        "TEXCOORD_1" : 2,
+                        "NORMAL" : 3
                     },
                     "indices" : 4,
                     "material" : 0
@@ -68,12 +68,12 @@
             "count" : 15219,
             "max" : [
                 4.888482570648193,
-                5.726827621459961,
+                2.1548800468444824,
                 3.769301652908325
             ],
             "min" : [
                 -4.78778076171875,
-                1.1199297904968262,
+                -2.4520177841186523,
                 -2.3034486770629883
             ],
             "type" : "VEC3"
@@ -82,7 +82,7 @@
             "bufferView" : 1,
             "componentType" : 5126,
             "count" : 15219,
-            "type" : "VEC3"
+            "type" : "VEC2"
         },
         {
             "bufferView" : 2,
@@ -94,7 +94,7 @@
             "bufferView" : 3,
             "componentType" : 5126,
             "count" : 15219,
-            "type" : "VEC2"
+            "type" : "VEC3"
         },
         {
             "bufferView" : 4,
@@ -107,27 +107,32 @@
         {
             "buffer" : 0,
             "byteLength" : 182628,
-            "byteOffset" : 0
+            "byteOffset" : 0,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 121752,
+            "byteOffset" : 182628,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 121752,
+            "byteOffset" : 304380,
+            "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 182628,
-            "byteOffset" : 182628
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 121752,
-            "byteOffset" : 365256
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 121752,
-            "byteOffset" : 487008
+            "byteOffset" : 426132,
+            "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 30438,
-            "byteOffset" : 608760
+            "byteOffset" : 608760,
+            "target" : 34963
         }
     ],
     "samplers" : [

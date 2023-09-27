@@ -1,6 +1,6 @@
 {
     "asset" : {
-        "generator" : "Khronos glTF Blender I/O v1.5.17",
+        "generator" : "Khronos glTF Blender I/O v3.4.50",
         "version" : "2.0"
     },
     "scene" : 0,
@@ -21,7 +21,7 @@
     "materials" : [
         {
             "doubleSided" : true,
-            "name" : "Wall",
+            "name" : "Wall.002",
             "pbrMetallicRoughness" : {
                 "baseColorTexture" : {
                     "index" : 0
@@ -38,9 +38,9 @@
                 {
                     "attributes" : {
                         "POSITION" : 0,
-                        "NORMAL" : 1,
-                        "TEXCOORD_0" : 2,
-                        "TEXCOORD_1" : 3
+                        "TEXCOORD_0" : 1,
+                        "TEXCOORD_1" : 2,
+                        "NORMAL" : 3
                     },
                     "indices" : 4,
                     "material" : 0
@@ -68,12 +68,12 @@
             "count" : 28323,
             "max" : [
                 9.426132202148438,
-                5.726824760437012,
+                2.058694839477539,
                 3.770179033279419
             ],
             "min" : [
                 -8.402013778686523,
-                1.119926929473877,
+                -2.5482029914855957,
                 -2.3034489154815674
             ],
             "type" : "VEC3"
@@ -82,7 +82,7 @@
             "bufferView" : 1,
             "componentType" : 5126,
             "count" : 28323,
-            "type" : "VEC3"
+            "type" : "VEC2"
         },
         {
             "bufferView" : 2,
@@ -94,7 +94,7 @@
             "bufferView" : 3,
             "componentType" : 5126,
             "count" : 28323,
-            "type" : "VEC2"
+            "type" : "VEC3"
         },
         {
             "bufferView" : 4,
@@ -107,27 +107,32 @@
         {
             "buffer" : 0,
             "byteLength" : 339876,
-            "byteOffset" : 0
+            "byteOffset" : 0,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 226584,
+            "byteOffset" : 339876,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 226584,
+            "byteOffset" : 566460,
+            "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 339876,
-            "byteOffset" : 339876
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 226584,
-            "byteOffset" : 679752
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 226584,
-            "byteOffset" : 906336
+            "byteOffset" : 793044,
+            "target" : 34962
         },
         {
             "buffer" : 0,
             "byteLength" : 56646,
-            "byteOffset" : 1132920
+            "byteOffset" : 1132920,
+            "target" : 34963
         }
     ],
     "samplers" : [
