@@ -167,6 +167,9 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 			if (DOWN_EASING_TIMER <= m_easingTimer) {
 				SoundManager::Instance()->SoundPlayerWave(wall_drop, 0);
 
+				//煙のトリガーを吐く
+				m_bulidSmokeEmitter.Init(m_transform.pos, 50.0f);
+
 				m_easingTimer = 0.0f;
 				m_buildStatus = BUILD_STATUS::COMPLETE;
 
@@ -295,6 +298,9 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 		m_rotateY = m_initRotateY;
 		m_boxTransform.rotation.y = m_initRotateY;
 	}
+
+
+	m_bulidSmokeEmitter.Update();
 }
 
 void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -374,6 +380,7 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 		m_hpBoxModel.Draw(arg_rasterize, arg_blasVec, m_hpBoxTransform, 0, false);
 	}
 	/*オカモトゾーン*/
+	m_bulidSmokeEmitter.Draw(arg_rasterize, arg_blasVec);
 }
 
 MeshCollision::CheckHitResult Wall::CheckHitMesh(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir) {

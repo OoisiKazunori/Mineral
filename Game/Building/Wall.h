@@ -2,6 +2,7 @@
 #include "../Game/DrawCallSet.h"
 #include "../Game/Collision/MeshCollision.h"
 #include "../KazLibrary/Sound/SoundManager.h"
+#include"../Game/VFX/BulidSmokeEmitter.h"
 
 class Player;
 
@@ -92,6 +93,8 @@ public:
 	std::array<MeshCollision, 3> m_meshCollider;
 	KazMath::Transform3D m_wallTransform;
 
+	//エフェクト
+	BulidSmokeEmitter m_bulidSmokeEmitter;
 public:
 
 	Wall();
