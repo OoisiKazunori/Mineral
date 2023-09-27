@@ -66,6 +66,9 @@ void Wall::Init()
 	m_meshCollider[m_modelIndex].Transform(m_wallTransform);
 	m_hp = HP;
 
+	m_level = 0;
+	m_isBuildNow = false;
+
 	/*オカモトゾーン*/
 	isDrawHpBox = false;
 	hpBoxScaleStart = 0.0f;
@@ -86,6 +89,8 @@ void Wall::Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int 
 	m_initPos = arg_generatePos;
 	Init();
 
+	m_level = 0;
+
 	m_isActive = true;
 	m_isKnockBackTrigger = false;
 	m_rotateY = arg_rotateY;
@@ -99,6 +104,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 {
 
 	m_isKnockBackTrigger = false;
+	m_isBuildNow = false;
 
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
 		m_materialCounter = MATERIAL_COUNT;
@@ -140,6 +146,16 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 
 	if (!m_isActive) return;
 
+	//近づいたらReady状態にする。
+	float distance = KazMath::Vec3<float>(GetPosZeroY() - arg_player.lock()->GetPosZeroY()).Length();
+	m_isOldReady = m_isReady;
+	if (distance < arg_player.lock()->GetMineralAffectRange()) {
+		m_isReady = true;
+	}
+	else {
+		m_isReady = false;
+	}
+
 	//建築したら
 	if (m_isBuild) {
 
@@ -156,6 +172,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 				m_buildStatus = BUILD_STATUS::STAY;
 
 			}
+			m_isBuildNow = true;
 		}
 		break;
 		case Wall::BUILD_STATUS::STAY:
@@ -167,6 +184,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 				m_buildStatus = BUILD_STATUS::DOWN;
 
 			}
+			m_isBuildNow = true;
 		}
 		break;
 		case Wall::BUILD_STATUS::DOWN:
@@ -194,6 +212,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 					Tutorial::Instance()->is_next = true;
 				}
 			}
+			m_isBuildNow = true;
 		}
 		break;
 		case Wall::BUILD_STATUS::COMPLETE:
@@ -208,22 +227,12 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 		m_transform.rotation.y += (m_rotateY - m_transform.rotation.y) / 5.0f;
 
 	}
-	//まだ建築していなかったら
+	//まだ建築していなかったら (箱の更新処理およびレベル0の建築の更新)
 	else {
 
 		//場所を設定。
 		m_transform.pos = m_initPos;
 		m_boxTransform.pos = m_initPos;
-
-		//近づいたらReady状態にする。
-		float distance = KazMath::Vec3<float>(GetPosZeroY() - arg_player.lock()->GetPosZeroY()).Length();
-		m_isOldReady = m_isReady;
-		if (distance < arg_player.lock()->GetMineralAffectRange()) {
-			m_isReady = true;
-		}
-		else {
-			m_isReady = false;
-		}
 
 		//Readyになった瞬間だったら
 		if (!m_isOldReady && m_isReady) {
@@ -281,11 +290,18 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 		m_sineWaveTimer += ADD_SINE_WAVE_TIMER;
 
 		if (MATERIAL_COUNT <= m_materialCounter) {
+
 			SoundManager::Instance()->SoundPlayerWave(wall_build, 0);
 			m_isBuild = true;
 			m_isBuildTrigger = true;
 			m_buildStatus = BUILD_STATUS::UPPER;
 			m_easingTimer = 0.0f;
+
+			m_materialCounter = 0;
+
+			//建築されていない状態からの建築なので、レベルを0に設定
+			m_level = 0;
+
 		}
 
 		//Y軸回転を元に戻す。
@@ -327,34 +343,26 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 
 	}
 
-	int debugLevel = 0;
-	if (KeyBoradInputManager::Instance()->InputState(DIK_1)) {
-		debugLevel = 1;
-	}
-	if (KeyBoradInputManager::Instance()->InputState(DIK_2)) {
-		debugLevel = 2;
-	}
-
 	//柵自体を描画
 	if (m_isActive) {
 
 
 		DessolveOutline outline;
 		outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
-		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
-		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
-		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-		m_model[m_modelIndex][debugLevel].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+		m_model[m_modelIndex][m_level].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+		m_model[m_modelIndex][m_level].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+		m_model[m_modelIndex][m_level].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		m_model[m_modelIndex][m_level].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 		KazMath::Transform3D modelTransform = m_transform;
 		modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
 		modelTransform.rotation.y += 180.0f;
-		m_model[m_modelIndex][debugLevel].Draw(arg_rasterize, arg_blasVec, modelTransform);
+		m_model[m_modelIndex][m_level].Draw(arg_rasterize, arg_blasVec, modelTransform);
 
 	}
 
 	//残りの建材数の描画	
-	if (m_isReady && !m_isBuild) {
+	if (m_isReady && m_level != MAX_LEVEL && !m_isBuildNow) {
 
 		m_numberModelTransform.pos = m_boxTransform.pos;
 		m_numberModelTransform.pos.y += 30.0f;

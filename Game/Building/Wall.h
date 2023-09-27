@@ -27,6 +27,9 @@ public:
 	bool m_isBuild;
 	bool m_isBuildTrigger;
 
+	int m_level;
+	const int MAX_LEVEL = 2;
+
 	/*オカモトゾーン*/
 	float damageAmount;
 	DrawCallSet m_hpBoxModel;
@@ -43,6 +46,9 @@ public:
 
 	int m_hp;
 	const int HP = 15;
+
+	//ちょうど工事中か 建材数のUIを隠すために使用する。
+	bool m_isBuildNow;
 
 	//状態
 	enum class NOREADY_STATUS {
@@ -126,5 +132,7 @@ public:
 	KazMath::Vec3<float> GetScale() { return m_transform.scale; }
 
 	bool GetIsKnockBackTrigger() { return m_isKnockBackTrigger; }
+
+	int GetNowLevel() { return m_level; }
 
 };
