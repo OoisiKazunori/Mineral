@@ -226,7 +226,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 	}
 
 	//ÅŒã‚Ì“G‚ª•¦‚¢‚Ä‚¢‚½‚çB
-	bool isEnemyEnd = enemyMaxSpawnTime <= m_nowTime;
+	bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime;
 	bool isZeroEnemy = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
 	if (isEnemyEnd && isZeroEnemy) {
 
