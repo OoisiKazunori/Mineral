@@ -64,7 +64,7 @@ void Wall::Init()
 	m_noreadyStatus = NOREADY_STATUS::EXIT;
 	m_wallTransform.pos.y = -1000.0f;
 	m_meshCollider[m_modelIndex].Transform(m_wallTransform);
-	m_hp = HP;
+	m_hp = HP[0];
 
 	m_level = 0;
 	m_drawLevel = 0;
@@ -142,7 +142,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 	//昼になったらHPを全快
 	if (!WaveMgr::Instance()->GetIsNight())
 	{
-		m_hp = HP;
+		m_hp = HP[m_level];
 	}
 	/*オカモトゾーン*/
 
@@ -348,6 +348,9 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 			m_easingTimer = 0.0f;
 			m_materialCounter = 0;
 			++m_level;
+
+			//HPを回復。
+			m_hp = HP[m_level];
 
 		}
 
@@ -556,5 +559,5 @@ void Wall::Damage(int arg_damage)
 	/*オカモトゾーン*/
 
 	//hpが引かれる処理
-	m_hp = std::clamp(m_hp - arg_damage, 0, HP);
+	m_hp = std::clamp(m_hp - arg_damage, 0, HP[m_level]);
 }

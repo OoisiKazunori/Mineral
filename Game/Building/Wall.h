@@ -46,7 +46,7 @@ public:
 	/*オカモトゾーン*/
 
 	int m_hp;
-	const int HP = 15;
+	const std::array<int, 3> HP = { 15, 30, 45 };
 
 	//ちょうど工事中か 建材数のUIを隠すために使用する。
 	bool m_isBuildNow;
@@ -135,5 +135,6 @@ public:
 	bool GetIsKnockBackTrigger() { return m_isKnockBackTrigger; }
 
 	int GetNowLevel() { return m_level; }
+	int GetMAXLevel() { return MAX_LEVEL; }
 
 };

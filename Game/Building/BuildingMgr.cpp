@@ -76,7 +76,7 @@ int BuildingMgr::GetTargetWallIndex(KazMath::Vec3<float> arg_playerPos, float ar
 	for (auto& index : m_walls) {
 
 		if (!index->GetIsActive()) continue;
-		if (index->GetIsBuild()) continue;
+		if (index->GetNowLevel() == index->GetMAXLevel()) continue;
 		if (!index->GetIsReady()) continue;
 
 		//ターゲットの中に入っているかをチェックする。
