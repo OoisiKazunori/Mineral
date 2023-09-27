@@ -3,15 +3,26 @@
 #include"../KazLibrary/Imgui/MyImgui.h"
 
 KazMath::Vec2<float> SlapSmokeEffect::s_smokeScale = { 3.0f,1.0f };
-int SlapSmokeEffect::Particle::s_velRateTime = 60;
-int SlapSmokeEffect::Particle::s_scaleRateTime = 60;
-int SlapSmokeEffect::Particle::s_disappearMaxTime = 20;
 KazMath::Vec2<float> SlapSmokeEffect::s_smokeSubRange = { 10.0f,0.0f };
 KazMath::Vec2<int> SlapSmokeEffect::s_smokeInterval = { 30,-10 };
 
-
 SlapSmokeEffect::SlapSmokeEffect()
 {
+	std::vector<ShaderOptionData>shaderArray;
+	shaderArray.emplace_back(ShaderOptionData(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "InstanceModel.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX));
+	shaderArray.emplace_back(ShaderOptionData(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "InstanceModel.hlsl", "PSDefferdMain", "ps_6_4", SHADER_TYPE_PIXEL));
+	m_drawSmokeRender = DrawFuncData::SetDefferdRenderingInstanceModel(ModelLoader::Instance()->Load("Resource/VFX/smoke/", "Slap_VFX.gltf"), shaderArray);
+	for (auto& obj : m_drawSmokeRender.drawMultiMeshesIndexInstanceCommandData.drawIndexInstancedData)
+	{
+		obj.instanceCount = PARTICLE_MAX_NUM;
+	}
+
+	m_smokeWorldMatBuffer = KazBufferHelper::SetUploadBufferData(sizeof(CoordinateSpaceMatData) * PARTICLE_MAX_NUM, "SmokeParticleRAM");
+	m_smokeWorldMatVRAMBuffer = KazBufferHelper::SetGPUBufferData(sizeof(CoordinateSpaceMatData) * PARTICLE_MAX_NUM, "SmokeParticleVRAM");
+	m_smokeWorldMatVRAMBuffer.bufferWrapper->ChangeBarrier(D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+	m_smokeWorldMatVRAMBuffer.rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+	m_smokeWorldMatVRAMBuffer.rootParamType = GRAPHICS_PRAMTYPE_DATA;
+	m_drawSmokeRender.extraBufferArray[0] = m_smokeWorldMatVRAMBuffer;
 }
 
 void SlapSmokeEffect::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range, bool arg_isStrong)
@@ -50,18 +61,35 @@ void SlapSmokeEffect::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_r
 
 void SlapSmokeEffect::Update()
 {
+	int index = 0;
 	for (auto& obj : m_particleArray)
 	{
 		obj.Update();
+		CoordinateSpaceMatData data(
+			obj.m_transform.GetMat(),
+			CameraMgr::Instance()->GetViewMatrix(),
+			CameraMgr::Instance()->GetPerspectiveMatProjection()
+		);
+		data.m_rotaion = DirectX::XMMatrixIdentity();
+		m_matArray[index] = data;
+		++index;
 	}
+	m_smokeWorldMatBuffer.bufferWrapper->TransData(m_matArray.data(), sizeof(CoordinateSpaceMatData) * PARTICLE_MAX_NUM);
+	m_smokeWorldMatVRAMBuffer.bufferWrapper->CopyBuffer(m_smokeWorldMatBuffer.bufferWrapper->GetBuffer());
 }
 
 void SlapSmokeEffect::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	for (auto& obj : m_particleArray)
+	arg_rasterize.ObjectRender(m_drawSmokeRender);
+	for (auto& obj : m_matArray)
 	{
-		obj.Draw(arg_rasterize, arg_blasVec);
+		arg_blasVec.Add(m_drawSmokeRender.m_raytracingData.m_blas[0], obj.m_world, 0);
 	}
+
+	//for (auto& obj : m_particleArray)
+	//{
+	//	obj.Draw(arg_rasterize, arg_blasVec);
+	//}
 }
 
 void SlapSmokeEffect::DebugImGui()
@@ -70,78 +98,12 @@ void SlapSmokeEffect::DebugImGui()
 	ImGui::DragFloat("SmokeScaleMax", &s_smokeScale.x);								//煙の大きさの最大値
 	ImGui::DragFloat("SmokeScaleMin", &s_smokeScale.y);								//煙の大きさの最小値
 	//時間の単位はflameで統一
-	ImGui::DragInt("SmokeExpandingTime", &Particle::s_velRateTime);					//煙が攻撃範囲まで広がる時間
-	ImGui::DragInt("SmokeDisappearTime", &Particle::s_scaleRateTime);				//煙が消えきる時間
-	ImGui::DragInt("SmokeReadyToDisappearTime", &Particle::s_disappearMaxTime);		//煙が残る時間
+	ImGui::DragInt("SmokeExpandingTime", &SmokeParticle::s_velRateTime);					//煙が攻撃範囲まで広がる時間
+	ImGui::DragInt("SmokeDisappearTime", &SmokeParticle::s_scaleRateTime);				//煙が消えきる時間
+	ImGui::DragInt("SmokeReadyToDisappearTime", &SmokeParticle::s_disappearMaxTime);		//煙が残る時間
 	ImGui::DragFloat("RangeSubMax", &s_smokeSubRange.x);							//煙の範囲を本来よりどれくらい小さくするかの最大値
 	ImGui::DragFloat("RangeSubMin", &s_smokeSubRange.y);							//煙の範囲を本来よりどれくらい小さくするかの最小値
 	ImGui::DragInt("SmokeIntervalMax", &s_smokeInterval.x);
 	ImGui::DragInt("SmokeIntervalMin", &s_smokeInterval.y);
 	ImGui::End();
-}
-
-SlapSmokeEffect::Particle::Particle() :m_initFlag(false)
-{
-	m_smokeRender.LoadZAllways("Resource/VFX/smoke/", "Slap_VFX.gltf");
-	m_transform.scale = { 0.0f,0.0f,0.0f };
-}
-
-void SlapSmokeEffect::Particle::Init(const KazMath::Vec3<float>& arg_emittPos, const KazMath::Vec3<float>& arg_vel, float arg_radius, float arg_scale)
-{
-	m_initFlag = true;
-	m_emittPos = arg_emittPos;
-	m_transform.pos = m_emittPos;
-	m_vel = arg_vel;
-	m_radius = arg_radius;
-	m_scaleMax = arg_scale;
-	m_transform.scale = { m_scaleMax,m_scaleMax ,m_scaleMax };
-	m_velRate = 0.0f;
-	m_scaleRate = 0.0f;
-	m_disappearTimer = 0;
-
-	m_disappearMaxTimer = KazMath::Rand<int>(s_disappearMaxTime + s_disappearMaxTime / 2, s_disappearMaxTime / 2);
-}
-
-void SlapSmokeEffect::Particle::Update()
-{
-	if (!m_initFlag)
-	{
-		return;
-	}
-
-	//一定範囲まで広がる
-	if (m_velRate < 1.0f)
-	{
-		float rateVel = static_cast<float>(1) / static_cast<float>(s_velRateTime);
-		Rate(&m_velRate, rateVel, 1.0f);
-		m_transform.pos = m_emittPos + m_vel * (m_radius * EasingMaker(Out, Exp, m_velRate));
-	}
-	//上に段々上がる
-	if (1.0f <= m_velRate)
-	{
-		++m_disappearTimer;
-		m_transform.pos.y += 0.01f;
-	}
-	//消える
-	if (m_disappearMaxTimer <= m_disappearTimer)
-	{
-		float rateVel = static_cast<float>(1) / static_cast<float>(s_scaleRateTime);
-		Rate(&m_scaleRate, rateVel, 1.0f);
-		float scale = m_scaleMax * (1.0f - EasingMaker(In, Sine, m_scaleRate));
-		m_transform.scale = { scale,scale,scale };
-	}
-
-	//スケールが0になったら終了
-	if (m_transform.scale.x <= 0.0f)
-	{
-		m_transform.scale = { 0.0f,0.0f,0.0f };
-		m_initFlag = false;
-	}
-}
-
-void SlapSmokeEffect::Particle::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
-{
-	//if (0 < m_transform.scale.x) {
-	//	m_smokeRender.Draw(arg_rasterize, arg_blasVec, m_transform);
-	//}
 }

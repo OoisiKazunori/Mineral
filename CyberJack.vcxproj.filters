@@ -160,6 +160,8 @@
     <ClCompile Include="Game\Tutorial.cpp" />
     <ClCompile Include="Game\Transition.cpp" />
     <ClCompile Include="Game\VFX\SlapSmokeEffect.cpp" />
+    <ClCompile Include="Game\VFX\SmokeParticle.cpp" />
+    <ClCompile Include="Game\VFX\BulidSmokeEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -345,6 +347,8 @@
     <ClInclude Include="Game\ResultFlag.h" />
     <ClInclude Include="Game\EnemyScore.h" />
     <ClInclude Include="Game\VFX\SlapSmokeEffect.h" />
+    <ClInclude Include="Game\VFX\SmokeParticle.h" />
+    <ClInclude Include="Game\VFX\BulidSmokeEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

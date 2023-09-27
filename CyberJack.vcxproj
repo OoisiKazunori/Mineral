@@ -165,7 +165,9 @@
     <ClCompile Include="Game\UI\LockOnBoxEffect.cpp" />
     <ClCompile Include="Game\UI\NumberFont.cpp" />
     <ClCompile Include="Game\UI\OptionUI.cpp" />
+    <ClCompile Include="Game\VFX\BulidSmokeEmitter.cpp" />
     <ClCompile Include="Game\VFX\SlapSmokeEffect.cpp" />
+    <ClCompile Include="Game\VFX\SmokeParticle.cpp" />
     <ClCompile Include="Game\WallAndTreeGeneratePos.cpp" />
     <ClCompile Include="Game\Wave\Wave.cpp" />
     <ClCompile Include="Game\Wave\WaveMgr.cpp" />
@@ -332,7 +334,9 @@
     <ClInclude Include="Game\UI\LockOnBoxEffect.h" />
     <ClInclude Include="Game\UI\NumberFont.h" />
     <ClInclude Include="Game\UI\OptionUI.h" />
+    <ClInclude Include="Game\VFX\BulidSmokeEmitter.h" />
     <ClInclude Include="Game\VFX\SlapSmokeEffect.h" />
+    <ClInclude Include="Game\VFX\SmokeParticle.h" />
     <ClInclude Include="Game\WallAndTreeGeneratePos.h" />
     <ClInclude Include="Game\Wave\Wave.h" />
     <ClInclude Include="Game\Wave\WaveMgr.h" />

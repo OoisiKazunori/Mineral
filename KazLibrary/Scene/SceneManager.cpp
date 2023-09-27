@@ -26,7 +26,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 	SoundManager::Instance()->SettingSoundManager();
 
 	//デモ用のゲームシーンを設定。
-	scene.emplace_back(std::make_unique<GameScene>());
+	scene.emplace_back(std::make_unique<GameScene>(m_rasterize));
 
 	//シーン遷移を設定
 	change = std::make_unique<ChangeScene::SceneChange>();
