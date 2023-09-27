@@ -35,13 +35,21 @@ void BuildingMgr::Generate()
 
 }
 
-void BuildingMgr::Update(std::weak_ptr<Player> arg_player)
+void BuildingMgr::Update(std::weak_ptr<Player> arg_player, BulidSmokeEmitter& arg_smokeEffect, int* arg_smokeIndex)
 {
 
 	for (auto& index : m_walls) {
 
-		index->Update(arg_player);
+		if (index->GetIsBuildTrigger())
+		{
+			*arg_smokeIndex += 1;
+			arg_smokeEffect.Init(
+				index->GetPosZeroY() + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f),
+				30.0f
+			);
+		}
 
+		index->Update(arg_player);
 	}
 
 }

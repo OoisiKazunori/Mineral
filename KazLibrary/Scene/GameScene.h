@@ -11,6 +11,7 @@
 #include"../Game/DrawCallSet.h"
 #include"../Game/DrawCallUISet.h"
 #include"../Game/VFX/SlapSmokeEffect.h"
+#include"../Game/VFX/BulidSmokeEmitter.h"
 
 class Player;
 class MineralMgr;
@@ -95,10 +96,12 @@ private:
 	KazMath::Vec2<float> UI_MAX_RETRY_SCALE = KazMath::Vec2<float>(100.0f, 50.0f) * 1.3f;
 
 	//煙エフェクト
-	std::array<std::unique_ptr<SlapSmokeEffect>,10> m_slapEffect;
+	std::array<std::unique_ptr<SlapSmokeEffect>, 10> m_slapEffect;
+	std::array<BulidSmokeEmitter, 10> m_bulidSmokeEffectArray;
 	int m_slapEffectIndex;
+	int m_bulidEffectIndex;
 public:
-	GameScene();
+	GameScene(DrawingByRasterize& arg_rasterize);
 	~GameScene();
 
 	void Init();

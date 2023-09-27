@@ -648,6 +648,9 @@ namespace DrawFuncPipelineData
 
 		return gPipeline;
 	}
+
+
+
 };
 
 namespace DrawFuncData
@@ -1003,6 +1006,54 @@ namespace DrawFuncData
 		return drawCallData;
 	};
 
+	//レイトレでのモデルのポリゴン表示(インデックスあり、マテリアルあり)
+	static DrawCallData SetDrawInstanceGLTFIndexMaterialInRayTracingData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
+	{
+		DrawCallData drawCallData;
+
+		drawCallData.pipelineData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+
+		//頂点情報
+		drawCallData.m_modelVertDataHandle = MODEL_DATA.modelVertDataHandle;
+		drawCallData.drawMultiMeshesIndexInstanceCommandData = VertexBufferMgr::Instance()->GetVertexIndexBuffer(MODEL_DATA.modelVertDataHandle).index;
+		drawCallData.drawCommandType = VERT_TYPE::MULTI_MESHED;
+		for (auto& obj : MODEL_DATA.modelData)
+		{
+			drawCallData.materialBuffer.emplace_back(obj.materialData.textureBuffer);
+		}
+
+		//行列情報
+		drawCallData.extraBufferArray.emplace_back();
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		drawCallData.extraBufferArray.back().structureSize = sizeof(CoordinateSpaceMatData);
+
+		//レイトレ側での判断
+		drawCallData.extraBufferArray.emplace_back(
+			KazBufferHelper::SetConstBufferData(sizeof(UINT))
+		);
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
+		drawCallData.extraBufferArray.back().structureSize = sizeof(UINT);
+
+		//色乗算
+		drawCallData.extraBufferArray.emplace_back(
+			KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMFLOAT4))
+		);
+		drawCallData.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCallData.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+		drawCallData.extraBufferArray.back().structureSize = sizeof(DirectX::XMFLOAT4);
+		KazMath::Color init(255, 255, 255, 255);
+		drawCallData.extraBufferArray.back().bufferWrapper->TransData(&init.ConvertColorRateToXMFLOAT4(), sizeof(DirectX::XMFLOAT4));
+
+
+
+		drawCallData.pipelineData = PIPELINE_DATA;
+		drawCallData.pipelineData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+
+		return drawCallData;
+	};
+
 	//レイトレでのモデルのポリゴン表示(インデックスあり、マテリアルあり、ブルームの加減設定あり)
 	static DrawCallData SetDrawGLTFIndexMaterialInRayTracingBloomData(const ModelInfomation& MODEL_DATA, const PipelineGenerateData& PIPELINE_DATA)
 	{
@@ -1281,6 +1332,52 @@ namespace DrawFuncData
 		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Model.hlsl", "PSDefferdMain", "ps_6_4", SHADER_TYPE_PIXEL);
 
 		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		drawCall.SetupRaytracing(true);
+
+		return drawCall;
+	};
+
+	static DrawCallData SetDefferdRenderingModel(std::shared_ptr<ModelInfomation>arg_model, std::vector<ShaderOptionData>arg_shader)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+
+		//その他設定
+		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+
+		lData.shaderDataArray = arg_shader;
+
+		drawCall = DrawFuncData::SetDrawGLTFIndexMaterialInRayTracingData(*arg_model, lData);
+		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
+		drawCall.SetupRaytracing(true);
+
+		return drawCall;
+	};
+	
+	static DrawCallData SetDefferdRenderingInstanceModel(std::shared_ptr<ModelInfomation>arg_model, std::vector<ShaderOptionData>arg_shader)
+	{
+		DrawCallData drawCall;
+
+		DrawFuncData::PipelineGenerateData lData;
+		lData.desc = DrawFuncPipelineData::SetPosUvNormalTangentBinormal();
+
+		//その他設定
+		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+
+		lData.shaderDataArray = arg_shader;
+
+		drawCall = DrawFuncData::SetDrawInstanceGLTFIndexMaterialInRayTracingData(*arg_model, lData);
 		drawCall.renderTargetHandle = GBufferMgr::Instance()->GetRenderTarget()[0];
 		drawCall.SetupRaytracing(true);
 

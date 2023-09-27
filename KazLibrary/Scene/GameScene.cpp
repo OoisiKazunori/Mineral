@@ -29,7 +29,7 @@
 #include"../Game/EnemyScore.h"
 #include"../Game/PointLightMgr.h"
 
-GameScene::GameScene()
+GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 {
 	skipTurtorialFlag = false;
 	PreInit();
@@ -190,6 +190,7 @@ void GameScene::Init()
 
 
 	m_slapEffectIndex = 0;
+	m_bulidEffectIndex = 0;
 }
 
 void GameScene::PreInit()
@@ -202,7 +203,10 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_B))
+	{
+		BuildingMgr::Instance()->Generate();
+	}
 }
 
 void GameScene::Update()
@@ -242,10 +246,15 @@ void GameScene::Update()
 			m_player->GetIsStrongDaipan()
 		);
 	}
+
 	//煙エフェクト
 	for (auto& obj : m_slapEffect)
 	{
 		obj->Update();
+	}
+	for (auto& obj : m_bulidSmokeEffectArray)
+	{
+		obj.Update();
 	}
 
 	//ミネラルのターゲットを更新。
@@ -261,7 +270,7 @@ void GameScene::Update()
 	BuildingMaterialMgr::Instance()->Update();
 
 	//建築物を更新。
-	BuildingMgr::Instance()->Update(m_player);
+	BuildingMgr::Instance()->Update(m_player, m_bulidSmokeEffectArray[m_bulidEffectIndex], &m_bulidEffectIndex);
 
 	//カメラの位置を設定
 	m_cameraEyeDir.Normalize();
@@ -361,7 +370,10 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	{
 		obj->Draw(arg_rasterize, arg_blasVec);
 	}
-
+	for (auto& obj : m_bulidSmokeEffectArray)
+	{
+		obj.Draw(arg_rasterize, arg_blasVec);
+	}
 	//ImGui::Begin("UI");
 
 	//////ImGui::DragFloat("POS_X", &BuildingMgr::Instance()->GetWall(2).lock()->m_initPos.x, 1.0f);

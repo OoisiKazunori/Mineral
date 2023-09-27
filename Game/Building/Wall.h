@@ -25,6 +25,7 @@ public:
 	bool m_isOldReady;
 	bool m_isReady;		//建築可能状態
 	bool m_isBuild;
+	bool m_isBuildTrigger;
 
 	/*オカモトゾーン*/
 	float damageAmount;
@@ -113,6 +114,12 @@ public:
 	bool GetIsActive() { return m_isActive; }
 	bool GetIsReady() { return m_isReady; }
 	bool GetIsBuild() { return m_isBuild; }
+	bool GetIsBuildTrigger()
+	{
+		bool flag = m_isBuildTrigger;
+		m_isBuildTrigger = false;
+		return flag;
+	}
 	KazMath::Vec3<float> GetPosZeroY();
 	KazMath::Vec3<float> GetScale() { return m_transform.scale; }
 

@@ -2,6 +2,7 @@
 #include "../KazLibrary/Helper/ISinglton.h"
 #include "../Game/DrawCallSet.h"
 #include "../Game/Collision/MeshCollision.h"
+#include "../Game/VFX/BulidSmokeEmitter.h"
 #include <memory>
 #include <array>
 
@@ -23,7 +24,7 @@ public:
 
 	void Generate();
 
-	void Update(std::weak_ptr<Player> arg_player);
+	void Update(std::weak_ptr<Player> arg_player, BulidSmokeEmitter& arg_smokeEffect,int *arg_smokeIndex);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
