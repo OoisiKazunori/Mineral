@@ -58,7 +58,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 
 	//2ウェーブ目 -----------------------------------------------------------------------------------------
-	dayTime = 18;		//日中の時間 フレーム数
+	dayTime = 300;		//日中の時間 フレーム数
 	nightTime = 3200;	//夜の時間 フレーム数
 	tree = { 4 };		//有効化時に生成される木の数
 	rock = {  };		//有効化時に生成される岩の数
@@ -279,7 +279,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	m_BGM = SoundManager::Instance()->SoundLoadWave("Resource/Sound/bgm.wav");
 	SoundManager::Instance()->SoundPlayerWave(m_BGM, 100);
 	m_BGM.source->SetVolume(0.0f);
-	m_BGM.source->Stop();
+	//m_BGM.source->Stop();
 	volume = 0.0f;
 	start_bgm = false;
 	start_morning = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Kokekoko.wav");
@@ -300,6 +300,35 @@ void WaveMgr::Init(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 {
+
+	//BGM関連
+	{
+		//ボリューム調整
+		WaveMgr::Instance()->m_BGM.source->SetVolume(WaveMgr::Instance()->volume);
+
+		//ボリュームを上げるフラグ
+		bool isNight = m_waves[m_nowWaveIndex]->GetIsNight();
+		bool isActiveWave = m_waves[m_nowWaveIndex]->GetIsActiveWave();
+
+		//ボリュームを下げるフラグ
+
+		if (isNight && isActiveWave)
+		{
+			if (WaveMgr::Instance()->volume < 0.05f)
+			{
+				WaveMgr::Instance()->volume += 0.0005f;
+			}
+		}
+		else
+		{
+
+			if (WaveMgr::Instance()->volume > 0.0001f)
+			{
+				WaveMgr::Instance()->volume -= 0.0005f;
+			}
+		}
+	}
+
 
 	//ウェーブを更新。
 	m_waves[m_nowWaveIndex]->Update(arg_enemyMgr);

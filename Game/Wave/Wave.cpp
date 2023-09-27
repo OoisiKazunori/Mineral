@@ -36,41 +36,6 @@ Wave::Wave(int arg_dayTime, int arg_nightTime, std::vector<int> arg_tree, std::v
 void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 {
 
-	//ボリューム調整
-	WaveMgr::Instance()->m_BGM.source->SetVolume(WaveMgr::Instance()->volume);
-
-	if (WaveMgr::Instance()->start_bgm)
-	{
-		WaveMgr::Instance()->m_BGM.source->Start();
-		WaveMgr::Instance()->start_bgm = false;
-	}
-
-	if (volume_up)
-	{
-		if (WaveMgr::Instance()->volume < 0.05f)
-		{
-			WaveMgr::Instance()->volume += 0.0005f;
-		}
-		else
-		{
-			volume_up = false;
-		}
-	}
-
-	if (volume_down)
-	{
-
-		if (WaveMgr::Instance()->volume > 0.0001f)
-		{
-			WaveMgr::Instance()->volume -= 0.0005f;
-		}
-
-		else
-		{
-			volume_down = false;
-		}
-	}
-
 	//タイトルだったらタイマーを1二固定する。
 	if (TitleFlag::Instance()->m_isTitle) {
 		m_nowTime = 1;
