@@ -94,6 +94,10 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 
 	m_isKnockBackTrigger = false;
 
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
+		m_materialCounter = MATERIAL_COUNT;
+	}
+
 	/*オカモトゾーン*/
 	if (isDrawHpBox)
 	{
