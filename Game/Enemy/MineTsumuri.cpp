@@ -119,6 +119,7 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 
 	using namespace KazMath;
 
+	m_deadEffectEmitter.Update();
 	if (!m_isActive) {
 		return;
 	}
@@ -263,6 +264,10 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 
 	//HP‚ª0‚É‚È‚Á‚½‚çŽ€–S
 	if (m_hp <= 0) {
+		if (m_isActive)
+		{
+			m_deadEffectEmitter.Init(m_transform.pos, 10.0f, false);
+		}
 		m_isActive = false;
 
 
@@ -279,8 +284,7 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 
 void MineTsumuri::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-
-	//m_deadEffectEmitter.Draw(arg_rasterize, arg_blasVec);
+	m_deadEffectEmitter.Draw(arg_rasterize, arg_blasVec);
 	if (!m_isActive && m_scale <= 0.0f)
 	{
 		return;
