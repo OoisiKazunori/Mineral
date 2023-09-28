@@ -25,7 +25,7 @@ void HideSmokeEmitter::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_
 	for (auto& obj : m_particleArray)
 	{
 		obj.m_transform.pos = arg_emittPos;
-		obj.m_vel = { 0.0f,0.1f,0.0f };
+		obj.m_vel = { 0.0f,1.5f,0.0f };
 		obj.m_maxScale = { 10.0f,10.0f,10.0f };
 		obj.m_timer = 0;
 		obj.m_maxTimer = 60;
