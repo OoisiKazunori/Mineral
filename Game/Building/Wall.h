@@ -105,6 +105,7 @@ public:
 	KazMath::Transform3D m_wallTransform;
 
 	//エフェクト
+	float m_smokeRadius;
 	BulidSmokeEmitter m_bulidSmokeEmitter;
 public:
 
@@ -112,7 +113,7 @@ public:
 
 	void Init();
 
-	void Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int arg_modelIndex);
+	void Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int arg_modelIndex, float arg_smokeRadius);
 
 	void Update(std::weak_ptr<Player> arg_player);
 

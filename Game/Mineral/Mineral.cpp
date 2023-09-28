@@ -106,6 +106,8 @@ void Mineral::Update(std::weak_ptr<Player> arg_player, std::vector<std::pair<Kaz
 
 	using namespace KazMath;
 
+	m_hitEmitter.Update();
+
 	//座標を保存しておく。
 	m_oldTransform = m_transform;
 
@@ -637,7 +639,7 @@ void Mineral::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& ar
 
 	m_model[static_cast<int>(m_mineralID)].Draw(arg_rasterize, arg_blasVec, m_transform);
 	m_surprisedModel.Draw(arg_rasterize, arg_blasVec, m_surpisedTransform);
-
+	m_hitEmitter.Draw(arg_rasterize, arg_blasVec);
 }
 
 void Mineral::Damage(int arg_damage)
@@ -940,7 +942,7 @@ void Mineral::UpdateAttack(std::weak_ptr<Player> arg_player, int& arg_moveSECoun
 
 		//距離が一定以下になったら待機状態へ
 		if (KazMath::Vec3<float>(targetPos - m_transform.pos).Length() <= targetScale.x + m_transform.scale.x) {
-
+			m_hitEmitter.Init(m_transform.pos, 10.0f, false);
 			m_attackID = STAY;
 
 			//反動で吹き飛ばす。

@@ -41,6 +41,7 @@ void MineKuji::Init()
 	m_hpBoxTransform.scale.z = 1.0f;
 	m_hpBoxTransform.scale.x = static_cast<float> (HP);
 	/*オカモトゾーン*/
+	m_deadTimer = 0;
 }
 
 void MineKuji::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_isTutorialEnemy)
@@ -129,9 +130,9 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 	}
 	/*オカモトゾーン*/
 
+	m_deadEffectEmitter.Update();
 	if (!m_isActive) {
 
-		m_deadEffectEmitter.Update();
 		return;
 
 	}
@@ -259,11 +260,13 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 	//HPが0になったら死亡
 	if (m_hp <= 0) {
-		if (m_isActive)
+		++m_deadTimer;
+		if (60 <= m_deadTimer && m_isActive)
 		{
+			m_transform.scale.y = 0.0f;
 			m_deadEffectEmitter.Init(m_transform.pos, 10.0f, false);
+			m_isActive = false;
 		}
-		m_isActive = false;
 
 		EnemyScore::Instance()->m_score += 50;
 
@@ -271,8 +274,9 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 		{
 			Tutorial::Instance()->is_next = true;
 		}
-	}
 
+
+	}
 }
 
 void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)

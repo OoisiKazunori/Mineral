@@ -3,16 +3,16 @@
 #include"../DrawCallUISet.h"
 #include"SmokeParticle.h"
 
-class HideSmokeEmitter
+class HitEmitter
 {
 public:
-	HideSmokeEmitter();
+	HitEmitter();
 	void Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range, bool arg_isStrong);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 private:
-	static const int PARTICLE_MAX_NUM = 1;
-
+	static const int PARTICLE_MAX_NUM = 10;
+	int m_particleIndex;
 	struct Particle
 	{
 		KazMath::Transform3D m_transform;

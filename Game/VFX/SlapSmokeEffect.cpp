@@ -35,7 +35,7 @@ void SlapSmokeEffect::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_r
 	float addRangeSub = 0.0f;
 	if (arg_isStrong)
 	{
-		addScale = 3.0f;
+		addScale = -1.0f;
 		addRangeSub = s_smokeSubRange.x / 2;
 	}
 

@@ -28,11 +28,11 @@ void BuildingMgr::Generate()
 {
 
 	//•ÇA
-	m_walls[0]->Genrate(KazMath::Vec3<float>(46, 10, 57), 47, 0);
+	m_walls[0]->Genrate(KazMath::Vec3<float>(46, 10, 57), 47, 0, 30.0f);
 	//•ÇB
-	m_walls[1]->Genrate(KazMath::Vec3<float>(-53, 10, 91), 163, 1);
+	m_walls[1]->Genrate(KazMath::Vec3<float>(-53, 10, 91), 163, 1, 30.0f);
 	//•ÇC
-	m_walls[2]->Genrate(KazMath::Vec3<float>(-130, 10, -160), 100, 2);
+	m_walls[2]->Genrate(KazMath::Vec3<float>(-130, 10, -160), 100, 2, 50.0f);
 
 }
 

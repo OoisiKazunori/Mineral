@@ -90,7 +90,7 @@ void Wall::Init()
 	/*オカモトゾーン*/
 }
 
-void Wall::Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int arg_modelIndex)
+void Wall::Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int arg_modelIndex, float arg_smokeRadius)
 {
 
 	m_transform.pos = arg_generatePos;
@@ -106,7 +106,7 @@ void Wall::Genrate(KazMath::Vec3<float> arg_generatePos, float arg_rotateY, int 
 	m_initRotateY = arg_rotateY;
 	m_boxTransform.rotation.y = arg_rotateY;
 	m_modelIndex = arg_modelIndex;
-
+	m_smokeRadius = arg_smokeRadius;
 }
 
 void Wall::Update(std::weak_ptr<Player> arg_player)
@@ -238,6 +238,9 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 					m_easingTimer = 0.0f;
 					m_buildStatus = BUILD_STATUS::COMPLETE;
 
+					//煙のトリガーを吐く
+					m_bulidSmokeEmitter.Init(GetPosZeroY() + KazMath::Vec3<float>(0.0f, 2.0f, 0.0f), m_smokeRadius);
+
 					m_isKnockBackTrigger = true;
 
 					ShakeMgr::Instance()->m_shakeAmount = 5.0f;
@@ -345,11 +348,11 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 				if (DOWN_EASING_TIMER <= m_easingTimer) {
 					SoundManager::Instance()->SoundPlayerWave(wall_drop, 0);
 
-				//煙のトリガーを吐く
-				m_bulidSmokeEmitter.Init(GetPosZeroY() + KazMath::Vec3<float>(0.0f, 2.0f, 0.0f), 30.0f);
+					//煙のトリガーを吐く
+					m_bulidSmokeEmitter.Init(GetPosZeroY() + KazMath::Vec3<float>(0.0f, 2.0f, 0.0f), m_smokeRadius);
 
-				m_easingTimer = 0.0f;
-				m_buildStatus = BUILD_STATUS::COMPLETE;
+					m_easingTimer = 0.0f;
+					m_buildStatus = BUILD_STATUS::COMPLETE;
 
 					m_isKnockBackTrigger = true;
 
@@ -502,6 +505,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
+	m_bulidSmokeEmitter.Draw(arg_rasterize, arg_blasVec);
 	//箱を描画
 	if (m_isActive && !m_isBuild) {
 
@@ -596,7 +600,6 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 		m_hpBoxModel.Draw(arg_rasterize, arg_blasVec, m_hpBoxTransform, 0, false);
 	}
 	/*オカモトゾーン*/
-	m_bulidSmokeEmitter.Draw(arg_rasterize, arg_blasVec);
 }
 
 MeshCollision::CheckHitResult Wall::CheckHitMesh(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_dir) {

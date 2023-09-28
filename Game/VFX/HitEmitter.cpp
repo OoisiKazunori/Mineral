@@ -1,8 +1,10 @@
-#include "HideSmokeEmitter.h"
+#include "HitEmitter.h"
 #include"../KazLibrary/Easing/easing.h"
 
-HideSmokeEmitter::HideSmokeEmitter()
+HitEmitter::HitEmitter()
 {
+	m_particleIndex = 0;
+	
 	std::vector<ShaderOptionData>shaderArray;
 	shaderArray.emplace_back(ShaderOptionData(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "InstanceModel.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX));
 	shaderArray.emplace_back(ShaderOptionData(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "InstanceModel.hlsl", "PSDefferdMain", "ps_6_4", SHADER_TYPE_PIXEL));
@@ -20,19 +22,22 @@ HideSmokeEmitter::HideSmokeEmitter()
 	m_drawSmokeRender.extraBufferArray[0] = m_smokeWorldMatVRAMBuffer;
 }
 
-void HideSmokeEmitter::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range, bool arg_isStrong)
+void HitEmitter::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range, bool arg_isStrong)
 {
-	for (auto& obj : m_particleArray)
+	++m_particleIndex;
+	if (m_particleArray.size() <= m_particleIndex)
 	{
-		obj.m_transform.pos = arg_emittPos;
-		obj.m_vel = { 0.0f,0.1f,0.0f };
-		obj.m_maxScale = { 10.0f,10.0f,10.0f };
-		obj.m_timer = 0;
-		obj.m_maxTimer = 60;
+		m_particleIndex = 0;
 	}
+	m_particleArray[m_particleIndex].m_transform.pos = arg_emittPos;
+	m_particleArray[m_particleIndex].m_vel = { 0.0f,0.2f,0.0f };
+	m_particleArray[m_particleIndex].m_maxScale = { 8.0f,8.0f,8.0f };
+	m_particleArray[m_particleIndex].m_timer = 0;
+	m_particleArray[m_particleIndex].m_maxTimer = 20;
+	++m_particleIndex;
 }
 
-void HideSmokeEmitter::Update()
+void HitEmitter::Update()
 {
 	int index = 0;
 	for (auto& obj : m_particleArray)
@@ -65,7 +70,7 @@ void HideSmokeEmitter::Update()
 	m_smokeWorldMatVRAMBuffer.bufferWrapper->CopyBuffer(m_smokeWorldMatBuffer.bufferWrapper->GetBuffer());
 }
 
-void HideSmokeEmitter::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
+void HitEmitter::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	arg_rasterize.ObjectRender(m_drawSmokeRender);
 	for (auto& obj : m_matArray)

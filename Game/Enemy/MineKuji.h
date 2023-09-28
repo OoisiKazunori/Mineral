@@ -21,6 +21,7 @@ private:
 	float m_gravity;
 	const float GRAVITY = 0.1f;
 	int m_hp;
+	int m_deadTimer;
 	const int HP = 9;
 	const float SCALE = 3.0f;
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "../Game/DrawCallSet.h"
 #include "../KazLibrary/Sound/SoundManager.h"
+#include"../Game/VFX/HitEmitter.h"
 
 class Player;
 class Rock;
@@ -116,7 +117,7 @@ private:
 	const float SURPRISED_STAY_TIMER = 10.0f;
 	const float SURPRISED_EXIT_TIMER = 15.0f;
 
-
+	HitEmitter m_hitEmitter;
 public:
 
 	Mineral();
