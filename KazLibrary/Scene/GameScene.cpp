@@ -66,7 +66,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 	Transition::Instance()->Setting();
 
 
-	m_ground.Load("Resource/Stage/", "Stage_Ground.gltf");
+	m_ground.LoadOutline("Resource/Stage/", "Stage_Ground.gltf");
 	m_fence.Load("Resource/Stage/", "Stage_Fence.gltf");
 	m_tree.Load("Resource/Stage/", "Stage_Tree.gltf");
 	m_rock.Load("Resource/Stage/", "Stage_Rock.gltf");
@@ -370,6 +370,13 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	static UINT reflection = 1;
 	m_puddle.m_model.extraBufferArray[1].bufferWrapper->TransData(&reflection, sizeof(UINT));
+
+	DessolveOutline outline;
+	outline.m_outline = KazMath::Vec4<float>(0.0f, 0, 0, 1);
+	m_ground.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+	m_ground.m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+	m_ground.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+	m_ground.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 	m_ground.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_fence.Draw(arg_rasterize, arg_blasVec, m_stageTransform);

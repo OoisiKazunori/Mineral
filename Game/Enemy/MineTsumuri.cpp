@@ -317,16 +317,13 @@ void MineTsumuri::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	}
 
 	//殻のスケール
-	if (m_isActive) {
+	if (m_isActive && m_isShell) {
 		const float KING_SHELL_SCALE = 2.0f;
 		m_shellTransform.scale = { SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE };
 		m_shellTransform.pos -= m_forwardVec * 10.0f;
 
 		//ちょっとX軸に回転させる。
-		m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 0,0,1 }, m_shellTransform.quaternion).ConvertXMVECTOR(), 0.1f));
-	}
-	else {
-		m_shellTransform.scale = { 0 ,0 ,0 };
+		//m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 0,0,1 }, m_shellTransform.quaternion).ConvertXMVECTOR(), 0.1f));
 	}
 
 	DessolveOutline outline;
@@ -991,10 +988,9 @@ void MineTsumuri::Move() {
 
 	}
 
-
 	//殻にこもっているときは殻に重力をかける。
 	const float UNDER_Y = 5.0f;
-	if (m_inShell) {
+	if (m_inShell && m_isShell) {
 
 		if (UNDER_Y < m_shellTransform.pos.y + m_shellPosY) {
 
@@ -1023,21 +1019,18 @@ void MineTsumuri::Move() {
 		}
 
 	}
+
+	//空中に浮いていたら重力を計算する。
+	if (UNDER_Y < m_transform.pos.y) {
+
+		m_gravity += GRAVITY;
+		m_transform.pos.y -= m_gravity;
+
+	}
 	else {
 
-		//空中に浮いていたら重力を計算する。
-		if (UNDER_Y < m_transform.pos.y) {
-
-			m_gravity += GRAVITY;
-			m_transform.pos.y -= m_gravity;
-
-		}
-		else {
-
-			m_gravity = 0.0f;
-			m_transform.pos.y = UNDER_Y;
-
-		}
+		m_gravity = 0.0f;
+		m_transform.pos.y = UNDER_Y;
 
 	}
 
@@ -1166,7 +1159,7 @@ void MineTsumuri::UpdateShell() {
 		}
 
 		//空中に浮いていたら重力を計算する。
-		const float UNDER_Y = -100.0f;
+		const float UNDER_Y = -1000.0f;
 		if (UNDER_Y < m_shellTransform.pos.y) {
 
 			if (m_isMineking) {
@@ -1190,7 +1183,7 @@ void MineTsumuri::UpdateShell() {
 			//m_shellBreakRotation += 0.01f;
 		}
 		else {
-			m_shellBreakRotation += 0.03f;
+			m_shellBreakRotation += 0.02f;
 		}
 		m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis(m_shellBreakRightVec.ConvertXMVECTOR(), m_shellBreakRotation));
 
