@@ -238,7 +238,7 @@ void Wave::Invalidate(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 	arg_enemyMgr.lock()->Init();
 
 	//全ての破壊可能オブジェクトを削除。
-	DestructibleObjectMgr::Instance()->Init();
+	//DestructibleObjectMgr::Instance()->Init();
 
 	//Waveを終える。
 	m_isActiveWave = false;
