@@ -78,7 +78,6 @@ int BuildingMgr::GetTargetWallIndex(KazMath::Vec3<float> arg_playerPos, float ar
 		if (!index->GetIsActive()) continue;
 		if (index->GetNowLevel() == index->GetMAXLevel()) continue;
 		if (!index->GetIsReady()) continue;
-		if (index->GetIsBroken()) continue;
 
 		//ターゲットの中に入っているかをチェックする。
 		float length = KazMath::Vec3<float>(arg_playerPos - index->GetPosZeroY()).Length();

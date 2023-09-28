@@ -119,9 +119,9 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
 		m_materialCounter = MATERIAL_COUNT;
 	}
-	//if (KeyBoradInputManager::Instance()->InputState(DIK_9)) {
-	//	Damage();
-	//}
+	if (KeyBoradInputManager::Instance()->InputState(DIK_9)) {
+		Damage();
+	}
 
 	/*オカモトゾーン*/
 	if (isDrawHpBox)
