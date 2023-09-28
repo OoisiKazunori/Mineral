@@ -15,9 +15,9 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
-	static int s_disappearMaxTime;	//スケールの縮小が始まるタイミングの基準
-	static int s_velRateTime;		//攻撃範囲まで広がる時間
-	static int s_scaleRateTime;		//煙が消える時間
+	int s_disappearMaxTime = 20;	//スケールの縮小が始まるタイミングの基準
+	int s_velRateTime = 30;		//攻撃範囲まで広がる時間
+	int s_scaleRateTime = 20;		//煙が消える時間
 	KazMath::Transform3D m_transform;
 private:
 	bool m_initFlag;

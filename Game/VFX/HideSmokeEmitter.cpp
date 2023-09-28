@@ -1,6 +1,7 @@
-#include "BulidSmokeEmitter.h"
+#include "HideSmokeEmitter.h"
+#include"../KazLibrary/Easing/easing.h"
 
-BulidSmokeEmitter::BulidSmokeEmitter()
+HideSmokeEmitter::HideSmokeEmitter()
 {
 	std::vector<ShaderOptionData>shaderArray;
 	shaderArray.emplace_back(ShaderOptionData(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "InstanceModel.hlsl", "VSDefferdMain", "vs_6_4", SHADER_TYPE_VERTEX));
@@ -19,25 +20,38 @@ BulidSmokeEmitter::BulidSmokeEmitter()
 	m_drawSmokeRender.extraBufferArray[0] = m_smokeWorldMatVRAMBuffer;
 }
 
-void BulidSmokeEmitter::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range)
+void HideSmokeEmitter::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range, bool arg_isStrong)
 {
-	for (int i = 0; i < m_particleArray.size(); ++i)
+	for (auto& obj : m_particleArray)
 	{
-		float angle = KazMath::Rand<float>(360.0f, 0.0f);
-		KazMath::Vec3<float>vel(cosf(KazMath::AngleToRadian(angle)), 0.0f, sinf(KazMath::AngleToRadian(angle)));
-		m_particleArray[i].s_disappearMaxTime = 20;
-		m_particleArray[i].s_velRateTime = 20;
-		m_particleArray[i].s_scaleRateTime = 10;
-		m_particleArray[i].Init(arg_emittPos, vel, arg_range, KazMath::Rand<float>(2.0f, 1.0f));
+		obj.m_transform.pos = arg_emittPos;
+		obj.m_vel = { 0.0f,1.0f,0.0f };
+		obj.m_maxScale = { 10.0f,10.0f,10.0f };
+		obj.m_timer = 0;
+		obj.m_maxTimer = 60;
 	}
 }
 
-void BulidSmokeEmitter::Update()
+void HideSmokeEmitter::Update()
 {
 	int index = 0;
 	for (auto& obj : m_particleArray)
 	{
-		obj.Update();
+		//イージング用の計算
+		if (obj.m_timer < obj.m_maxTimer)
+		{
+			++obj.m_timer;
+		}
+		obj.m_transform.pos += obj.m_vel;
+		float rate = static_cast<float>(obj.m_timer) / static_cast<float>(obj.m_maxTimer);
+		obj.m_transform.scale =
+		{
+			1.0f - EasingMaker(In, Exp, rate),
+			1.0f - EasingMaker(In, Exp, rate),
+			1.0f - EasingMaker(In, Exp, rate)
+		};
+		obj.m_transform.scale *= obj.m_maxScale;
+
 		CoordinateSpaceMatData data(
 			obj.m_transform.GetMat(),
 			CameraMgr::Instance()->GetViewMatrix(),
@@ -47,19 +61,15 @@ void BulidSmokeEmitter::Update()
 		m_matArray[index] = data;
 		++index;
 	}
-	m_smokeWorldMatBuffer.bufferWrapper->TransData(m_matArray.data(), sizeof(CoordinateSpaceMatData)* PARTICLE_MAX_NUM);
+	m_smokeWorldMatBuffer.bufferWrapper->TransData(m_matArray.data(), sizeof(CoordinateSpaceMatData) * PARTICLE_MAX_NUM);
 	m_smokeWorldMatVRAMBuffer.bufferWrapper->CopyBuffer(m_smokeWorldMatBuffer.bufferWrapper->GetBuffer());
 }
 
-void BulidSmokeEmitter::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
+void HideSmokeEmitter::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 	arg_rasterize.ObjectRender(m_drawSmokeRender);
 	for (auto& obj : m_matArray)
 	{
 		arg_blasVec.Add(m_drawSmokeRender.m_raytracingData.m_blas[0], obj.m_world, 0);
 	}
-}
-
-void BulidSmokeEmitter::DebugImGui()
-{
 }

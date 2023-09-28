@@ -195,7 +195,6 @@ void GameScene::Init()
 	m_resultStayTimer = 0;
 
 	m_slapEffectIndex = 0;
-	m_bulidEffectIndex = 0;
 }
 
 void GameScene::PreInit()
@@ -257,10 +256,6 @@ void GameScene::Update()
 	{
 		obj->Update();
 	}
-	for (auto& obj : m_bulidSmokeEffectArray)
-	{
-		obj.Update();
-	}
 
 	//ミネラルのターゲットを更新。
 	m_mineralTarget->Update(m_player->GetPosZeroY(), m_player->GetMineralAffectRange(), m_enemyMgr);
@@ -275,7 +270,7 @@ void GameScene::Update()
 	BuildingMaterialMgr::Instance()->Update();
 
 	//建築物を更新。
-	BuildingMgr::Instance()->Update(m_player, m_bulidSmokeEffectArray[m_bulidEffectIndex], &m_bulidEffectIndex);
+	BuildingMgr::Instance()->Update(m_player);
 
 	//カメラの位置を設定
 	m_cameraEyeDir.Normalize();
@@ -400,10 +395,6 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	for (auto& obj : m_slapEffect)
 	{
 		obj->Draw(arg_rasterize, arg_blasVec);
-	}
-	for (auto& obj : m_bulidSmokeEffectArray)
-	{
-		obj.Draw(arg_rasterize, arg_blasVec);
 	}
 	//ImGui::Begin("UI");
 

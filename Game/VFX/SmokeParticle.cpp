@@ -1,10 +1,6 @@
 #include "SmokeParticle.h"
 #include"../KazLibrary/Easing/easing.h"
 
-int SmokeParticle::s_velRateTime = 60;
-int SmokeParticle::s_scaleRateTime = 60;
-int SmokeParticle::s_disappearMaxTime = 20;
-
 SmokeParticle::SmokeParticle() :m_initFlag(false)
 {
 	m_smokeRender.LoadZAllways("Resource/VFX/smoke/", "Slap_VFX.gltf");

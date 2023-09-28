@@ -85,25 +85,20 @@ void SlapSmokeEffect::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVe
 	{
 		arg_blasVec.Add(m_drawSmokeRender.m_raytracingData.m_blas[0], obj.m_world, 0);
 	}
-
-	//for (auto& obj : m_particleArray)
-	//{
-	//	obj.Draw(arg_rasterize, arg_blasVec);
-	//}
 }
 
 void SlapSmokeEffect::DebugImGui()
 {
-	ImGui::Begin("Smoke");
-	ImGui::DragFloat("SmokeScaleMax", &s_smokeScale.x);								//煙の大きさの最大値
-	ImGui::DragFloat("SmokeScaleMin", &s_smokeScale.y);								//煙の大きさの最小値
-	//時間の単位はflameで統一
-	ImGui::DragInt("SmokeExpandingTime", &SmokeParticle::s_velRateTime);					//煙が攻撃範囲まで広がる時間
-	ImGui::DragInt("SmokeDisappearTime", &SmokeParticle::s_scaleRateTime);				//煙が消えきる時間
-	ImGui::DragInt("SmokeReadyToDisappearTime", &SmokeParticle::s_disappearMaxTime);		//煙が残る時間
-	ImGui::DragFloat("RangeSubMax", &s_smokeSubRange.x);							//煙の範囲を本来よりどれくらい小さくするかの最大値
-	ImGui::DragFloat("RangeSubMin", &s_smokeSubRange.y);							//煙の範囲を本来よりどれくらい小さくするかの最小値
-	ImGui::DragInt("SmokeIntervalMax", &s_smokeInterval.x);
-	ImGui::DragInt("SmokeIntervalMin", &s_smokeInterval.y);
-	ImGui::End();
+	//ImGui::Begin("Smoke");
+	//ImGui::DragFloat("SmokeScaleMax", &s_smokeScale.x);								//煙の大きさの最大値
+	//ImGui::DragFloat("SmokeScaleMin", &s_smokeScale.y);								//煙の大きさの最小値
+	////時間の単位はflameで統一
+	//ImGui::DragInt("SmokeExpandingTime", &SmokeParticle::s_velRateTime);					//煙が攻撃範囲まで広がる時間
+	//ImGui::DragInt("SmokeDisappearTime", &SmokeParticle::s_scaleRateTime);				//煙が消えきる時間
+	//ImGui::DragInt("SmokeReadyToDisappearTime", &SmokeParticle::s_disappearMaxTime);		//煙が残る時間
+	//ImGui::DragFloat("RangeSubMax", &s_smokeSubRange.x);							//煙の範囲を本来よりどれくらい小さくするかの最大値
+	//ImGui::DragFloat("RangeSubMin", &s_smokeSubRange.y);							//煙の範囲を本来よりどれくらい小さくするかの最小値
+	//ImGui::DragInt("SmokeIntervalMax", &s_smokeInterval.x);
+	//ImGui::DragInt("SmokeIntervalMin", &s_smokeInterval.y);
+	//ImGui::End();
 }

@@ -101,9 +101,7 @@ private:
 
 	//煙エフェクト
 	std::array<std::unique_ptr<SlapSmokeEffect>, 10> m_slapEffect;
-	std::array<BulidSmokeEmitter, 10> m_bulidSmokeEffectArray;
 	int m_slapEffectIndex;
-	int m_bulidEffectIndex;
 public:
 	GameScene(DrawingByRasterize& arg_rasterize);
 	~GameScene();
