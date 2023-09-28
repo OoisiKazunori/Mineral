@@ -43,7 +43,7 @@ void BuildingMgr::Update(std::weak_ptr<Player> arg_player, BulidSmokeEmitter& ar
 
 		if (index->GetIsBuildTrigger())
 		{
-			*arg_smokeIndex += 1;
+			*arg_smokeIndex = 1;
 			arg_smokeEffect.Init(
 				index->GetPosZeroY() + KazMath::Vec3<float>(0.0f, 5.0f, 0.0f),
 				30.0f
@@ -78,6 +78,7 @@ int BuildingMgr::GetTargetWallIndex(KazMath::Vec3<float> arg_playerPos, float ar
 		if (!index->GetIsActive()) continue;
 		if (index->GetNowLevel() == index->GetMAXLevel()) continue;
 		if (!index->GetIsReady()) continue;
+		if (index->GetIsBroken()) continue;
 
 		//ターゲットの中に入っているかをチェックする。
 		float length = KazMath::Vec3<float>(arg_playerPos - index->GetPosZeroY()).Length();

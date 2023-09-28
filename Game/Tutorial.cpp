@@ -21,7 +21,7 @@ void Tutorial::setting()
 
 	m_tutorialArrow.Load("Resource/Stage/Tutorial/", "TutorialArrow.gltf");
 
-	is_tutorial = true;
+	is_tutorial = false;
 	tutorial_num = 0;
 	tex_transform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f };
 	tex_transform.scale = { 1280.0f, 720.0f };

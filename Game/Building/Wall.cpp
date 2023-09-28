@@ -19,6 +19,11 @@ Wall::Wall()
 	m_model[2][0].LoadOutline("Resource/Building/Wall/", "WallC.gltf");
 	m_model[2][1].LoadOutline("Resource/Building/Wall/", "WallC2.gltf");
 	m_model[2][2].LoadOutline("Resource/Building/Wall/", "WallC3.gltf");
+
+	m_brokenModel[0].LoadOutline("Resource/Building/Wall/", "BrokenWallA.gltf");
+	m_brokenModel[1].LoadOutline("Resource/Building/Wall/", "BrokenWallB.gltf");
+	m_brokenModel[2].LoadOutline("Resource/Building/Wall/", "BrokenWallC.gltf");
+
 	m_buildingBoxModel.LoadOutline("Resource/Building/", "BuildingBox.gltf");
 	m_numberModel.LoadNoLighting("Resource/UI/NumFont/", "number.gltf");
 	/*オカモトゾーン*/
@@ -70,6 +75,9 @@ void Wall::Init()
 	m_drawLevel = 0;
 	m_isBuildNow = false;
 
+	m_isBroken = false;
+	m_isDrawBrokenModel = false;
+
 	/*オカモトゾーン*/
 	isDrawHpBox = false;
 	hpBoxScaleStart = 0.0f;
@@ -111,6 +119,9 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
 		m_materialCounter = MATERIAL_COUNT;
 	}
+	//if (KeyBoradInputManager::Instance()->InputState(DIK_9)) {
+	//	Damage();
+	//}
 
 	/*オカモトゾーン*/
 	if (isDrawHpBox)
@@ -158,11 +169,36 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 		m_isReady = false;
 	}
 
+	//壊れていたら
+	if (m_isBroken) {
+
+
+
+		if (MATERIAL_COUNT <= m_materialCounter) {
+
+			SoundManager::Instance()->SoundPlayerWave(wall_build, 0);
+			m_isBuild = true;
+			m_isBuildTrigger = true;
+			m_buildStatus = BUILD_STATUS::UPPER;
+			m_easingTimer = 0.0f;
+
+			m_materialCounter = 0;
+
+			//建築されていない状態からの建築なので、レベルを0に設定
+			m_level = 0;
+			m_drawLevel = 0;
+
+			m_isBroken = false;
+
+		}
+
+
+	}
 	//建築したら
-	if (m_isBuild) {
+	else if (m_isBuild) {
 
 		//レベルが0だったら(ブロックからレベル0への建築の処理)
-		if (m_level == 0) {
+		if (m_level == 0 && !m_isDrawBrokenModel) {
 
 			switch (m_buildStatus)
 			{
@@ -262,6 +298,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 
 						//見た目のレベルを適用する。
 						m_drawLevel = m_level;
+						m_isDrawBrokenModel = false;
 
 					}
 					//後半戦だったら大きさを元に戻す。
@@ -449,6 +486,9 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 		m_transform.pos = m_initPos;
 		Init();
 
+		m_isBroken = true;
+		m_isDrawBrokenModel = true;
+
 		m_isActive = true;
 		m_rotateY = m_initRotateY;
 		m_boxTransform.rotation.y = m_initRotateY;
@@ -478,18 +518,37 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 	//柵自体を描画
 	if (m_isActive) {
 
+		if (m_isDrawBrokenModel) {
 
-		DessolveOutline outline;
-		outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
-		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
-		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
-		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-		m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+			DessolveOutline outline;
+			outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
+			m_brokenModel[m_modelIndex].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+			m_brokenModel[m_modelIndex].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+			m_brokenModel[m_modelIndex].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+			m_brokenModel[m_modelIndex].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
-		KazMath::Transform3D modelTransform = m_transform;
-		modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
-		modelTransform.rotation.y += 180.0f;
-		m_model[m_modelIndex][m_drawLevel].Draw(arg_rasterize, arg_blasVec, modelTransform);
+			KazMath::Transform3D modelTransform = m_transform;
+			modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
+			modelTransform.rotation.y += 180.0f;
+			m_brokenModel[m_modelIndex].Draw(arg_rasterize, arg_blasVec, modelTransform);
+
+		}
+		else {
+
+			DessolveOutline outline;
+			outline.m_outline = KazMath::Vec4<float>(0.5f, 0, 0, 1);
+			m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+			m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+			m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+			m_model[m_modelIndex][m_drawLevel].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+
+			KazMath::Transform3D modelTransform = m_transform;
+			modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
+			modelTransform.rotation.y += 180.0f;
+			m_model[m_modelIndex][m_drawLevel].Draw(arg_rasterize, arg_blasVec, modelTransform);
+
+		}
+
 
 	}
 

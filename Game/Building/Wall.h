@@ -16,6 +16,7 @@ public:
 
 	//基本情報
 	std::array<std::array<DrawCallSet, 3>, 3> m_model;
+	std::array<DrawCallSet, 3> m_brokenModel;
 	int m_modelIndex;
 	DrawCallSet m_buildingBoxModel;
 	KazMath::Transform3D m_transform;
@@ -30,6 +31,9 @@ public:
 	int m_level;
 	int m_drawLevel;	//描画に使用するモデルを選択する用のレベル。 m_levelとほぼ一緒だが、エフェクトの見た目の関係でm_levelをインクリメントした後でする前のモデルを描画したい場合があるので追加。
 	const int MAX_LEVEL = 2;
+
+	bool m_isBroken;
+	bool m_isDrawBrokenModel;
 
 	/*オカモトゾーン*/
 	float damageAmount;
@@ -136,5 +140,7 @@ public:
 
 	int GetNowLevel() { return m_level; }
 	int GetMAXLevel() { return MAX_LEVEL; }
+
+	bool GetIsBroken() { return m_isBroken; }
 
 };
