@@ -301,6 +301,22 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 
 	}
 
+
+	//プレイヤーがスタンしたらミネラルの追従を解除する。
+	if (arg_player.lock()->GetIsStun()) {
+
+		for (auto& mineral : m_minerals) {
+
+			if (!mineral->GetIsAlive()) continue;
+			if (mineral->GetIsAttack()) continue;
+			if (!mineral->GetIsGathering()) continue;
+
+			mineral->BreakUP({0,1,0});
+
+		}
+
+	}
+
 }
 
 void MineralMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec) {
