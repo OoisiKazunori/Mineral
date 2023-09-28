@@ -297,7 +297,7 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 	}
 
 	if (m_isActive) {
-		m_transform.scale = { m_scale - m_attackedScale ,m_scale - m_attackedScale ,m_scale - m_attackedScale };
+		m_transform.scale = { m_scale + m_attackedScale ,m_scale - m_attackedScale ,m_scale + m_attackedScale };
 	}
 	else {
 		m_transform.scale = { m_scale ,m_scale ,m_scale };
@@ -868,7 +868,7 @@ void MineKuji::Move() {
 	//ダメージを受けたときの拡縮をもとに戻す。
 	if (0 < m_attackedScale) {
 
-		m_attackedScale -= m_attackedScale / 5.0f;
+		m_attackedScale -= m_attackedScale / 10.0f;
 
 	}
 	else {

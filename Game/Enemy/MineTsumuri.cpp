@@ -310,7 +310,7 @@ void MineTsumuri::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 
 	//本体のスケールをデフォルトに近づける。
 	if (m_isActive) {
-		m_transform.scale = { m_scale - m_attackedScale ,m_scale - m_attackedScale ,m_scale - m_attackedScale };
+		m_transform.scale = { m_scale + m_attackedScale ,m_scale - m_attackedScale ,m_scale + m_attackedScale };
 	}
 	else {
 		m_transform.scale = { m_scale ,m_scale ,m_scale };
