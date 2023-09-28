@@ -68,7 +68,7 @@ private:
 
 	//UŒ‚‚ğó‚¯‚½‚Æ‚«‚ÌŠgk
 	float m_attackedScale;
-	const float ATTACKED_SCALE = 4.5f;
+	const float ATTACKED_SCALE = 4.0f;
 
 	//i˜HAI
 	std::vector<KazMath::Vec3<float>> m_route;

@@ -336,8 +336,13 @@ void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 		//次のウェーブが存在しているか？
 		if (m_waveCount - 1 <= m_nowWaveIndex) {
 
-			//次のウェーブがない時
-			m_isFinishAllWave = true;
+			//敵がすべていなかったら
+			if (arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0) {
+
+				//次のウェーブがない時
+				m_isFinishAllWave = true;
+
+			}
 
 		}
 		else {
