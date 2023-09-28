@@ -654,6 +654,7 @@ void GameScene::UpdateResult()
 
 					m_isResultToTitle = true;
 					m_titleLogoDeleteTimer = 0;
+					m_selectTitleNum = 0;
 					//Init();
 
 				}
