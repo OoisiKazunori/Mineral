@@ -124,17 +124,44 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			//時間を進める。
 			m_nowTime = std::clamp(m_nowTime + 1, 0, m_nighTime);
 
-			//時間が終わったWaveを無効化する。
-			if (m_nighTime <= m_nowTime) {
-				if (!m_isPlayNiwatori && !WaveMgr::Instance()->IsNextWave()) {
-					SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
-					m_isPlayNiwatori = true;
+			bool isEnemyZero = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
+			bool isFinalWave = WaveMgr::Instance()->IsFinalWave();
+
+			if (isFinalWave) {
+
+				if (isEnemyZero) {
+
+					//時間が終わったWaveを無効化する。
+					if (m_nighTime <= m_nowTime) {
+						if (!m_isPlayNiwatori && !WaveMgr::Instance()->IsNextWave()) {
+							SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
+							m_isPlayNiwatori = true;
+						}
+						Invalidate(arg_enemyMgr);
+						if (Tutorial::Instance()->is_tutorial)
+						{
+							Tutorial::Instance()->is_tutorial = false;
+						}
+					}
+
 				}
-				Invalidate(arg_enemyMgr);
-				if (Tutorial::Instance()->is_tutorial)
-				{
-					Tutorial::Instance()->is_tutorial = false;
+
+			}
+			else {
+
+				//時間が終わったWaveを無効化する。
+				if (m_nighTime <= m_nowTime) {
+					if (!m_isPlayNiwatori && !WaveMgr::Instance()->IsNextWave()) {
+						SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
+						m_isPlayNiwatori = true;
+					}
+					Invalidate(arg_enemyMgr);
+					if (Tutorial::Instance()->is_tutorial)
+					{
+						Tutorial::Instance()->is_tutorial = false;
+					}
 				}
+
 			}
 
 		}
@@ -190,13 +217,17 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 	}
 
-	//最後の敵が沸いていたら。
-	bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime;
-	bool isZeroEnemy = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
-	if (isEnemyEnd && isZeroEnemy) {
+	if (m_isNight) {
 
-		//時間経過を速める。
-		m_nowTime = std::clamp(m_nowTime + 20, 0, m_nighTime);
+		//最後の敵が沸いていたら。
+		bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime;
+		bool isZeroEnemy = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
+		if (isEnemyEnd && isZeroEnemy) {
+
+			//時間経過を速める。
+			m_nowTime = std::clamp(m_nowTime + 20, 0, m_nighTime);
+
+		}
 
 	}
 
