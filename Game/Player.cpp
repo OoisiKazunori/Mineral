@@ -405,12 +405,14 @@ void Player::Update()
 	float baseFacter = 1.0f - (m_hp / HP);
 	ChromaticAberration::Instance()->m_facter += (baseFacter - ChromaticAberration::Instance()->m_facter) / 20.0f;
 
-
-
 	//HP‚ª0‚É‚È‚Á‚½‚ç
 	if (m_hp <= 0 && !m_isStun) {
 
 		m_isStun = true;
+
+		m_daipanStatus = NONE;
+		m_isInputDaipan = false;
+
 		SoundManager::Instance()->SoundPlayerWave(down, 0);
 
 		ShakeMgr::Instance()->m_shakeAmount = 5.0f;
