@@ -166,6 +166,7 @@
     <ClCompile Include="Game\UI\NumberFont.cpp" />
     <ClCompile Include="Game\UI\OptionUI.cpp" />
     <ClCompile Include="Game\VFX\BulidSmokeEmitter.cpp" />
+    <ClCompile Include="Game\VFX\HideSmokeEmitter.cpp" />
     <ClCompile Include="Game\VFX\SlapSmokeEffect.cpp" />
     <ClCompile Include="Game\VFX\SmokeParticle.cpp" />
     <ClCompile Include="Game\WallAndTreeGeneratePos.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="Game\UI\NumberFont.h" />
     <ClInclude Include="Game\UI\OptionUI.h" />
     <ClInclude Include="Game\VFX\BulidSmokeEmitter.h" />
+    <ClInclude Include="Game\VFX\HideSmokeEmitter.h" />
     <ClInclude Include="Game\VFX\SlapSmokeEffect.h" />
     <ClInclude Include="Game\VFX\SmokeParticle.h" />
     <ClInclude Include="Game\WallAndTreeGeneratePos.h" />

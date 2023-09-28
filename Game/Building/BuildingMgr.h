@@ -25,7 +25,7 @@ public:
 
 	void Generate();
 
-	void Update(std::weak_ptr<Player> arg_player, BulidSmokeEmitter& arg_smokeEffect,int *arg_smokeIndex);
+	void Update(std::weak_ptr<Player> arg_player);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

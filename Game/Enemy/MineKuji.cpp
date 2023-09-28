@@ -131,6 +131,7 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 	if (!m_isActive) {
 
+		m_deadEffectEmitter.Update();
 		return;
 
 	}
@@ -258,6 +259,10 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 	//HPが0になったら死亡
 	if (m_hp <= 0) {
+		if (m_isActive)
+		{
+			m_deadEffectEmitter.Init(m_transform.pos, 10.0f, false);
+		}
 		m_isActive = false;
 
 		EnemyScore::Instance()->m_score += 50;
@@ -267,10 +272,16 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 			Tutorial::Instance()->is_next = true;
 		}
 	}
+
 }
 
 void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
+	m_deadEffectEmitter.Draw(arg_rasterize, arg_blasVec);
+	if (!m_isActive && m_scale <= 0.0f)
+	{
+		return;
+	}
 
 	//スケールをデフォルトの値に近づける。
 	if (m_isActive) {
@@ -283,7 +294,6 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 		if (m_scale < 0.1f) {
 			m_scale = 0.0f;
 		}
-
 	}
 
 	if (m_isActive) {
@@ -315,6 +325,7 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 		m_hpBoxModel.Draw(arg_rasterize, arg_blasVec, m_hpBoxTransform, 0, false);
 	}
 	/*オカモトゾーン*/
+
 }
 
 void MineKuji::Damage(std::weak_ptr<Mineral> arg_mineral, int arg_damage)
