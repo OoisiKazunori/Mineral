@@ -92,7 +92,7 @@ private:
 	bool m_isShell;		//Šk‚ª‚Â‚¢‚Ä‚¢‚é‚©B
 	bool m_inShell;		//Šk‚É‚±‚à‚Á‚Ä‚¢‚é‚©B
 	float m_inShellTimer;
-	const float IN_SHELL_TIMER = 120.0f;
+	const float IN_SHELL_TIMER = 60.0f;
 	float m_shellPosY;
 	const float SHELL_POS_Y = 8.0f;
 	float m_shellGravity;
