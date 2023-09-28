@@ -280,6 +280,12 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 void MineTsumuri::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
 
+	//m_deadEffectEmitter.Draw(arg_rasterize, arg_blasVec);
+	if (!m_isActive && m_scale <= 0.0f)
+	{
+		return;
+	}
+
 	float useScale = SCALE;
 	if (m_isMineking) {
 
