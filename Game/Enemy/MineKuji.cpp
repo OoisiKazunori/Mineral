@@ -260,13 +260,11 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 	//HP‚ª0‚É‚È‚Á‚½‚çŽ€–S
 	if (m_hp <= 0) {
-		++m_deadTimer;
-		if (60 <= m_deadTimer && m_isActive)
+		if (m_isActive)
 		{
-			m_transform.scale.y = 0.0f;
 			m_deadEffectEmitter.Init(m_transform.pos, 10.0f, false);
-			m_isActive = false;
 		}
+		m_isActive = false;
 
 		EnemyScore::Instance()->m_score += 50;
 
