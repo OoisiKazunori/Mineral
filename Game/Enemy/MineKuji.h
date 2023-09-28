@@ -1,6 +1,7 @@
 #pragma once
 #include "../Game/DrawCallSet.h"
 #include "../KazLibrary/Sound/SoundManager.h"
+#include"../Game/VFX/HideSmokeEmitter.h"
 
 class Core;
 class Player;
@@ -86,7 +87,7 @@ private:
 	KazMath::Vec3<float> m_knockBackVec;
 	const float KNOCKBACK_SPEED = 5.0f;
 
-
+	HideSmokeEmitter m_deadEffectEmitter;
 public:
 
 	/*オカモトゾーン*/

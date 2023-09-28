@@ -1,17 +1,27 @@
 #pragma once
+#include"../DrawCallSet.h"
+#include"../DrawCallUISet.h"
 #include"SmokeParticle.h"
 
-class BulidSmokeEmitter
+class HideSmokeEmitter
 {
 public:
-	BulidSmokeEmitter();
-	void Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range);
+	HideSmokeEmitter();
+	void Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range, bool arg_isStrong);
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
-	static void DebugImGui();
 private:
 	static const int PARTICLE_MAX_NUM = 80;
-	std::array<SmokeParticle, PARTICLE_MAX_NUM>m_particleArray;
+
+	struct Particle
+	{
+		KazMath::Transform3D m_transform;
+		KazMath::Vec3<float>m_vel;
+		KazMath::Vec3<float>m_maxScale;
+		int m_timer;
+		int m_maxTimer;
+	};
+	std::array<Particle, PARTICLE_MAX_NUM>m_particleArray;
 
 	KazBufferHelper::BufferData m_smokeWorldMatBuffer;
 	KazBufferHelper::BufferData m_smokeWorldMatVRAMBuffer;
@@ -19,3 +29,4 @@ private:
 
 	std::array<CoordinateSpaceMatData, PARTICLE_MAX_NUM>m_matArray;
 };
+

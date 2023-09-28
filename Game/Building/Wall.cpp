@@ -9,7 +9,6 @@
 
 Wall::Wall()
 {
-
 	m_model[0].LoadOutline("Resource/Building/Wall/", "WallA.gltf");
 	m_model[1].LoadOutline("Resource/Building/Wall/", "WallB.gltf");
 	m_model[2].LoadOutline("Resource/Building/Wall/", "WallC.gltf");
@@ -40,7 +39,6 @@ Wall::Wall()
 	damage.volume = 0.05f;
 	m_modelIndex = 0;
 	Init();
-
 }
 
 void Wall::Init()
@@ -172,7 +170,7 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 				SoundManager::Instance()->SoundPlayerWave(wall_drop, 0);
 
 				//âåÇÃÉgÉäÉKÅ[ÇìfÇ≠
-				m_bulidSmokeEmitter.Init(m_transform.pos, 50.0f);
+				m_bulidSmokeEmitter.Init(GetPosZeroY() + KazMath::Vec3<float>(0.0f, 2.0f, 0.0f), 30.0f);
 
 				m_easingTimer = 0.0f;
 				m_buildStatus = BUILD_STATUS::COMPLETE;
@@ -302,7 +300,6 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 		m_rotateY = m_initRotateY;
 		m_boxTransform.rotation.y = m_initRotateY;
 	}
-
 
 	m_bulidSmokeEmitter.Update();
 }
