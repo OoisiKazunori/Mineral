@@ -5,6 +5,7 @@
 #include <memory>
 #include <array>
 #include "../KazLibrary/Helper/ISinglton.h"
+#include"../VFX/BulidSmokeEmitter.h"
 
 class Rock;
 class Player;
@@ -15,6 +16,7 @@ private:
 
 	static const int ROCK_COUNT = 32;
 	std::array<std::shared_ptr<Rock>, ROCK_COUNT> m_rocks;
+	std::array<BulidSmokeEmitter, ROCK_COUNT> m_buildSmokeEmitterArray;
 
 public:
 

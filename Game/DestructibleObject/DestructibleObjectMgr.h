@@ -3,6 +3,7 @@
 #include "../KazLibrary/Helper/ISinglton.h"
 #include <memory>
 #include <array>
+#include"../VFX/BulidSmokeEmitter.h"
 
 class DestructibleTree;
 class Player;
@@ -13,6 +14,7 @@ private:
 
 	static const int TREE_COUNT = 16;
 	std::array<std::shared_ptr<DestructibleTree>, TREE_COUNT> m_trees;
+	std::array<BulidSmokeEmitter, TREE_COUNT> m_buildEffectArray;
 
 
 public:
@@ -34,5 +36,4 @@ public:
 	KazMath::Vec3<float> GetTreeTargetScale(int arg_index);
 	KazMath::Vec3<float> GetTreePosZeroY(int arg_index);
 	std::weak_ptr<DestructibleTree> GetTree(int arg_index) { return m_trees[arg_index]; }
-
 };

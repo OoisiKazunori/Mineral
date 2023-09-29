@@ -44,6 +44,19 @@ void DestructibleObjectMgr::GenerateTree(KazMath::Vec3<float> arg_pos)
 
 	}
 
+	for (auto& smoke : m_buildEffectArray)
+	{
+		if (smoke.IsActive())
+		{
+			continue;
+		}
+		KazMath::Vec3<float>pos(arg_pos);
+		pos.y = 5.0f;
+		smoke.Init(pos, 30.0f);
+
+		break;
+
+	}
 }
 
 void DestructibleObjectMgr::Update(std::weak_ptr<Player> arg_player)
@@ -54,7 +67,15 @@ void DestructibleObjectMgr::Update(std::weak_ptr<Player> arg_player)
 		if (!index->GetIsActive()) continue;
 
 		index->Update(arg_player);
+	}
 
+	for (auto& index : m_buildEffectArray)
+	{
+		if (!index.IsActive())
+		{
+			continue;
+		}
+		index.Update();
 	}
 
 }
@@ -70,6 +91,14 @@ void DestructibleObjectMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::
 
 	}
 
+	for (auto& index : m_buildEffectArray)
+	{
+		if (!index.IsActive())
+		{
+			continue;
+		}
+		index.Draw(arg_rasterize, arg_blasVec);
+	}
 }
 
 int DestructibleObjectMgr::GetTargetTreeIndex(KazMath::Vec3<float> arg_playerPos, float arg_targetRange, float& arg_targetDistance)

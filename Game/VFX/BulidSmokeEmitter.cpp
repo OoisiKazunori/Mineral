@@ -17,6 +17,7 @@ BulidSmokeEmitter::BulidSmokeEmitter()
 	m_smokeWorldMatVRAMBuffer.rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 	m_smokeWorldMatVRAMBuffer.rootParamType = GRAPHICS_PRAMTYPE_DATA;
 	m_drawSmokeRender.extraBufferArray[0] = m_smokeWorldMatVRAMBuffer;
+	m_isActiveFlag = false;
 }
 
 void BulidSmokeEmitter::Init(const KazMath::Vec3<float>& arg_emittPos, float arg_range)
@@ -30,6 +31,8 @@ void BulidSmokeEmitter::Init(const KazMath::Vec3<float>& arg_emittPos, float arg
 		m_particleArray[i].s_scaleRateTime = 10;
 		m_particleArray[i].Init(arg_emittPos, vel, arg_range, KazMath::Rand<float>(2.0f, 1.0f));
 	}
+	m_timer = 120;
+	m_isActiveFlag = true;
 }
 
 void BulidSmokeEmitter::Update()
@@ -47,8 +50,14 @@ void BulidSmokeEmitter::Update()
 		m_matArray[index] = data;
 		++index;
 	}
-	m_smokeWorldMatBuffer.bufferWrapper->TransData(m_matArray.data(), sizeof(CoordinateSpaceMatData)* PARTICLE_MAX_NUM);
+	m_smokeWorldMatBuffer.bufferWrapper->TransData(m_matArray.data(), sizeof(CoordinateSpaceMatData) * PARTICLE_MAX_NUM);
 	m_smokeWorldMatVRAMBuffer.bufferWrapper->CopyBuffer(m_smokeWorldMatBuffer.bufferWrapper->GetBuffer());
+
+	--m_timer;
+	if (m_timer <= 0)
+	{
+		m_isActiveFlag = false;
+	}
 }
 
 void BulidSmokeEmitter::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -62,4 +71,9 @@ void BulidSmokeEmitter::Draw(DrawingByRasterize& arg_rasterize, Raytracing::Blas
 
 void BulidSmokeEmitter::DebugImGui()
 {
+}
+
+bool BulidSmokeEmitter::IsActive()
+{
+	return m_isActiveFlag;
 }
