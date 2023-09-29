@@ -126,7 +126,7 @@ public:
 
 	void Generate(std::weak_ptr<Mineral> arg_thisMineral, KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_respawnVec, int arg_mineralID = MEDIUM);
 
-	void Update(std::weak_ptr<Player> arg_player, std::vector<std::pair<KazMath::Vec3<float>, int>>& arg_respawnVec, int& arg_moveSECount);
+	void Update(std::weak_ptr<Player> arg_player, std::vector<std::pair<KazMath::Vec3<float>, int>>& arg_respawnVec, float& arg_moveSECount);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
@@ -170,7 +170,7 @@ public:
 
 private:
 
-	void UpdateAttack(std::weak_ptr<Player> arg_player, int& arg_moveSECount);
+	void UpdateAttack(std::weak_ptr<Player> arg_player, float& arg_moveSECount);
 	void UpdateHaveMaterial(std::weak_ptr<Player> arg_player);
 
 };

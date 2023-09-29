@@ -19,7 +19,7 @@ private:
 	static const int MINERAL_COUNT = 64;
 	std::array<std::shared_ptr<Mineral>, MINERAL_COUNT> m_minerals;
 
-	int moveSECount;
+	float moveSECount;
 
 public:
 
