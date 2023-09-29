@@ -52,7 +52,16 @@ void Core::Init()
 void Core::Update()
 {
 
-	m_transform.scale = { SCALE ,SCALE ,SCALE };
+	if (m_hp <= 0) {
+		m_transform.scale.x += (0.0f - m_transform.scale.x) / 5.0f;
+		m_transform.scale.y += (0.0f - m_transform.scale.y) / 5.0f;
+		m_transform.scale.z += (0.0f - m_transform.scale.z) / 5.0f;
+	}
+	else {
+		m_transform.scale.x += (SCALE - m_transform.scale.x) / 5.0f;
+		m_transform.scale.y += (SCALE - m_transform.scale.y) / 5.0f;
+		m_transform.scale.z += (SCALE - m_transform.scale.z) / 5.0f;
+	}
 	m_transform.rotation.y = 270.0f;
 
 	//’‹‚Ì‚Æ‚«
