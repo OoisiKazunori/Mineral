@@ -71,6 +71,7 @@ private:
 	bool m_isResultToGame;
 	int m_resultDayScore;
 	int m_resultStayTimer;
+	bool m_isResultTransition;
 	const int RESULT_STAY_TIMER = 60;
 
 	bool m_isTitleNight;
