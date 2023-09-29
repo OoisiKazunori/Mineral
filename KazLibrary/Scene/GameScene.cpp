@@ -125,6 +125,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 	m_resultTitleUI.m_transform.scale = UI_DEF_TITLE_SCALE;
 	m_resultRetryUI.m_transform.pos = { 640.0f, 535.0f };
 	m_resultRetryUI.m_transform.scale = { UI_MAX_RETRY_SCALE };
+	m_isResultTransition = false;
 
 	EnemyScore::Instance()->m_score = 0;
 
@@ -298,8 +299,9 @@ void GameScene::Update()
 		if (ResultFlag::Instance()->UI_DELETE_TIME <= ResultFlag::Instance()->m_uiDeleteTime) {
 
 			//遷移が始まっていなかったら遷移させる。
-			if (!Transition::Instance()->GetIsActive()) {
+			if (!Transition::Instance()->GetIsActive() && !m_isResultTransition) {
 				Transition::Instance()->Activate();
+				m_isResultTransition = true;
 			}
 			//終わっていたら
 			else if (Transition::Instance()->GetIsFinish()) {
@@ -394,7 +396,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 		++a;
 	}
 
-	m_puddle.Draw(arg_rasterize, arg_blasVec, transform);
+	//m_puddle.Draw(arg_rasterize, arg_blasVec, transform);
 
 
 	//煙エフェクト
@@ -644,6 +646,7 @@ void GameScene::UpdateResult()
 					//リトライ
 					m_isResultToGame = true;
 					m_titleLogoDeleteTimer = 0;
+					m_isResultTransition = false;
 
 				}
 				//Quitを選択していたら
@@ -652,6 +655,7 @@ void GameScene::UpdateResult()
 					m_isResultToTitle = true;
 					m_titleLogoDeleteTimer = 0;
 					m_selectTitleNum = 0;
+					m_isResultTransition = false;
 					//Init();
 
 				}
