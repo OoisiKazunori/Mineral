@@ -20,8 +20,12 @@ void Tutorial::setting()
 	tutorial_tex[11].Load("Resource/TutorialTex/UI_Tutorial12.png");
 
 	m_tutorialArrow.Load("Resource/Stage/Tutorial/", "TutorialArrow.gltf");
+	m_tutorialArrowTransform.pos = { 50.0f, -100.0f, -122.0f };
+	m_tutorialArrowTransform.scale = { 5.0f, 10.0f, 5.0f };
+	m_tutorialArrowTransform.rotation.y = 45.0f;
+	m_tutorialArrowTransform.rotation.x = -90.0f;
 
-	is_tutorial = false;
+	is_tutorial = true;
 	tutorial_num = 0;
 	tex_transform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f };
 	tex_transform.scale = { 1280.0f, 720.0f };
@@ -164,12 +168,27 @@ void Tutorial::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 		}
 	}
 
-	if (is_tutorial && tutorial_num == 1) {
+	if (is_tutorial) {
 
-		KazMath::Transform3D transform;
-		transform.pos = { 50.0f, 0.0f, -122.0f };
-		transform.scale = { 5.0f, 10.0f, 5.0f };
-		transform.rotation.y = 45.0f;
+		const KazMath::Vec3<float> BASE_POS = { 50.0f, 40.0f, -122.0f };
+
+		if (tutorial_num == 1) {
+
+			m_tutorialArrowTransform.pos.y += (BASE_POS.y - m_tutorialArrowTransform.pos.y) / 7.0f;
+
+		}
+		else {
+
+			m_tutorialArrowTransform.pos.y += (-30.0f - m_tutorialArrowTransform.pos.y) / 7.0f;
+
+		}
+
+		KazMath::Transform3D transform = m_tutorialArrowTransform;
+
+		static float sineWave = 0;
+		sineWave += 0.05f;
+		transform.pos.y += (std::sin(sineWave) * 5.0f);
+
 		m_tutorialArrow.Draw(arg_rasterize, arg_blasVec, transform);
 
 	}

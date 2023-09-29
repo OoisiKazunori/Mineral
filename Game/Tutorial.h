@@ -29,6 +29,7 @@ public:
 	float DRAW_TIME_MAX = 120.0f;
 
 	DrawCallSet m_tutorialArrow;
+	KazMath::Transform3D m_tutorialArrowTransform;
 
 	void setting();
 
