@@ -56,6 +56,8 @@ void Core::Update()
 		m_transform.scale.x += (0.0f - m_transform.scale.x) / 5.0f;
 		m_transform.scale.y += (0.0f - m_transform.scale.y) / 5.0f;
 		m_transform.scale.z += (0.0f - m_transform.scale.z) / 5.0f;
+		m_hpBoxTransform.scale = {};
+
 	}
 	else {
 		m_transform.scale.x += (SCALE - m_transform.scale.x) / 5.0f;

@@ -292,7 +292,6 @@ void GameScene::Update()
 	if (WaveMgr::Instance()->GetIsFinishAllWave())
 	{
 		MineralMgr::Instance()->Init();
-		m_enemyMgr->Init();
 	}
 
 	//ウェーブが終わったらリザルトへ。
