@@ -289,6 +289,12 @@ void GameScene::Update()
 	//シェイクを更新。
 	ShakeMgr::Instance()->Update();
 
+	if (WaveMgr::Instance()->GetIsFinishAllWave())
+	{
+		MineralMgr::Instance()->Init();
+		m_enemyMgr->Init();
+	}
+
 	//ウェーブが終わったらリザルトへ。
 	if (!ResultFlag::Instance()->m_isResult) {
 		ResultFlag::Instance()->m_isReadyResult = (WaveMgr::Instance()->GetIsFinishAllWave()) || m_goldCore->IsDead();
