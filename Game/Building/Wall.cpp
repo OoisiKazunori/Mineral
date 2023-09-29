@@ -20,9 +20,9 @@ Wall::Wall()
 	m_model[2][1].LoadOutline("Resource/Building/Wall/", "WallC2.gltf");
 	m_model[2][2].LoadOutline("Resource/Building/Wall/", "WallC3.gltf");
 
-	m_brokenModel[0].LoadOutline("Resource/Building/Wall/", "BrokenWallA.gltf");
-	m_brokenModel[1].LoadOutline("Resource/Building/Wall/", "BrokenWallB.gltf");
-	m_brokenModel[2].LoadOutline("Resource/Building/Wall/", "BrokenWallC.gltf");
+	m_brokenModel[0].LoadOutline("Resource/Building/Wall/", "rubbleA.gltf");
+	m_brokenModel[1].LoadOutline("Resource/Building/Wall/", "rubbleB.gltf");
+	m_brokenModel[2].LoadOutline("Resource/Building/Wall/", "rubbleC.gltf");
 
 	m_buildingBoxModel.LoadOutline("Resource/Building/", "BuildingBox.gltf");
 	m_numberModel.LoadNoLighting("Resource/UI/NumFont/", "number.gltf");
@@ -115,12 +115,12 @@ void Wall::Update(std::weak_ptr<Player> arg_player)
 	m_isKnockBackTrigger = false;
 	m_isBuildNow = false;
 
-	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
-	//	m_materialCounter = MATERIAL_COUNT;
-	//}
-	//if (KeyBoradInputManager::Instance()->InputState(DIK_9)) {
-	//	Damage();
-	//}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
+		m_materialCounter = MATERIAL_COUNT;
+	}
+	if (KeyBoradInputManager::Instance()->InputState(DIK_9)) {
+		Damage();
+	}
 
 	/*ÉIÉJÉÇÉgÉ]Å[Éì*/
 	if (isDrawHpBox)
@@ -507,7 +507,7 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 
 	m_bulidSmokeEmitter.Draw(arg_rasterize, arg_blasVec);
 	//î†Çï`âÊ
-	if (m_isActive && !m_isBuild) {
+	if (m_isActive && !m_isBuild && !m_isDrawBrokenModel) {
 
 
 		KazMath::Transform3D boxTransform = m_boxTransform;
@@ -536,6 +536,7 @@ void Wall::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_b
 			m_brokenModel[m_modelIndex].m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 			KazMath::Transform3D modelTransform = m_transform;
+			modelTransform.pos.y -= 7.0f;
 			modelTransform.pos.y += std::sin(m_sineWaveTimer) * SINE_WAVE_MOVE;
 			modelTransform.rotation.y += 180.0f;
 			m_brokenModel[m_modelIndex].Draw(arg_rasterize, arg_blasVec, modelTransform);
