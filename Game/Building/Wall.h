@@ -51,7 +51,7 @@ public:
 	/*オカモトゾーン*/
 
 	int m_hp;
-	const std::array<int, 3> HP = { 15, 30, 45 };
+	const std::array<int, 3> HP = { 15, 25, 35 };
 
 	//ちょうど工事中か 建材数のUIを隠すために使用する。
 	bool m_isBuildNow;

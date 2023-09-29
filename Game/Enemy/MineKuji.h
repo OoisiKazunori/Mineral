@@ -22,7 +22,7 @@ private:
 	const float GRAVITY = 0.1f;
 	int m_hp;
 	int m_deadTimer;
-	const int HP = 9;
+	const int HP = 6;
 	const float SCALE = 3.0f;
 
 	//ó‘Ô‚²‚Æ‚Ì•Ï”
