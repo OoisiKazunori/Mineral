@@ -122,7 +122,6 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 				isDrawHpBox = false;
 			}
 		}
-
 		else
 		{
 			isDrawHpBox = false;

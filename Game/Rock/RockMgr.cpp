@@ -58,6 +58,18 @@ void RockMgr::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<float> arg_re
 
 	}
 
+	for (auto& smoke : m_buildSmokeEmitterArray)
+	{
+		if (smoke.IsActive())
+		{
+			continue;
+		}
+		KazMath::Vec3<float>pos(arg_pos);
+		pos.y = 5.0f;
+		smoke.Init(pos, 30.0f);
+
+		break;
+	}
 }
 
 void RockMgr::Update(std::weak_ptr<Player> arg_player) {
@@ -90,6 +102,15 @@ void RockMgr::Update(std::weak_ptr<Player> arg_player) {
 
 	}
 
+	for (auto& index : m_buildSmokeEmitterArray)
+	{
+		if (!index.IsActive())
+		{
+			continue;
+		}
+		index.Update();
+	}
+
 }
 
 void RockMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec) {
@@ -101,6 +122,15 @@ void RockMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& ar
 
 		index->Draw(arg_rasterize, arg_blasVec);
 
+	}
+
+	for (auto& index : m_buildSmokeEmitterArray)
+	{
+		if (!index.IsActive())
+		{
+			continue;
+		}
+		index.Draw(arg_rasterize, arg_blasVec);
 	}
 
 }

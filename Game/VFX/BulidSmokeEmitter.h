@@ -9,6 +9,8 @@ public:
 	void Update();
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 	static void DebugImGui();
+
+	bool IsActive();
 private:
 	static const int PARTICLE_MAX_NUM = 80;
 	std::array<SmokeParticle, PARTICLE_MAX_NUM>m_particleArray;
@@ -18,4 +20,7 @@ private:
 	DrawFuncData::DrawCallData m_drawSmokeRender;
 
 	std::array<CoordinateSpaceMatData, PARTICLE_MAX_NUM>m_matArray;
+
+	int m_timer;
+	bool m_isActiveFlag;
 };

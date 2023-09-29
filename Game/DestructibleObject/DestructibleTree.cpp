@@ -54,7 +54,6 @@ void DestructibleTree::Update(std::weak_ptr<Player> arg_player)
 	}
 
 	if (m_hp <= 0) {
-
 		m_isActive = false;
 		SoundManager::Instance()->SoundPlayerWave(break_se, 0);
 		//ëfçﬁÇéUÇÁÇŒÇÁÇπÇÈÅB
@@ -74,7 +73,6 @@ void DestructibleTree::Update(std::weak_ptr<Player> arg_player)
 			Tutorial::Instance()->is_next = true;
 		}
 	}
-
 }
 
 void DestructibleTree::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -99,7 +97,6 @@ void DestructibleTree::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 	m_model.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 	m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
-
 }
 
 void DestructibleTree::Damage(int arg_damage) {
