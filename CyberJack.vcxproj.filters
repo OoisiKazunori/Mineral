@@ -162,6 +162,9 @@
     <ClCompile Include="Game\VFX\SlapSmokeEffect.cpp" />
     <ClCompile Include="Game\VFX\SmokeParticle.cpp" />
     <ClCompile Include="Game\VFX\BulidSmokeEmitter.cpp" />
+    <ClCompile Include="Game\VFX\HideSmokeEmitter.cpp" />
+    <ClCompile Include="Game\VFX\HitEmitter.cpp" />
+    <ClCompile Include="Game\VFX\GPUFireFlyParticle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -349,6 +352,9 @@
     <ClInclude Include="Game\VFX\SlapSmokeEffect.h" />
     <ClInclude Include="Game\VFX\SmokeParticle.h" />
     <ClInclude Include="Game\VFX\BulidSmokeEmitter.h" />
+    <ClInclude Include="Game\VFX\HideSmokeEmitter.h" />
+    <ClInclude Include="Game\VFX\HitEmitter.h" />
+    <ClInclude Include="Game\VFX\GPUFireFlyParticle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

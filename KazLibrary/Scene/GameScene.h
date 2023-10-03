@@ -12,6 +12,7 @@
 #include"../Game/DrawCallUISet.h"
 #include"../Game/VFX/SlapSmokeEffect.h"
 #include"../Game/VFX/BulidSmokeEmitter.h"
+#include"../Game/VFX/GPUFireFlyParticle.h"
 
 class Player;
 class MineralMgr;
@@ -103,6 +104,8 @@ private:
 	//煙エフェクト
 	std::array<std::unique_ptr<SlapSmokeEffect>, 10> m_slapEffect;
 	int m_slapEffectIndex;
+
+	GPUFireFlyParticle m_fireFlyParticle;
 
 	bool m_pauseFlag;
 public:

@@ -25,21 +25,21 @@ int main()
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 #endif // DEBUG
 {
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	//DebugLayer
-	//Microsoft::WRL::ComPtr<ID3D12Debug1> debug1;
-	//if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debug1))))
-	//{
-	//	Microsoft::WRL::ComPtr<ID3D12Debug> spDebugController0;
-	//	Microsoft::WRL::ComPtr<ID3D12Debug1> spDebugController1;
+	Microsoft::WRL::ComPtr<ID3D12Debug1> debug1;
+	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debug1))))
+	{
+		Microsoft::WRL::ComPtr<ID3D12Debug> spDebugController0;
+		Microsoft::WRL::ComPtr<ID3D12Debug1> spDebugController1;
 
 
-	//	D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0));
-	//	spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1));
-	//	spDebugController1->EnableDebugLayer();
-	//	spDebugController1->SetEnableGPUBasedValidation(true);
-	//}
-//#endif
+		D3D12GetDebugInterface(IID_PPV_ARGS(&spDebugController0));
+		spDebugController0->QueryInterface(IID_PPV_ARGS(&spDebugController1));
+		spDebugController1->EnableDebugLayer();
+		spDebugController1->SetEnableGPUBasedValidation(true);
+	}
+#endif
 	//CheckDirectXError
 	int CheckWinError = 0;
 	bool CheckMessageFlag = true;
@@ -61,23 +61,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		return 0;
 	}
 
-//#ifdef _DEBUG
-	//Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
-	//DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&infoQueue));
+#ifdef _DEBUG
+	Microsoft::WRL::ComPtr<ID3D12InfoQueue> infoQueue;
+	DirectX12Device::Instance()->dev->QueryInterface(IID_PPV_ARGS(&infoQueue));
 
-	//D3D12_MESSAGE_ID denyIds[] = {
-	//  D3D12_MESSAGE_ID_GPU_BASED_VALIDATION_RESOURCE_STATE_IMPRECISE,
-	//};
-	//D3D12_MESSAGE_SEVERITY severities[] = {
-	//  D3D12_MESSAGE_SEVERITY_INFO
-	//};
-	//D3D12_INFO_QUEUE_FILTER filter{};
-	//filter.DenyList.NumIDs = _countof(denyIds);
-	//filter.DenyList.pIDList = denyIds;
-	//filter.DenyList.NumSeverities = _countof(severities);
-	//filter.DenyList.pSeverityList = severities;
-	//infoQueue->PushStorageFilter(&filter);
-//#endif 
+	D3D12_MESSAGE_ID denyIds[] = {
+	  D3D12_MESSAGE_ID_GPU_BASED_VALIDATION_RESOURCE_STATE_IMPRECISE,
+	};
+	D3D12_MESSAGE_SEVERITY severities[] = {
+	  D3D12_MESSAGE_SEVERITY_INFO
+	};
+	D3D12_INFO_QUEUE_FILTER filter{};
+	filter.DenyList.NumIDs = _countof(denyIds);
+	filter.DenyList.pIDList = denyIds;
+	filter.DenyList.NumSeverities = _countof(severities);
+	filter.DenyList.pSeverityList = severities;
+	infoQueue->PushStorageFilter(&filter);
+#endif 
 
 	MyImgui imgui;
 	imgui.Create(winApi.hwnd);

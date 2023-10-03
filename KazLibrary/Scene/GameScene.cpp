@@ -367,6 +367,8 @@ void GameScene::Update()
 
 	Tutorial::Instance()->Update();
 
+	m_fireFlyParticle.Update();
+
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -406,6 +408,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_tree.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_line.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+
+	m_fireFlyParticle.Draw(arg_rasterize);
 
 
 	static KazMath::Transform3D transform;
