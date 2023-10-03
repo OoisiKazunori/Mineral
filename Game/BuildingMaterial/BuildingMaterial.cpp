@@ -33,7 +33,38 @@ void BuildingMaterial::Generate(KazMath::Vec3<float> arg_pos, KazMath::Vec3<floa
 void BuildingMaterial::Update()
 {
 
-	if (m_isHeld) return;
+	if (m_isHeld) {
+
+
+		m_upperVec -= m_upperVec / 5.0f;
+
+		m_transform.pos.y += m_upperVec;
+
+		if (m_upperVec <= 0.1f) {
+		}
+
+		//UpperVecが1より小さくて座標がGROUNDより小さかったらそれ以下にならないようにする。
+		if (m_upperVec < 0.1f) {
+
+			m_upperStayTimer = std::clamp(m_upperStayTimer + 1, 0, UPPER_STAY_TIMER);
+
+			if (UPPER_STAY_TIMER <= m_upperStayTimer) {
+
+				m_transform.pos.x += (m_heldPos.x - m_transform.pos.x) / 5.0f;
+				m_transform.pos.z += (m_heldPos.z - m_transform.pos.z) / 5.0f;
+
+
+				m_upperGravity = std::clamp(m_upperGravity - UPPER_GRAVITY, -10000.0f, 0.0f);
+				m_transform.pos.y += m_upperGravity;
+
+			}
+
+			m_transform.pos.y = std::clamp(m_transform.pos.y, m_heldPos.y, 10000.0f);
+
+		}
+
+		return;
+	}
 
 	//座標を更新。
 	if (0.01f < m_generateVec.Length()) {
@@ -49,7 +80,6 @@ void BuildingMaterial::Update()
 	}
 
 	//重力をかける。
-	const float GROUND = 5.0f;
 	if (GROUND < m_transform.pos.y) {
 
 		m_gravity += GRAVITY;
@@ -89,4 +119,17 @@ void BuildingMaterial::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasV
 
 	m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
 
+}
+
+void BuildingMaterial::Held()
+{
+	m_isHeld = true;
+	m_upperVec = UPPER_VEC;
+	m_upperGravity = 0.0f;
+	m_upperStayTimer = 0;
+}
+
+void BuildingMaterial::SetPos(KazMath::Vec3<float> arg_pos)
+{
+	m_heldPos = arg_pos;
 }
