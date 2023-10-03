@@ -14,13 +14,18 @@ GPUFireFlyParticle::GPUFireFlyParticle()
 	//バッファ生成--------------------------------
 
 	m_executeIndirect = DrawFuncData::SetExecuteIndirect(
-		DrawFuncData::GetBasicInstanceShader(),
+		DrawFuncData::GetSpriteInstanceShader(),
 		m_outputBuffer.bufferWrapper->GetGpuAddress(),					//バッファのアドレス
 		PARTICLE_MAX_NUM					//パーティクル数
 	);
 	m_executeIndirect.extraBufferArray.emplace_back(m_outputBuffer);
 	m_executeIndirect.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 	m_executeIndirect.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
+
+	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/VFX/Orb.png");
+	m_executeIndirect.extraBufferArray.emplace_back(m_textureBuffer);
+	m_executeIndirect.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
+	m_executeIndirect.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;
 
 	{
 		std::vector<KazBufferHelper::BufferData>buffer;
@@ -57,7 +62,6 @@ GPUFireFlyParticle::GPUFireFlyParticle()
 	UINT num = 0;
 	m_uploadCounterBuffer.bufferWrapper->TransData(&num, sizeof(UINT));
 
-	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/VFX/Orb.png");
 }
 
 void GPUFireFlyParticle::Update()

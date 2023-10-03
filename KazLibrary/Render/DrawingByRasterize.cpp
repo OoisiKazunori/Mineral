@@ -263,28 +263,13 @@ void DrawingByRasterize::Sort()
 			callData.drawCommandType == DrawFuncData::VERT_TYPE::EXECUTEINDIRECT_INSTANCE)
 		{
 			RootSignatureDataTest rootSignatureGenerateData;
-			for (int i = 0; i < callData.m_executeIndirectGenerateData.m_desc.size(); ++i)
+			for (int i = 0; i < callData.extraBufferArray.size(); ++i)
 			{
-				switch (callData.m_executeIndirectGenerateData.m_desc[i].Type)
-				{
-				case D3D12_INDIRECT_ARGUMENT_TYPE_CONSTANT_BUFFER_VIEW:
-					rootSignatureGenerateData.rangeArray.emplace_back(
-						GRAPHICS_RANGE_TYPE_CBV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
-					);
-					break;
-				case D3D12_INDIRECT_ARGUMENT_TYPE_SHADER_RESOURCE_VIEW:
-					rootSignatureGenerateData.rangeArray.emplace_back(
-						GRAPHICS_RANGE_TYPE_SRV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
-					);
-					break;
-				case D3D12_INDIRECT_ARGUMENT_TYPE_UNORDERED_ACCESS_VIEW:
-					rootSignatureGenerateData.rangeArray.emplace_back(
-						GRAPHICS_RANGE_TYPE_UAV_VIEW, static_cast<GraphicsRootParamType>(GRAPHICS_PRAMTYPE_DATA + i)
-					);
-					break;
-				default:
-					break;
-				}
+				rootSignatureGenerateData.rangeArray.emplace_back
+				(
+					callData.extraBufferArray[i].rangeType,
+					callData.extraBufferArray[i].rootParamType
+				);
 			}
 			//ルートシグネチャー
 			result.m_commandRootsignatureHandle = rootSignatureBufferMgr.GenerateRootSignature(rootSignatureGenerateData);
@@ -435,7 +420,7 @@ void DrawingByRasterize::Render()
 			DirectX12CmdList::Instance()->cmdList->SetPipelineState(
 				piplineBufferMgr.GetBuffer(pipelineHandle).Get()
 			);
-			//SetBufferOnCmdList(renderData.buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
+			SetBufferOnCmdList(renderData.buffer, rootSignatureBufferMgr.GetRootParam(rootSignatureHandle));
 		}
 
 		//描画コマンド実行

@@ -41,3 +41,33 @@ float4 PSAlphaMain(VSOutput input) : SV_TARGET
     }
     return output * color;
 }
+
+
+struct VSOutputColor
+{
+    float4 svpos : SV_POSITION; //�V�X�e���p���_���W
+    float2 uv : TEXCOORD; //uv�l
+    float4 color : COLOR;
+};
+
+struct OutputData
+{
+    matrix mat; //�V�X�e���p���_���W
+    float4 color; //uv�l
+};
+RWStructuredBuffer<OutputData> matBuffer : register(u0);
+
+VSOutputColor InstanceVSMain(float4 pos : POSITION, float2 uv : TEXCOORD,uint id : SV_InstanceID)
+{
+	VSOutputColor op;
+	op.svpos = mul(matBuffer[id].mat, pos);
+	op.uv = uv;
+    op.color = matBuffer[id].color;
+	return op;
+}
+
+float4 InstancePSMain(VSOutputColor input) : SV_TARGET
+{
+    float4 output = float4(tex.Sample(smp, input.uv)) * input.color;    
+    return float4(1,1,1,1);
+}
