@@ -31,8 +31,9 @@ void InitMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 
     uint index = groupThreadID.x;
     index += 1024 * groupId.x;
 
-    particleBuffer[index].pos =   RandVec3(shaderTable[index],500.0f,-500.0f);
-    particleBuffer[index].scale = float3(10.0f,10.0f,10.0f);
+    particleBuffer[index].pos =   RandVec3(shaderTable[index],800.0f,-800.0f);
+    float scale = RandVec3(shaderTable[index],10.0f,5.0f).z;
+    particleBuffer[index].scale = float3(scale,scale,scale);
     particleBuffer[index].color = float4(1.0f,1.0f,1.0f,1.0f);
     particleBuffer[index].timer = 0;
 }
