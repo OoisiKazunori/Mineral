@@ -32,6 +32,11 @@ void InitMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 
     index += 1024 * groupId.x;
 
     particleBuffer[index].pos =   RandVec3(shaderTable[index],800.0f,-800.0f);
+
+    if(particleBuffer[index].pos.y <= 0.0f)
+    {
+        particleBuffer[index].pos.x = -111111150.0f;
+    }
     float scale = RandVec3(shaderTable[index],10.0f,5.0f).z;
     particleBuffer[index].scale = float3(scale,scale,scale);
     particleBuffer[index].color = float4(1.0f,1.0f,1.0f,1.0f);
