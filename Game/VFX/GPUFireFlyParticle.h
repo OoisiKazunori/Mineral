@@ -14,13 +14,12 @@ public:
 private:
 	static const int PARTICLE_MAX_NUM = 1024 * 1;
 	ComputeShader m_initShader, m_updateShader;
-	//蛍のパーティクル情報
-	KazBufferHelper::BufferData m_particleBuffer;
-	//カメラ情報
-	KazBufferHelper::BufferData m_cameraBuffer;
-	//出力情報
-	KazBufferHelper::BufferData m_outputBuffer;
+
+	KazBufferHelper::BufferData m_particleBuffer;	//蛍のパーティクル情報
+	KazBufferHelper::BufferData m_cameraBuffer;		//カメラ情報
+	KazBufferHelper::BufferData m_outputBuffer;		//出力情報
 	KazBufferHelper::BufferData m_uploadCounterBuffer;
+	KazBufferHelper::BufferData m_textureBuffer;
 
 	//パーティクル描画
 	DrawFuncData::DrawCallData m_executeIndirect;
