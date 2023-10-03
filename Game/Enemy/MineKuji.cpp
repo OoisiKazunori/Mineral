@@ -130,6 +130,29 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 	/*オカモトゾーン*/
 
 	m_deadEffectEmitter.Update();
+
+
+	//スケールをデフォルトの値に近づける。
+	if (m_isActive) {
+
+		m_scale += (SCALE - m_scale) / 5.0f;
+	}
+	else {
+
+		m_scale -= m_scale / 5.0f;
+		if (m_scale < 0.1f) {
+			m_scale = 0.0f;
+		}
+	}
+
+	if (m_isActive) {
+		m_transform.scale = { m_scale + m_attackedScale ,m_scale - m_attackedScale ,m_scale + m_attackedScale };
+	}
+	else {
+		m_transform.scale = { m_scale ,m_scale ,m_scale };
+	}
+
+
 	if (!m_isActive) {
 
 		return;
@@ -271,8 +294,6 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 		{
 			Tutorial::Instance()->is_next = true;
 		}
-
-
 	}
 }
 
@@ -283,28 +304,6 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 	{
 		return;
 	}
-
-	//スケールをデフォルトの値に近づける。
-	if (m_isActive) {
-
-		m_scale += (SCALE - m_scale) / 5.0f;
-	}
-	else {
-
-		m_scale -= m_scale / 5.0f;
-		if (m_scale < 0.1f) {
-			m_scale = 0.0f;
-		}
-	}
-
-	if (m_isActive) {
-		m_transform.scale = { m_scale + m_attackedScale ,m_scale - m_attackedScale ,m_scale + m_attackedScale };
-	}
-	else {
-		m_transform.scale = { m_scale ,m_scale ,m_scale };
-	}
-
-
 
 	DessolveOutline outline;
 	outline.m_outline = KazMath::Vec4<float>(0.2f, 0, 0, 1);

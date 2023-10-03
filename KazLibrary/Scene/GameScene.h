@@ -103,6 +103,8 @@ private:
 	//煙エフェクト
 	std::array<std::unique_ptr<SlapSmokeEffect>, 10> m_slapEffect;
 	int m_slapEffectIndex;
+
+	bool m_pauseFlag;
 public:
 	GameScene(DrawingByRasterize& arg_rasterize);
 	~GameScene();

@@ -28,6 +28,7 @@
 #include"../Game/Transition.h"
 #include"../Game/EnemyScore.h"
 #include"../Game/PointLightMgr.h"
+#include"../Game/Effect/StopMgr.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 {
@@ -196,6 +197,7 @@ void GameScene::Init()
 	m_resultStayTimer = 0;
 
 	m_slapEffectIndex = 0;
+	m_pauseFlag = false;
 }
 
 void GameScene::PreInit()
@@ -208,15 +210,28 @@ void GameScene::Finalize()
 
 void GameScene::Input()
 {
-	//if (KeyBoradInputManager::Instance()->InputTrigger(DIK_B))
-	//{
-	//	BuildingMgr::Instance()->Generate();
-	//}
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
+	{
+		m_pauseFlag = !m_pauseFlag;
+	}
+	if (m_pauseFlag)
+	{
+		StopMgr::Instance()->HitStopStart({ 1000000,0.0f });
+	}
+	else
+	{
+		StopMgr::Instance()->HitStopStart({ 1000000,1.0f });
+	}
 }
 
 void GameScene::Update()
 {
 	using namespace KazMath;
+
+	if (StopMgr::Instance()->GetGameSpeed() != 1.0f)
+	{
+		return;
+	}
 
 	//ウェーブを更新。
 	WaveMgr::Instance()->Update(m_enemyMgr);

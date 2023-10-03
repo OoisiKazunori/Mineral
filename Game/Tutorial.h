@@ -30,6 +30,7 @@ public:
 
 	DrawCallSet m_tutorialArrow;
 	KazMath::Transform3D m_tutorialArrowTransform;
+	KazMath::Transform3D m_drawTutorialArrowTransform;
 
 	void setting();
 

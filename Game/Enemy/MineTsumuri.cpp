@@ -120,6 +120,54 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 	using namespace KazMath;
 
 	m_deadEffectEmitter.Update();
+
+
+	float useScale = SCALE;
+	if (m_isMineking) {
+
+		useScale = KING_SCALE;
+
+	}
+
+
+	//スケールをデフォルトの値に近づける。
+	if (m_inShell) {
+
+		m_scale -= m_scale / 2.0f;
+
+	}
+	else if (m_isActive) {
+
+		m_scale += (useScale - m_scale) / 5.0f;
+
+	}
+	else {
+
+		m_scale -= m_scale / 5.0f;
+		if (m_scale < 0.1f) {
+			m_scale = 0.0f;
+		}
+
+	}
+
+	//本体のスケールをデフォルトに近づける。
+	if (m_isActive) {
+		m_transform.scale = { m_scale + m_attackedScale ,m_scale - m_attackedScale ,m_scale + m_attackedScale };
+	}
+	else {
+		m_transform.scale = { m_scale ,m_scale ,m_scale };
+	}
+
+	//殻のスケール
+	if (m_isActive && m_isShell) {
+		const float KING_SHELL_SCALE = 2.0f;
+		m_shellTransform.scale = { SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE };
+		m_shellTransform.pos -= m_forwardVec * 10.0f;
+
+		//ちょっとX軸に回転させる。
+		//m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 0,0,1 }, m_shellTransform.quaternion).ConvertXMVECTOR(), 0.1f));
+	}
+
 	if (!m_isActive) {
 		return;
 	}
@@ -288,52 +336,6 @@ void MineTsumuri::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector
 	if (!m_isActive && m_scale <= 0.0f)
 	{
 		return;
-	}
-
-	float useScale = SCALE;
-	if (m_isMineking) {
-
-		useScale = KING_SCALE;
-
-	}
-
-
-	//スケールをデフォルトの値に近づける。
-	if (m_inShell) {
-
-		m_scale -= m_scale / 2.0f;
-
-	}
-	else if (m_isActive) {
-
-		m_scale += (useScale - m_scale) / 5.0f;
-
-	}
-	else {
-
-		m_scale -= m_scale / 5.0f;
-		if (m_scale < 0.1f) {
-			m_scale = 0.0f;
-		}
-
-	}
-
-	//本体のスケールをデフォルトに近づける。
-	if (m_isActive) {
-		m_transform.scale = { m_scale + m_attackedScale ,m_scale - m_attackedScale ,m_scale + m_attackedScale };
-	}
-	else {
-		m_transform.scale = { m_scale ,m_scale ,m_scale };
-	}
-
-	//殻のスケール
-	if (m_isActive && m_isShell) {
-		const float KING_SHELL_SCALE = 2.0f;
-		m_shellTransform.scale = { SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE };
-		m_shellTransform.pos -= m_forwardVec * 10.0f;
-
-		//ちょっとX軸に回転させる。
-		//m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 0,0,1 }, m_shellTransform.quaternion).ConvertXMVECTOR(), 0.1f));
 	}
 
 	DessolveOutline outline;
