@@ -149,12 +149,6 @@ void SceneManager::Update()
 	}
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 
-	if (StopMgr::Instance()->IsHitStop()) {
-		StopMgr::Instance()->Update();
-		m_blasVector.Update();
-		return;
-	}
-
 	//シェイク量を更新。
 	ShakeMgr::Instance()->Update();
 
@@ -216,6 +210,14 @@ void SceneManager::Update()
 	if (itisInArrayFlag && !initGameFlag)
 	{
 		scene[nowScene]->Input();
+
+		if (StopMgr::Instance()->GetGameSpeed() != 1.0f) {
+			StopMgr::Instance()->Update();
+			m_blasVector.Update();
+			return;
+		}
+
+
 		scene[nowScene]->Update();
 
 		int sceneNum = scene[nowScene]->SceneChange();

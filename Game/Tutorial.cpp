@@ -156,17 +156,6 @@ void Tutorial::Update()
 			}
 		}
 	}
-}
-
-void Tutorial::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
-{
-	if (!TitleFlag::Instance()->m_isTitle)
-	{
-		for (int i = 0; i < static_cast<int>(tutorial_tex.size()); i++)
-		{
-			tutorial_tex[i].Draw(arg_rasterize);
-		}
-	}
 
 	if (is_tutorial) {
 
@@ -183,13 +172,27 @@ void Tutorial::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 
 		}
 
-		KazMath::Transform3D transform = m_tutorialArrowTransform;
+		m_drawTutorialArrowTransform = m_tutorialArrowTransform;
 
 		static float sineWave = 0;
 		sineWave += 0.05f;
-		transform.pos.y += (std::sin(sineWave) * 5.0f);
+		m_drawTutorialArrowTransform.pos.y += (std::sin(sineWave) * 5.0f);
+	}
+}
 
-		m_tutorialArrow.Draw(arg_rasterize, arg_blasVec, transform);
+void Tutorial::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
+{
+	if (!TitleFlag::Instance()->m_isTitle)
+	{
+		for (int i = 0; i < static_cast<int>(tutorial_tex.size()); i++)
+		{
+			tutorial_tex[i].Draw(arg_rasterize);
+		}
+	}
+
+	if (is_tutorial) {
+
+		m_tutorialArrow.Draw(arg_rasterize, arg_blasVec, m_drawTutorialArrowTransform);
 
 	}
 
