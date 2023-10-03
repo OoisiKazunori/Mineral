@@ -77,10 +77,17 @@ struct GBufferOutput
 GBufferOutput InstancePSMain(VSOutputColor input) : SV_TARGET
 {
     GBufferOutput output;
-    output.albedo = float4(tex.Sample(smp, input.uv));
+    float4 albedoColor = float4(tex.Sample(smp, input.uv));
+    output.albedo = albedoColor;
+    
+    if (albedoColor.a <= 0.01f)
+    {
+        discard;
+    }
+    
     output.normal = float4(-1,-1,-1,1);
     output.metalnessRoughness = float4(0,0,0,1);
-    output.emissive = float4(0,0,0,1);
+    output.emissive = albedoColor;;
     output.world = float4(0,0,0,1);
     return output;
 }
