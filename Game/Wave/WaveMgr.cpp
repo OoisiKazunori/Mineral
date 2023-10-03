@@ -24,8 +24,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 
 	//チュートリアルのウェーブ-----------------------------------------------------------------------------------------
-	dayTime = 60;
-	nightTime = 1800;
+	dayTime = 1;
+	nightTime = 1800000;
 	//敵を追加していく。
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
@@ -38,8 +38,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 
 	//1ウェーブ目 -----------------------------------------------------------------------------------------
-	dayTime = 1800;		//日中の時間 フレーム数
-	nightTime = 1800;	//夜の時間 フレーム数
+	dayTime = 199999;		//日中の時間 フレーム数
+	nightTime = 1800000;	//夜の時間 フレーム数
 	tree = { 1 };		//有効化時に生成される木のIndex 1スタート
 	rock = {  };		//有効化時に生成される岩のIndex 1スタート
 	mineralRock = { 1 };		//有効化時に生成されるミネラル岩のIndex 1スタート

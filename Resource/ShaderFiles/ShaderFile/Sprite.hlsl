@@ -41,3 +41,46 @@ float4 PSAlphaMain(VSOutput input) : SV_TARGET
     }
     return output * color;
 }
+
+
+struct VSOutputColor
+{
+    float4 svpos : SV_POSITION; //�V�X�e���p���_���W
+    float2 uv : TEXCOORD; //uv�l
+    float4 color : COLOR;
+};
+
+struct OutputData
+{
+    matrix mat; //�V�X�e���p���_���W
+    float4 color; //uv�l
+};
+RWStructuredBuffer<OutputData> matBuffer : register(u0);
+
+VSOutputColor InstanceVSMain(float4 pos : POSITION, float2 uv : TEXCOORD,uint id : SV_InstanceID)
+{
+	VSOutputColor op;
+	op.svpos = mul(matBuffer[id].mat, pos);
+	op.uv = uv;
+    op.color = matBuffer[id].color;
+	return op;
+}
+struct GBufferOutput
+{
+    float4 albedo : SV_TARGET0;
+    float4 normal : SV_TARGET1;
+    float4 metalnessRoughness : SV_TARGET2;
+    float4 world : SV_TARGET3;
+    float4 emissive : SV_TARGET4;
+};
+
+GBufferOutput InstancePSMain(VSOutputColor input) : SV_TARGET
+{
+    GBufferOutput output;
+    output.albedo = float4(1,1,1,1);
+    output.normal = float4(0,0,0,0);
+    output.metalnessRoughness = float4(0,0,0,0);
+    output.emissive = float4(0,0,0,0);
+    output.world = float4(0,0,0,0);
+    return output;
+}
