@@ -65,9 +65,22 @@ VSOutputColor InstanceVSMain(float4 pos : POSITION, float2 uv : TEXCOORD,uint id
     op.color = matBuffer[id].color;
 	return op;
 }
-
-float4 InstancePSMain(VSOutputColor input) : SV_TARGET
+struct GBufferOutput
 {
-    float4 output = float4(tex.Sample(smp, input.uv)) * input.color;    
-    return float4(1,1,1,1);
+    float4 albedo : SV_TARGET0;
+    float4 normal : SV_TARGET1;
+    float4 metalnessRoughness : SV_TARGET2;
+    float4 world : SV_TARGET3;
+    float4 emissive : SV_TARGET4;
+};
+
+GBufferOutput InstancePSMain(VSOutputColor input) : SV_TARGET
+{
+    GBufferOutput output;
+    output.albedo = float4(1,1,1,1);
+    output.normal = float4(0,0,0,0);
+    output.metalnessRoughness = float4(0,0,0,0);
+    output.emissive = float4(0,0,0,0);
+    output.world = float4(0,0,0,0);
+    return output;
 }
