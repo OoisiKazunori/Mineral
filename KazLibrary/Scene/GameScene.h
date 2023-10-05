@@ -13,6 +13,7 @@
 #include"../Game/VFX/SlapSmokeEffect.h"
 #include"../Game/VFX/BulidSmokeEmitter.h"
 #include"../Game/VFX/GPUFireFlyParticle.h"
+#include"../Game/VFX/GPURainEffect.h"
 
 class Player;
 class MineralMgr;
@@ -106,6 +107,7 @@ private:
 	int m_slapEffectIndex;
 
 	GPUFireFlyParticle m_fireFlyParticle;
+	GPURainEffect m_rainVFX;
 
 	bool m_pauseFlag;
 public:
