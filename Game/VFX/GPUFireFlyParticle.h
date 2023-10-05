@@ -37,6 +37,7 @@ private:
 		LerpData m_scale;
 		UINT m_shrinkFlag;
 		float m_shrinkScale;
+		float shirinkBaseScale;
 		DirectX::XMFLOAT4 m_color;
 		float m_scaleTimer;
 		float m_scaleMaxTime;

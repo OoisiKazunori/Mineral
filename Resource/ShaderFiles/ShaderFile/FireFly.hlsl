@@ -15,6 +15,7 @@ struct ParticleUpdate
     LerpData scale;
     uint shrinkFlag;
     float shrinkScale;
+    float shirinkBaseScale;
     float4 color;
     float scaleTimer;
     float scaleMaxTime;
@@ -93,16 +94,17 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     updateData.scaleTimer += updateData.scaleMaxTime;
 
     //登場--------------------------------
-    float3 scale = float3(0.0f,0.0f,0.0f);
     if(appearFlag)
     {
-        scale = updateData.scale.base;
+        updateData.shirinkBaseScale = lerp(updateData.shirinkBaseScale,updateData.scale.base,0.01f);
     }
     else
     {
+        updateData.shirinkBaseScale = 0.0f;
         updateData.shrinkScale = 0.0f;
     }
-    updateData.scale.lerp = lerp(updateData.scale.lerp,scale * float3(updateData.shrinkScale,updateData.shrinkScale,0.0f),0.1f);
+
+    updateData.scale.lerp = lerp(updateData.scale.lerp,updateData.shirinkBaseScale * float3(updateData.shrinkScale,updateData.shrinkScale,0.0f),0.1f);
 
     //リサージュ曲線
     float radius = 1.0f;
