@@ -12,7 +12,7 @@ public:
 	void Draw(DrawingByRasterize& arg_rasterize);
 
 private:
-	static const int PARTICLE_MAX_NUM = 1024 * 10;
+	static const int PARTICLE_MAX_NUM = 1024 * 2;
 	ComputeShader m_initShader, m_updateShader;
 
 	KazBufferHelper::BufferData m_particleBuffer;	//蛍のパーティクル情報

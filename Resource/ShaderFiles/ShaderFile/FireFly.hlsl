@@ -52,7 +52,7 @@ void InitMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 
 
     float scale = RandVec3(shaderTable[index],5.0f,1.0f).z;
     particleBuffer[index].scale.base = float3(scale,scale,scale);
-    particleBuffer[index].color = float4(0.97f, 0.9f, 0.0f,1.0f);
+    particleBuffer[index].color = float4(0.88, 0.66, 0.27,1.0f);
     particleBuffer[index].timer = 0;
     particleBuffer[index].moveTimer = RandVec3(shaderTable[index],10.0f,1.0f).xy;
     particleBuffer[index].shrinkScale = 0.0f;
