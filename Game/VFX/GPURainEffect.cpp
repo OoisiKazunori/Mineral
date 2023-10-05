@@ -71,7 +71,7 @@ void GPURainEffect::Update(bool arg_generateRain)
 	}
 	else
 	{
-		data.m_appearFlag = 0;
+		data.m_appearFlag = 1;
 	}
 	m_cameraBuffer.bufferWrapper->TransData(&data, sizeof(CameraData));
 	m_outputBuffer.counterWrapper->CopyBuffer(m_uploadCounterBuffer.bufferWrapper->GetBuffer());

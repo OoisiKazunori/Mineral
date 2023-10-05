@@ -44,7 +44,7 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     ParticleUpdate updateData = particleBuffer[index];
     //通常時挙動--------------------------------
     float4 color = float4(1,1,1,1);
-    if(appearFlag)
+    if(!appearFlag)
     {
         color.a = 0.0f;
     }
