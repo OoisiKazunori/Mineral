@@ -35,7 +35,7 @@ GPUFireFlyParticle::GPUFireFlyParticle()
 		buffer.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 		buffer.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
 		//—”ƒe[ƒuƒ‹
-		buffer.emplace_back(ShaderRandomTable::Instance()->GetCurlBuffer(GRAPHICS_PRAMTYPE_DATA2));
+		buffer.emplace_back(ShaderRandomTable::Instance()->GetBuffer(GRAPHICS_PRAMTYPE_DATA2));
 		buffer.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 		m_initShader.Generate(ShaderOptionData("Resource/ShaderFiles/ShaderFile/FireFly.hlsl", "InitMain", "cs_6_4"), buffer);
 	}

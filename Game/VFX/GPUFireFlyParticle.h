@@ -38,6 +38,8 @@ private:
 		UINT m_shrinkFlag;
 		float m_shrinkScale;
 		DirectX::XMFLOAT4 m_color;
+		float m_scaleTimer;
+		float m_scaleMaxTime;
 		float m_timer;
 		DirectX::XMFLOAT2 m_moveTimer;
 	};
