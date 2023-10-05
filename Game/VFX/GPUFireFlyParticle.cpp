@@ -1,5 +1,6 @@
 #include "GPUFireFlyParticle.h"
 #include"../KazLibrary/Buffer/ShaderRandomTable.h"
+#include"../KazLibrary/Input/KeyBoradInputManager.h"
 
 GPUFireFlyParticle::GPUFireFlyParticle()
 {
@@ -64,11 +65,19 @@ GPUFireFlyParticle::GPUFireFlyParticle()
 
 }
 
-void GPUFireFlyParticle::Update()
+void GPUFireFlyParticle::Update(bool arg_nightFlag)
 {
 	CameraData data;
 	data.m_viewProjectionMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
 	data.m_billboard = CameraMgr::Instance()->GetMatBillBoard();
+	if (arg_nightFlag)
+	{
+		data.m_appearFlag = 1;
+	}
+	else
+	{
+		data.m_appearFlag = 0;
+	}
 	m_cameraBuffer.bufferWrapper->TransData(&data, sizeof(CameraData));
 	m_outputBuffer.counterWrapper->CopyBuffer(m_uploadCounterBuffer.bufferWrapper->GetBuffer());
 	//•`‰æ‚ÌXVˆ—

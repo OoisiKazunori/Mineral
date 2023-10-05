@@ -367,7 +367,7 @@ void GameScene::Update()
 
 	Tutorial::Instance()->Update();
 
-	m_fireFlyParticle.Update();
+	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight());
 
 }
 

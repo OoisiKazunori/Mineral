@@ -8,7 +8,7 @@ class GPUFireFlyParticle
 public:
 	GPUFireFlyParticle();
 
-	void Update();
+	void Update(bool arg_nightFlag);
 	void Draw(DrawingByRasterize& arg_rasterize);
 
 private:
@@ -24,12 +24,22 @@ private:
 	//パーティクル描画
 	DrawFuncData::DrawCallData m_executeIndirect;
 
+	struct LerpData
+	{
+		DirectX::XMFLOAT3 base;
+		DirectX::XMFLOAT3 lerp;
+		float mul;
+	};
+
 	struct FireFlyParticleData
 	{
-		DirectX::XMFLOAT3 m_pos;
-		DirectX::XMFLOAT3 m_scale;
+		LerpData m_pos;
+		LerpData m_scale;
+		UINT m_shrinkFlag;
+		float m_shrinkScale;
 		DirectX::XMFLOAT4 m_color;
-		UINT m_timer;
+		float m_timer;
+		DirectX::XMFLOAT2 m_moveTimer;
 	};
 	struct OutputData
 	{
@@ -40,6 +50,7 @@ private:
 	{
 		DirectX::XMMATRIX m_viewProjectionMat;
 		DirectX::XMMATRIX m_billboard;
+		UINT m_appearFlag;
 	};
 
 	UINT GetThread()

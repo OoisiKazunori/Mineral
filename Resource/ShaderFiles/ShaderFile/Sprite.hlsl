@@ -78,8 +78,7 @@ GBufferOutput InstancePSMain(VSOutputColor input) : SV_TARGET
 {
     GBufferOutput output;
     float4 albedoColor = float4(tex.Sample(smp, input.uv));
-    output.albedo = albedoColor;
-    
+    output.albedo = albedoColor * input.color;
     if (albedoColor.a <= 0.01f)
     {
         discard;
@@ -87,7 +86,7 @@ GBufferOutput InstancePSMain(VSOutputColor input) : SV_TARGET
     
     output.normal = float4(-1,-1,-1,1);
     output.metalnessRoughness = float4(0,0,0,1);
-    output.emissive = albedoColor;;
+    output.emissive = output.albedo;
     output.world = float4(0,0,0,1);
     return output;
 }
