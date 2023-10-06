@@ -33,6 +33,53 @@ void mainRayGen()
         
     }
     
+    //法線の色が0だったらそこには海を描画して飛ばす。
+    if (length(normalColor.xyz) <= 0.0f)
+    {
+        
+        float2 uv = launchIndex.xy / dims.xy;
+        uv = uv * 2.0f - 1.0f;
+        
+        float3 origin = cameraEyePos.m_eye;
+        
+        float3 position;
+        HeightMapRayMarching(origin, dir, position);
+
+        float3 dist = position - origin;
+        float3 n = GetNormal(position, dot(dist, dist) * (0.1f / dims.x));
+        
+        float3 sky = GetSkyColor(dir);
+        float3 sea = GetSeaColor(position, n, lightData.m_dirLight.m_dir, dir, dist);
+        
+        float t = pow(smoothstep(0.0f, -0.05f, dir.y), 0.3f);
+        float3 color = lerp(sky, sea, t);
+        
+        
+        finalColor[launchIndex.xy] = float4(color, 1.0f);
+        emissiveTexture[launchIndex.xy] = emissiveColor;
+        lensFlareTexture[launchIndex.xy] = float4(0, 0, 0, 0);
+        
+        //レイの方向を決める。
+        float3 cameraDir = normalize(position - cameraEyePos.m_eye);
+        float3 reflectDir = reflect(cameraDir, n);
+        
+        //レイを打つ。
+        Payload reflectPayload;
+        reflectPayload.m_color = float3(0, 0, 0);
+        reflectPayload.m_rayID = 0;
+        CastRay(reflectPayload, position.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+        
+        if (reflectPayload.m_color.x != -1.0f)
+        {
+            
+            finalColor[launchIndex.xy].xyz = reflectPayload.m_color;
+            
+        }
+        
+        return;
+        
+    }
+    
     //遠さを見る。 ある程度離れている位置では反射の計算を切る
     const float REFLECTION_DEADLINE = 100.0f;
     bool isFar = REFLECTION_DEADLINE < length(cameraEyePos.m_eye - worldColor.xyz);
@@ -356,8 +403,8 @@ void checkHitRayMS(inout Payload payload)
             {
         
               //アルベドにライトの色をかける。
-              float3 lightColor = float3(1, 1, 1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
-             payload.m_color.xyz *= lightColor * clamp(bright, 0.0f, 1.0f);
+                float3 lightColor = float3(1, 1, 1) * dayRate + NIGHT_LIGHT_COLOR * (1.0f - dayRate);
+                payload.m_color.xyz *= lightColor * clamp(bright, 0.0f, 1.0f);
             
             }
     

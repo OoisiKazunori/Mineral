@@ -29,6 +29,7 @@
 #include"../Game/EnemyScore.h"
 #include"../Game/PointLightMgr.h"
 #include"../Game/Effect/StopMgr.h"
+#include"../Game/Effect/ShockWave.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 {
@@ -65,6 +66,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 	WallAndTreeGeneratePos::Instance()->Setting();
 	WaveMgr::Instance()->Setting(m_goldCore);
 	Transition::Instance()->Setting();
+
+	ShockWave::Instance()->Setting();
 
 
 	m_ground.LoadOutline("Resource/Stage/", "Stage_Ground_hole.gltf");
@@ -369,6 +372,13 @@ void GameScene::Update()
 
 	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight());
 
+	GBufferMgr::Instance()->m_cameraEyePosData.m_noiseTimer += 0.1f;
+
+	GBufferMgr::Instance()->m_cameraEyePosData.m_eyePos = m_player->GetTransformDefaultY() + m_cameraEyeDir * m_cameraEyeDistance;
+	GBufferMgr::Instance()->m_cameraEyePosData.m_viewMat = CameraMgr::Instance()->GetViewMatrix(0);
+	GBufferMgr::Instance()->m_cameraEyePosData.m_projMat = CameraMgr::Instance()->GetPerspectiveMatProjection(0);
+
+	ShockWave::Instance()->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)

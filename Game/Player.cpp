@@ -9,6 +9,7 @@
 #include "../Game/TitleFlag.h"
 #include "../Game/ResultFlag.h"
 #include"../Game/Tutorial.h"
+#include"../Game/Effect/ShockWave.h"
 
 Player::Player()
 {
@@ -291,6 +292,8 @@ void Player::Update()
 			}
 			m_daipanStatus = Player::RETURN;
 
+			ShockWave::Instance()->Generate(m_transform.pos);
+
 			//強大パンだったらそれ用のシェイクにする。
 			ShakeMgr::Instance()->m_shakeAmount = m_isDaipanStrong ? DAIPAN_STRONG_SHAKE : DAIPAN_SHAKE;
 
@@ -353,7 +356,7 @@ void Player::Update()
 
 	//当たり判定に使用する地形データ
 	MeshCollision checkHitData = StageCollision::Instance()->m_stageCollision;
-	if(Tutorial::Instance()->is_tutorial){
+	if (Tutorial::Instance()->is_tutorial) {
 		checkHitData = StageCollision::Instance()->m_tutorialStageCollision;
 	}
 
@@ -514,7 +517,7 @@ void Player::Update()
 	{
 
 		//矢印の座標
-		KazMath::Vec3<float> arrowPos = {50.0f, 0.0f, -122.0f};
+		KazMath::Vec3<float> arrowPos = { 50.0f, 0.0f, -122.0f };
 
 		//矢印の位置に来たと判断できる範囲。
 		const float ARROW_RANGE = 20.0f;

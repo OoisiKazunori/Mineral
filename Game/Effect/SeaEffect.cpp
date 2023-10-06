@@ -46,8 +46,8 @@ void SeaEffect::Update()
 	float baseFreq = 0.0f;
 	float baseSeaSpeed = SEA_SPEED;
 	if (SeaEffect::Instance()->m_seaID == SEA_ID::CALM) {
-		baseAmp = CALM_SEA_AMP;
-		baseFreq = CALM_SEA_FREQ;
+		baseAmp = STORMY_SEA_AMP;
+		baseFreq = STORMY_SEA_FREQ;
 	}
 	else if (SeaEffect::Instance()->m_seaID == SEA_ID::NORMAL) {
 		baseAmp = NORMAL_SEA_AMP;

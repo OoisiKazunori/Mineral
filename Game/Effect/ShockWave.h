@@ -20,9 +20,13 @@ public:
 	};
 
 	std::array<ShockWaveData, 8> m_shockWave;
+	std::array<float, 8> m_shockWaveEasingTimer;
+	const float SHOCKWAVE_EASING_TIMER = 60.0f;
+	const float SHOCK_WAVE_RAIDUS = 100.0f;
 	KazBufferHelper::BufferData m_shockWaveParamData;
 
 	void Setting();
+	void Generate(KazMath::Vec3<float> arg_generatePos);
 	void Init();
 	void Update();
 
