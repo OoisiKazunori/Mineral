@@ -67,7 +67,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 	Transition::Instance()->Setting();
 
 
-	m_ground.LoadOutline("Resource/Stage/", "Stage_Ground.gltf");
+	m_ground.LoadOutline("Resource/Stage/", "Stage_Ground_hole.gltf");
 	m_fence.Load("Resource/Stage/", "Stage_Fence.gltf");
 	m_tree.Load("Resource/Stage/", "Stage_Tree.gltf");
 	m_rock.Load("Resource/Stage/", "Stage_Rock.gltf");
