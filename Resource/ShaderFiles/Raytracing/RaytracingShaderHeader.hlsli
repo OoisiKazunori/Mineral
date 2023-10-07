@@ -305,8 +305,8 @@ float Specular(float3 arg_normal, float3 arg_light, float3 arg_eye, float arg_sp
 }
 
 //海の色を取得
-static const float3 SEA_BASE = float3(0.1f, 0.19f, 0.22f); //謎。 海が完成したら動かしてみて何かを判断する。
-static const float3 SEA_WATER_COLOR = float3(0.8f, 0.9f, 0.6f); //名前的に水の色
+static const float3 SEA_BASE = float3(0.12f, 0.19f, 0.29f); //謎。 海が完成したら動かしてみて何かを判断する。
+static const float3 SEA_WATER_COLOR = float3(0.60f, 0.90f, 0.84f); //名前的に水の色
 float3 GetSeaColor(float3 arg_position, float3 arg_normal, float3 arg_light, float3 arg_rayDir, float3 arg_dist /*arg_position - レイの原点*/)
 {
     //海に関する定数 実装出来たらこれらを定数バッファに入れて変えられるようにする。
@@ -589,6 +589,7 @@ float3 AtmosphericScattering(float3 pos, inout float3 mieColor)
 //波を計算。
 float SeaOctave(float2 arg_uv, float arg_choppy)
 {
+    arg_uv *= 0.6f;
     arg_uv += ValueNoise(arg_uv, 0);
     float2 wv = 1.0f - abs(sin(arg_uv));
     float2 swv = abs(cos(arg_uv));
@@ -599,13 +600,14 @@ float SeaOctave(float2 arg_uv, float arg_choppy)
 //海のハイトマップの計算の際にレイマーチングしている位置のノイズを計算する。
 float MappingHeightNoise(float3 arg_position)
 {
-    //定数 いずれ定数バッファにする。
-    float freq = 0.16f;
-    float amp = 0.6f;
-    float choppy = 4.0f;
-    float seaSpeed = 0.8f;
     
-    float thickness = 8.0f;
+    //定数 いずれ定数バッファにする。
+    float freq = 0.36f;
+    float amp = 1.5f;
+    float choppy = 4.0f;
+    float seaSpeed = 1.2f;
+    
+    float thickness = 12.0f;
     for (int index = 0; index < 8; ++index)
     {
         if (!shockWaveData.m_shockWave[index].m_isActive)
@@ -624,7 +626,7 @@ float MappingHeightNoise(float3 arg_position)
     }
 
     //XZ平面による計算
-    float2 uv = arg_position.xz / 3.0f;
+    float2 uv = arg_position.xz;
 
     float d, h = 0.0f;
     
@@ -665,7 +667,7 @@ float HeightMapRayMarching(float3 arg_origin, float3 arg_direction, out float3 a
 {
     float tm = 0.0f;
 
-    float tx = 1500.0f;
+    float tx = 1800.0f;
 
     //一旦遠くの位置のサンプリングを行い、結果の高さが0以上だったらレイが海に当たらないということなのでReturnする。
     float hx = MappingHeightNoise(arg_origin + arg_direction * tx);
