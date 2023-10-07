@@ -669,12 +669,12 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 
 
 
-	//ImGui::Begin("UI");
+	ImGui::Begin("UI");
 
-	//ImGui::Text("POS_X : %f", m_transform.pos.x);
-	//ImGui::Text("POS_Z : %f", m_transform.pos.z);
+	ImGui::Text("POS_X : %f", m_transform.pos.x);
+	ImGui::Text("POS_Z : %f", m_transform.pos.z);
 
-	//ImGui::End();
+	ImGui::End();
 
 
 }

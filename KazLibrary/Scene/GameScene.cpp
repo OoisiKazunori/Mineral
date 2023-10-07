@@ -30,6 +30,7 @@
 #include"../Game/PointLightMgr.h"
 #include"../Game/Effect/StopMgr.h"
 #include"../Game/Effect/ShockWave.h"
+#include"../Game/Cloud.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 {
@@ -135,6 +136,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 
 	NumberFont::Instance()->Load();
 	Tutorial::Instance()->setting();
+
+	m_cloud = std::make_shared<Cloud>();
 
 	//Tutorial::Instance()->is_tutorial = false;
 
@@ -379,6 +382,8 @@ void GameScene::Update()
 	GBufferMgr::Instance()->m_cameraEyePosData.m_projMat = CameraMgr::Instance()->GetPerspectiveMatProjection(0);
 
 	ShockWave::Instance()->Update();
+
+	m_cloud->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -401,6 +406,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	DestructibleObjectMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 	BuildingMaterialMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 	BuildingMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	m_cloud->Draw(arg_rasterize, arg_blasVec);
 
 	static UINT reflection = 1;
 	m_puddle.m_model.extraBufferArray[1].bufferWrapper->TransData(&reflection, sizeof(UINT));

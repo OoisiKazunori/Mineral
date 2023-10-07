@@ -67,7 +67,7 @@ void mainRayGen()
         Payload reflectPayload;
         reflectPayload.m_color = float3(0, 0, 0);
         reflectPayload.m_rayID = 0;
-        CastRay(reflectPayload, position.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+        CastRay(reflectPayload, position.xyz, reflectDir, 3000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
         
         if (reflectPayload.m_color.x != -1.0f)
         {

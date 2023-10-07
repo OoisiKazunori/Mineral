@@ -118,6 +118,7 @@
     <ClCompile Include="Game\BuildingMaterial\BuildingMaterialMgr.cpp" />
     <ClCompile Include="Game\Building\BuildingMgr.cpp" />
     <ClCompile Include="Game\Building\Wall.cpp" />
+    <ClCompile Include="Game\Cloud.cpp" />
     <ClCompile Include="Game\Collision\MeshCollision.cpp" />
     <ClCompile Include="Game\Collision\StageCollision.cpp" />
     <ClCompile Include="Game\Core\Core.cpp" />
@@ -283,6 +284,7 @@
     <ClInclude Include="Game\BuildingMaterial\BuildingMaterialMgr.h" />
     <ClInclude Include="Game\Building\BuildingMgr.h" />
     <ClInclude Include="Game\Building\Wall.h" />
+    <ClInclude Include="Game\Cloud.h" />
     <ClInclude Include="Game\Collision\MeshCollision.h" />
     <ClInclude Include="Game\Collision\StageCollision.h" />
     <ClInclude Include="Game\Core\Core.h" />
