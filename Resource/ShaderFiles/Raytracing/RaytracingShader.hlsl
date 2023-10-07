@@ -59,22 +59,22 @@ void mainRayGen()
         emissiveTexture[launchIndex.xy] = emissiveColor;
         lensFlareTexture[launchIndex.xy] = float4(0, 0, 0, 0);
         
-        //レイの方向を決める。
-        float3 cameraDir = normalize(position - cameraEyePos.m_eye);
-        float3 reflectDir = reflect(cameraDir, n);
+        ////レイの方向を決める。
+        //float3 cameraDir = normalize(position - cameraEyePos.m_eye);
+        //float3 reflectDir = reflect(cameraDir, n);
         
-        //レイを打つ。
-        Payload reflectPayload;
-        reflectPayload.m_color = float3(0, 0, 0);
-        reflectPayload.m_rayID = 0;
-        CastRay(reflectPayload, position.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+        ////レイを打つ。
+        //Payload reflectPayload;
+        //reflectPayload.m_color = float3(0, 0, 0);
+        //reflectPayload.m_rayID = 0;
+        //CastRay(reflectPayload, position.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
         
-        if (reflectPayload.m_color.x != -1.0f)
-        {
+        //if (reflectPayload.m_color.x != -1.0f)
+        //{
             
-            finalColor[launchIndex.xy].xyz = reflectPayload.m_color;
+        //    finalColor[launchIndex.xy].xyz = reflectPayload.m_color;
             
-        }
+        //}
         
         return;
         

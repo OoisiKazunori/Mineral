@@ -412,7 +412,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_ground.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
 	m_ground.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
-	m_ground.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
+	//m_ground.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_fence.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_tree.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);

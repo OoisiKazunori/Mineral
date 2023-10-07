@@ -210,7 +210,7 @@ void LightingPass(inout float arg_bright, inout float arg_pointlightBright, floa
         payloadData.m_rayID = 1;
         
         //レイを撃つ
-        CastRay(payloadData, arg_worldPosMap.xyz, -arg_lightData.m_dirLight.m_dir, 1000.0f, MISS_LIGHTING, RAY_FLAG_NONE, arg_scene, 0x01);
+        CastRay(payloadData, arg_worldPosMap.xyz + arg_normalMap.xyz, -arg_lightData.m_dirLight.m_dir, 1000.0f, MISS_LIGHTING, RAY_FLAG_NONE, arg_scene, 0x01);
                 
         //ライトのベクトルと法線から明るさを計算する。
         float bright = saturate(dot(arg_normalMap.xyz, -arg_lightData.m_dirLight.m_dir));
@@ -608,6 +608,9 @@ float MappingHeightNoise(float3 arg_position)
     float thickness = 8.0f;
     for (int index = 0; index < 8; ++index)
     {
+        if (!shockWaveData.m_shockWave[index].m_isActive)
+            continue;
+        
         float waveLength = length(arg_position - shockWaveData.m_shockWave[index].m_pos) - shockWaveData.m_shockWave[index].m_radius;
         if (abs(waveLength) <= thickness)
         {
@@ -615,13 +618,13 @@ float MappingHeightNoise(float3 arg_position)
             float easing = (1.0f - abs(waveLength / thickness));
             //easing = easing ==  0 ? 0 : pow(2, 10 * easing - 10);
             easing = -(cos(PI * easing) - 1.0f) / 2.0f;
-            amp += shockWaveData.m_shockWave[index].m_power * easing;
+            amp += shockWaveData.m_shockWave[index].m_power * easing * 20.0f;
         
         }
     }
 
     //XZ平面による計算
-    float2 uv = arg_position.xz / 1.0f;
+    float2 uv = arg_position.xz / 3.0f;
 
     float d, h = 0.0f;
     
