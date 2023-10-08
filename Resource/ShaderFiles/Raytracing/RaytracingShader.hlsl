@@ -22,6 +22,15 @@ void mainRayGen()
     float4 worldColor = worldMap[launchIndex];
     float4 emissiveColor = emissiveMap[launchIndex];
     
+    //夜のときのディレクショナルライトのY 絶対値
+    const float NIGHT_DIRLIGHT_Y = 0.4472f;
+    //昼のときのディレクショナルライトのY 絶対値
+    const float DAY_DIRLIGHT_Y = 0.894f;
+    const float DIRLIGHT_Y_CHANGE_AMOUNT = abs(DAY_DIRLIGHT_Y - NIGHT_DIRLIGHT_Y);
+    
+    //夜を基準とした時の現在の昼の割合
+    float dayRate = (abs(lightData.m_dirLight.m_dir.y) - NIGHT_DIRLIGHT_Y) / DIRLIGHT_Y_CHANGE_AMOUNT;
+    
     //法線が-1,-1,-1だったらパーティクルなので処理を飛ばす。
     if (normalColor.r <= -0.9f && normalColor.g <= -0.9f && normalColor.b <= -0.9f)
     {
@@ -43,7 +52,7 @@ void mainRayGen()
         float3 origin = cameraEyePos.m_eye;
         
         float3 position;
-        HeightMapRayMarching(origin, dir, position);
+        float distance = HeightMapRayMarching(origin, dir, position);
 
         float3 dist = position - origin;
         float3 n = GetNormal(position, dot(dist, dist) * (0.1f / dims.x));
@@ -55,7 +64,8 @@ void mainRayGen()
         float3 color = lerp(sky, sea, t);
         
         
-        finalColor[launchIndex.xy] = float4(color, 1.0f);
+        //position = cameraEyePos.m_eye + dir * 1200.0f;
+        albedoColor = float4(color, 1.0f);
         emissiveTexture[launchIndex.xy] = emissiveColor;
         lensFlareTexture[launchIndex.xy] = float4(0, 0, 0, 0);
         
@@ -72,9 +82,27 @@ void mainRayGen()
         if (reflectPayload.m_color.x != -1.0f)
         {
             
-            finalColor[launchIndex.xy].xyz = reflectPayload.m_color;
+            albedoColor.xyz = reflectPayload.m_color;
             
         }
+        
+        reflectPayload.m_color = float3(0, 0, 0);
+        reflectPayload.m_rayID = 0;
+        CastRay(reflectPayload, position.xyz, -lightData.m_dirLight.m_dir, 3000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+        
+        if (reflectPayload.m_color.x != -1.0f)
+        {
+            
+            const float3 NIGHT_SHADOW_COLOR = float3(0.10f, 0.12f, 0.18f);
+            const float3 DAY_SHADOW_COLOR = float3(0.24f, 0.15f, 0.17f);
+            albedoColor.xyz = DAY_SHADOW_COLOR * dayRate + NIGHT_SHADOW_COLOR * (1.0f - dayRate);
+            
+        }
+        
+        
+        finalColor[launchIndex.xy] = albedoColor;
+        emissiveTexture[launchIndex.xy] = emissiveColor;
+        lensFlareTexture[launchIndex.xy] = float4(0, 0, 0, 0);
         
         return;
         
@@ -111,15 +139,6 @@ void mainRayGen()
     //float lensflareBright = (deadline * bright);
     //lensFlareTexture[launchIndex.xy] = saturate(float4(albedoColor.xyz * lensflareBright * 0.1f, 1.0f) + emissiveColor * 0.45f);
     //lensFlareTexture[launchIndex.xy] = float4(0,0,0,0);
-    
-    //夜のときのディレクショナルライトのY 絶対値
-    const float NIGHT_DIRLIGHT_Y = 0.4472f;
-    //昼のときのディレクショナルライトのY 絶対値
-    const float DAY_DIRLIGHT_Y = 0.894f;
-    const float DIRLIGHT_Y_CHANGE_AMOUNT = abs(DAY_DIRLIGHT_Y - NIGHT_DIRLIGHT_Y);
-    
-    //夜を基準とした時の現在の昼の割合
-    float dayRate = (abs(lightData.m_dirLight.m_dir.y) - NIGHT_DIRLIGHT_Y) / DIRLIGHT_Y_CHANGE_AMOUNT;
     
     //ポイントライトの色
     float3 pointLightColor = float3(0.93f, 0.67f, 0.64f) * (pointlightBright);
@@ -217,28 +236,28 @@ void mainRayGen()
     //SecondaryPass(dir, emissiveColor, worldColor, materialInfo, normalColor, albedoColor, gRtScene, cameraEyePos, final);
     final = albedoColor;
     
-    float4 reflectColor = float4(0, 0, 0, 0);
-    if (materialInfo.a == 1)
-    {
+    //float4 reflectColor = float4(0, 0, 0, 0);
+    //if (materialInfo.a == 1)
+    //{
         
-        //レイの方向を決める。
-        float3 cameraDir = normalize(worldColor.xyz - cameraEyePos.m_eye);
-        float3 reflectDir = reflect(cameraDir, normalColor.xyz);
+    //    //レイの方向を決める。
+    //    float3 cameraDir = normalize(worldColor.xyz - cameraEyePos.m_eye);
+    //    float3 reflectDir = reflect(cameraDir, normalColor.xyz);
         
-        //レイを打つ。
-        Payload reflectPayload;
-        reflectPayload.m_color = float3(0, 0, 0);
-        reflectPayload.m_rayID = 0;
-        CastRay(reflectPayload, worldColor.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
+    //    //レイを打つ。
+    //    Payload reflectPayload;
+    //    reflectPayload.m_color = float3(0, 0, 0);
+    //    reflectPayload.m_rayID = 0;
+    //    CastRay(reflectPayload, worldColor.xyz, reflectDir, 1000, MISS_CHECKHIT, RAY_FLAG_NONE, gRtScene, 0xFF);
         
-        if (reflectPayload.m_color.x != -1.0f)
-        {
+    //    if (reflectPayload.m_color.x != -1.0f)
+    //    {
             
-            final.xyz = reflectPayload.m_color;
+    //        final.xyz = reflectPayload.m_color;
             
-        }
+    //    }
         
-    }
+    //}
     
     //合成の結果を入れる。
     finalColor[launchIndex.xy] = final;

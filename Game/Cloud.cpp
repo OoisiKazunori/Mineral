@@ -9,7 +9,7 @@ Cloud::Cloud()
 
 		m_cloudSpeed[index] = KazMath::Rand(MIN_SPEED, MAX_SPEED);
 
-		m_transform[index].scale = { KazMath::Rand(MIN_SCALE_X, MAX_SCALE_X), 20.0f, KazMath::Rand(MIN_SCALE_Z, MAX_SCALE_Z) };
+		m_transform[index].scale = { KazMath::Rand(MIN_SCALE_X, MAX_SCALE_X), 10.0f, KazMath::Rand(MIN_SCALE_Z, MAX_SCALE_Z) };
 
 		KazMath::Vec3<float> generatePos = { GENERATE_CENTER_X, KazMath::Rand(MIN_HEIGHT, MAX_HEIGHT), GENERATE_CENTER_Z };
 		generatePos += KazMath::Vec3<float>(1.0f, 0.0f, 1.0f).GetNormal() * KazMath::Rand(-GENERATE_RANGE, GENERATE_RANGE);

@@ -603,7 +603,7 @@ float MappingHeightNoise(float3 arg_position)
     
     //定数 いずれ定数バッファにする。
     float freq = 0.36f;
-    float amp = 1.5f;
+    float amp = 0.6f;
     float choppy = 4.0f;
     float seaSpeed = 1.2f;
     
@@ -667,7 +667,7 @@ float HeightMapRayMarching(float3 arg_origin, float3 arg_direction, out float3 a
 {
     float tm = 0.0f;
 
-    float tx = 1800.0f;
+    float tx = 2000.0f;
 
     //一旦遠くの位置のサンプリングを行い、結果の高さが0以上だったらレイが海に当たらないということなのでReturnする。
     float hx = MappingHeightNoise(arg_origin + arg_direction * tx);
