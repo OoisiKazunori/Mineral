@@ -59,9 +59,9 @@ GBufferOutput PSmain(VSOutput input) : SV_TARGET
     GBufferOutput output;
     output.albedo = input.color;
     output.normal = float4(input.normal,1.0f);
-    output.metalnessRoughness = float4(0, 1, 0, 1);
+    output.metalnessRoughness = float4(0, 0, 0, 1);
     output.world = float4(input.svpos.xyz, 1.0f);
-    output.emissive = output.albedo / 2.0f;
+    output.emissive = float4(0, 0, 0, 1);
     return output;
 }
 

@@ -8,7 +8,7 @@ class GPURainEffect
 public:
 	GPURainEffect();
 
-	void Update(bool arg_generateRain);
+	void Update(bool arg_generateRain,const KazMath::Vec3<float>&arg_pos);
 	void Draw(DrawingByRasterize& arg_rasterize);
 
 private:
@@ -25,6 +25,7 @@ private:
 
 	struct FireFlyParticleData
 	{
+		DirectX::XMFLOAT3 m_basePos;
 		DirectX::XMFLOAT3 m_pos;
 	};
 	struct OutputData
@@ -36,6 +37,7 @@ private:
 	{
 		DirectX::XMMATRIX m_viewProjectionMat;
 		DirectX::XMMATRIX m_billboard;
+		DirectX::XMFLOAT3 m_pos;
 		UINT m_appearFlag;
 	};
 

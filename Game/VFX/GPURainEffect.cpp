@@ -60,7 +60,7 @@ GPURainEffect::GPURainEffect()
 
 }
 
-void GPURainEffect::Update(bool arg_generateRain)
+void GPURainEffect::Update(bool arg_generateRain, const KazMath::Vec3<float>& arg_pos)
 {
 	CameraData data;
 	data.m_viewProjectionMat = CameraMgr::Instance()->GetViewMatrix() * CameraMgr::Instance()->GetPerspectiveMatProjection();
@@ -73,8 +73,12 @@ void GPURainEffect::Update(bool arg_generateRain)
 	{
 		data.m_appearFlag = 1;
 	}
+	data.m_pos = arg_pos.ConvertXMFLOAT3();
 	m_cameraBuffer.bufferWrapper->TransData(&data, sizeof(CameraData));
 	m_outputBuffer.counterWrapper->CopyBuffer(m_uploadCounterBuffer.bufferWrapper->GetBuffer());
+
+
+
 	//•`‰æ‚ÌXVˆ—
 	m_updateShader.Compute({ GetThread(),1,1 });
 }

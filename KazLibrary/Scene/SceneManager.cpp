@@ -318,7 +318,6 @@ void SceneManager::Update()
 
 	//データを転送。一旦ここで。
 	GBufferMgr::Instance()->m_lightBuffer.bufferWrapper->TransData(&GBufferMgr::Instance()->m_lightConstData, sizeof(GBufferMgr::LightConstData));
-
 }
 
 void SceneManager::Draw()
@@ -342,7 +341,7 @@ void SceneManager::Draw()
 	m_rayPipeline->BuildShaderTable(m_blasVector);
 	if (m_blasVector.GetBlasRefCount() != 0)
 	{
-	//	m_rayPipeline->TraceRay(m_tlas);
+		m_rayPipeline->TraceRay(m_tlas);
 	}
 
 	m_rasterize.UISort();

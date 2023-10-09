@@ -368,7 +368,7 @@ void GameScene::Update()
 	Tutorial::Instance()->Update();
 
 	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight());
-	m_rainVFX.Update(WaveMgr::Instance()->GetIsNight());
+	m_rainVFX.Update(WaveMgr::Instance()->GetIsNight(), m_player->GetPosZeroY());
 
 }
 
@@ -409,8 +409,8 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_line.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
-	m_fireFlyParticle.Draw(arg_rasterize);
 	m_rainVFX.Draw(arg_rasterize);
+	m_fireFlyParticle.Draw(arg_rasterize);
 
 	static KazMath::Transform3D transform;
 	static int a = 0;
