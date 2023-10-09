@@ -23,7 +23,7 @@ GPURipplesEffect::GPURipplesEffect()
 	m_executeIndirect.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_VIEW;
 	m_executeIndirect.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA;
 
-	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/VFX/Orb.png");
+	m_textureBuffer = TextureResourceMgr::Instance()->LoadGraphBuffer("Resource/VFX/WaterRing.png");
 	m_executeIndirect.extraBufferArray.emplace_back(m_textureBuffer);
 	m_executeIndirect.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_SRV_DESC;
 	m_executeIndirect.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA2;

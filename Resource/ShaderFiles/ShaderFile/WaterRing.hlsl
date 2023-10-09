@@ -71,9 +71,11 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     //拡大
     else
     {
-        updateData.scale.x = ((float)updateData.timer / MAX_TIMER) * 10.0f;
-        updateData.scale.y = ((float)updateData.timer / MAX_TIMER) * 10.0f;
-        updateData.scale.z = ((float)updateData.timer / MAX_TIMER) * 10.0f;
+        float rate = (float)updateData.timer / MAX_TIMER;
+        updateData.scale.x = rate * 10.0f;
+        updateData.scale.y = rate * 10.0f;
+        updateData.scale.z = rate * 10.0f;
+        color.a = 1.0f - rate;
     }
 
     particleBuffer[index] = updateData;
