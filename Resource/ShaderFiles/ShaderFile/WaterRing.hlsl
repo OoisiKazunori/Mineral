@@ -59,24 +59,25 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
         color.a = 1.0f;
     }
     ++updateData.timer;
+    const float MAX_TIMER = 10;
     //拡大終了
-    if(60 <= updateData.timer)
+    if(MAX_TIMER <= updateData.timer)
     {
         updateData.pos.x = RandVec3(shaderTable[index],range,-range).x;
         updateData.pos.z = RandVec3(shaderTable[index],range,-range).z;
         updateData.scale = float3(0.0f,0.0f,0.0f);
-        updateData.timer = 0;        
+        updateData.timer = 0;
     }
     //拡大
     else
     {
-        updateData.scale.x = updateData.timer * 6.0f;
-        updateData.scale.y = updateData.timer * 6.0f;
-        updateData.scale.z = updateData.timer * 6.0f;
+        updateData.scale.x = ((float)updateData.timer / MAX_TIMER) * 10.0f;
+        updateData.scale.y = ((float)updateData.timer / MAX_TIMER) * 10.0f;
+        updateData.scale.z = ((float)updateData.timer / MAX_TIMER) * 10.0f;
     }
 
     particleBuffer[index] = updateData;
-    matrix worldMat = CalucurateWorldMat(particleBuffer[index].pos,float3(10.0f,10.0f,1.0f),float3(0,90,0),MatrixIdentity());
+    matrix worldMat = CalucurateWorldMat(particleBuffer[index].pos, updateData.scale,float3(90,0,0),MatrixIdentity());
     
     OutputData outputMat;
     outputMat.mat = mul(viewProjectionMat,worldMat);

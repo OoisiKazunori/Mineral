@@ -86,7 +86,7 @@ GBufferOutput InstancePSMain(VSOutputColor input) : SV_TARGET
     
     output.normal = float4(-1,-1,-1,1);
     output.metalnessRoughness = float4(0,0,0,1);
-    output.emissive = output.albedo;
+    output.emissive = float4(0,0,0,1);
     output.world = float4(0,0,0,1);
     return output;
 }
