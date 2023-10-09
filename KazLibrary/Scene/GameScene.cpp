@@ -369,6 +369,7 @@ void GameScene::Update()
 
 	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight());
 	m_rainVFX.Update(WaveMgr::Instance()->GetIsNight(), m_player->GetPosZeroY());
+	m_ripplesVFX.Update(WaveMgr::Instance()->GetIsNight(), m_player->GetPosZeroY());
 
 }
 
@@ -411,6 +412,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 
 	m_rainVFX.Draw(arg_rasterize);
 	m_fireFlyParticle.Draw(arg_rasterize);
+	m_ripplesVFX.Draw(arg_rasterize);
 
 	static KazMath::Transform3D transform;
 	static int a = 0;

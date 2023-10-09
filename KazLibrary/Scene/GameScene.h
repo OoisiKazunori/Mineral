@@ -14,6 +14,7 @@
 #include"../Game/VFX/BulidSmokeEmitter.h"
 #include"../Game/VFX/GPUFireFlyParticle.h"
 #include"../Game/VFX/GPURainEffect.h"
+#include"../Game/VFX/GPURipplesEffect.h"
 
 class Player;
 class MineralMgr;
@@ -108,6 +109,7 @@ private:
 
 	GPUFireFlyParticle m_fireFlyParticle;
 	GPURainEffect m_rainVFX;
+	GPURipplesEffect m_ripplesVFX;
 
 	bool m_pauseFlag;
 public:

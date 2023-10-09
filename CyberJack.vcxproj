@@ -168,6 +168,7 @@
     <ClCompile Include="Game\VFX\BulidSmokeEmitter.cpp" />
     <ClCompile Include="Game\VFX\GPUFireFlyParticle.cpp" />
     <ClCompile Include="Game\VFX\GPURainEffect.cpp" />
+    <ClCompile Include="Game\VFX\GPURipplesEffect.cpp" />
     <ClCompile Include="Game\VFX\HideSmokeEmitter.cpp" />
     <ClCompile Include="Game\VFX\HitEmitter.cpp" />
     <ClCompile Include="Game\VFX\SlapSmokeEffect.cpp" />
@@ -341,6 +342,7 @@
     <ClInclude Include="Game\VFX\BulidSmokeEmitter.h" />
     <ClInclude Include="Game\VFX\GPUFireFlyParticle.h" />
     <ClInclude Include="Game\VFX\GPURainEffect.h" />
+    <ClInclude Include="Game\VFX\GPURipplesEffect.h" />
     <ClInclude Include="Game\VFX\HideSmokeEmitter.h" />
     <ClInclude Include="Game\VFX\HitEmitter.h" />
     <ClInclude Include="Game\VFX\SlapSmokeEffect.h" />
