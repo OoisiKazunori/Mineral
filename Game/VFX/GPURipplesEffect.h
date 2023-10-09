@@ -30,6 +30,9 @@ private:
 		DirectX::XMFLOAT3 m_pos;
 		DirectX::XMFLOAT3 m_scale;
 		int m_timer;
+		int m_coolTimer;
+		int m_coolMaxTimer;
+		int m_coolTimeFlag;
 	};
 	struct OutputData
 	{

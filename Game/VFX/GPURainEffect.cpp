@@ -77,8 +77,6 @@ void GPURainEffect::Update(bool arg_generateRain, const KazMath::Vec3<float>& ar
 	m_cameraBuffer.bufferWrapper->TransData(&data, sizeof(CameraData));
 	m_outputBuffer.counterWrapper->CopyBuffer(m_uploadCounterBuffer.bufferWrapper->GetBuffer());
 
-
-
 	//•`‰æ‚ÌXVˆ—
 	m_updateShader.Compute({ GetThread(),1,1 });
 }

@@ -7,6 +7,9 @@ struct ParticleUpdate
     float3 pos;
     float3 scale;
     int timer;
+    int coolTimer;
+    int coolMaxTimer;
+    int coolTimeFlag;
 };
 
 struct OutputData
@@ -28,6 +31,7 @@ RWStructuredBuffer<uint> shaderTable : register(u1);
 RWStructuredBuffer<OutputData> drawData : register(u2);
 
 static const float range = 400.0f;
+
 [numthreads(1024, 1, 1)]
 void InitMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
 {
@@ -39,6 +43,10 @@ void InitMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 
     particleBuffer[index].pos.y = 5.0f;
     particleBuffer[index].timer = 0;
     particleBuffer[index].scale = float3(0.0f,0.0f,0.0f);
+
+    particleBuffer[index].coolTimeFlag = 1;
+    particleBuffer[index].coolMaxTimer = RandVec3(shaderTable[index],60 * 4,30).x;
+    particleBuffer[index].coolTimer = 0;
 }
 
 [numthreads(1024, 1, 1)]
@@ -58,15 +66,33 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     {
         color.a = 1.0f;
     }
-    ++updateData.timer;
-    const float MAX_TIMER = 10;
+
+    //一度発生したら間隔をあける
+    if(updateData.coolTimeFlag)
+    {
+        ++updateData.coolTimer;
+
+        if(updateData.coolMaxTimer <= updateData.coolTimer)
+        {
+            updateData.coolTimeFlag = 0;
+            updateData.coolTimer = 0;
+        }
+    }
+    //通常時
+    else
+    {
+        ++updateData.timer;
+    }
+
+    const float MAX_TIMER = 30;
     //拡大終了
     if(MAX_TIMER <= updateData.timer)
     {
-        updateData.pos.x = RandVec3(shaderTable[index],range,-range).x;
-        updateData.pos.z = RandVec3(shaderTable[index],range,-range).z;
+        updateData.pos.x = RandVec3(shaderTable[index + updateData.pos.x],range,-range).x;
+        updateData.pos.z = RandVec3(shaderTable[index + updateData.pos.z],range,-range).z;
         updateData.scale = float3(0.0f,0.0f,0.0f);
         updateData.timer = 0;
+        updateData.coolTimeFlag = 1;
     }
     //拡大
     else
