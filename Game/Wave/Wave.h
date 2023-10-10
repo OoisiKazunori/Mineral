@@ -35,14 +35,31 @@ private:
 	std::vector<int> m_tree;
 	std::vector<int> m_rock;
 	std::vector<int> m_mineralRock;
-	bool m_isNight;
+	eWeather m_weather;
 	bool m_isActiveWave;
 	std::vector<EnemyWaveInfo> m_enemyWaveInfo;	//“G‚ğ—N‚©‚¹‚éƒtƒŒ[ƒ€”
 	bool m_isPlayNiwatori;
 
 public:
 
-	Wave(int arg_dayTime, int arg_nightTime, std::vector<int> arg_tree, std::vector<int> arg_rock, std::vector<int> arg_mineralRock, std::vector<EnemyWaveInfo> arg_enemyWaveInfo, std::weak_ptr<Core> m_core);
+	struct WheatherData
+	{
+		eWeather m_weather;
+		int m_time;
+	};
+
+	struct InitWaveData
+	{
+		WheatherData m_dayTime;
+		WheatherData m_nightTime;
+		std::vector<int> m_tree;
+		std::vector<int> m_rock;
+		std::vector<int> m_mineralRock;
+		std::vector<EnemyWaveInfo> m_enemyWaveInfo;
+		std::weak_ptr<Core> m_core;
+	};
+
+	Wave(const InitWaveData& arg_initData);
 
 	void Update(std::weak_ptr<EnemyMgr> arg_enemyMgr);
 
@@ -54,6 +71,6 @@ public:
 	float WaveTimerRate();
 
 	bool GetIsActiveWave() { return m_isActiveWave; }
-	bool GetIsNight() { return m_isNight; }
+	bool GetIsNight() { return m_weather == NIGHT; }
 	void SetMNowTime(int set_time) { m_nowTime = set_time; }
 };

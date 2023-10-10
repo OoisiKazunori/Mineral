@@ -9,20 +9,19 @@
 #include "../Game/Tutorial.h"
 #include "../Wave/WaveMgr.h"
 
-Wave::Wave(int arg_dayTime, int arg_nightTime, std::vector<int> arg_tree, std::vector<int> arg_rock, std::vector<int> arg_mineralRock, std::vector<EnemyWaveInfo> arg_enemyWaveInfo, std::weak_ptr<Core> core)
+Wave::Wave(const InitWaveData& arg_initData)
 {
-
-	m_dayTime = arg_dayTime;
-	m_nighTime = arg_nightTime;
-	m_tree = arg_tree;
-	m_rock = arg_rock;
-	m_mineralRock = arg_mineralRock;
-	m_enemyWaveInfo = arg_enemyWaveInfo;
+	m_dayTime = arg_initData.m_dayTime.m_time;
+	m_nighTime = arg_initData.m_nightTime.m_time;
+	m_tree = arg_initData.m_tree;
+	m_rock = arg_initData.m_rock;
+	m_mineralRock = arg_initData.m_mineralRock;
+	m_enemyWaveInfo = arg_initData.m_enemyWaveInfo;
 	m_nowTime = 0;
-	m_isNight = false;
+	m_weather = arg_initData.m_dayTime.m_weather;
 	m_isActiveWave = false;
 
-	m_core = core;
+	m_core = arg_initData.m_core;
 	m_core.lock()->SetHp(25);
 	night_start = SoundManager::Instance()->SoundLoadWave("Resource/Sound/night_start.wav");
 	night_start.volume = 0.1f;
@@ -95,7 +94,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 	if (!ResultFlag::Instance()->m_isResult) {
 
 		//夜時間だったら
-		if (m_isNight) {
+		if (m_weather == NIGHT) {
 
 			//この時間に湧く敵がいたら湧かせる。
 			for (auto& enemy : m_enemyWaveInfo) {
@@ -177,7 +176,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 				//夜時間へ
 				m_nowTime = 0;
-				m_isNight = true;
+				m_weather = NIGHT;
 				SoundManager::Instance()->SoundPlayerWave(night_start, 0);
 
 				//BGMを鳴らす
@@ -192,16 +191,24 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 		if (!TitleFlag::Instance()->m_isTitle) {
 
 			//ディレクショナルライトの方向を変えて昼夜を表現
-			if (!m_isNight) {
+			switch (m_weather)
+			{
+			case SUNNY:
 				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
-			}
-			else if (m_isNight) {
+				break;
+			case RAIN:
+				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.648f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+				break;
+			case NIGHT:
 				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.4472f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+				break;
+			default:
+				break;
 			}
 			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.Normalize();
 
 			//ライトのアップデート
-			PointLightMgr::Instance()->Update(m_isNight);
+			PointLightMgr::Instance()->Update(m_weather == NIGHT);
 
 		}
 
@@ -217,7 +224,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 	}
 
-	if (m_isNight) {
+	if (m_weather == NIGHT) {
 
 		//最後の敵が沸いていたら。
 		bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime;
@@ -238,7 +245,6 @@ void Wave::Active()
 
 	//ウェーブを有効化。
 	m_isActiveWave = true;
-	m_isNight = false;
 	m_isPlayNiwatori = false;
 	m_nowTime = 0;
 
@@ -279,7 +285,7 @@ void Wave::Invalidate(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 float Wave::WaveTimerRate()
 {
 
-	if (m_isNight) {
+	if (m_weather == NIGHT) {
 
 		return static_cast<float>(m_nowTime) / static_cast<float>(m_nighTime);
 
