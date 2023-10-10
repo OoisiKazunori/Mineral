@@ -323,11 +323,11 @@ void SceneManager::Draw()
 
 
 	//UIを描画
-	//OptionUI::Instance()->Draw(m_rasterize, m_debugRaytracingParam.m_sliderRate);
 	if (itisInArrayFlag)
 	{
 		scene[nowScene]->Draw(m_rasterize, m_blasVector);
 	}
+	OptionUI::Instance()->Draw(m_rasterize, m_debugRaytracingParam.m_sliderRate);
 
 	m_rasterize.Sort();
 	m_rasterize.Render();

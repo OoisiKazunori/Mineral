@@ -224,7 +224,7 @@ void GameScene::Input()
 {
 	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_ESCAPE))
 	{
-		m_pauseFlag = !m_pauseFlag;
+		//m_pauseFlag = !m_pauseFlag;
 	}
 	if (m_pauseFlag)
 	{

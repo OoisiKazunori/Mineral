@@ -190,14 +190,33 @@ void OptionUI::Update()
 void OptionUI::Draw(DrawingByRasterize& arg_rasterize, float arg_sliderRate)
 {
 
-	//ImGui::Begin("UI");
+	////ImGui::Begin("UI");
 
-	//ImGui::End();
+	////ImGui::End();
 
 
 	const int ASCII_A = 65;	//"A"のASCIIコード
 	const int ASCII_Z = 90;	//"Z"のASCIIコード
 
+	//背景を描画
+	{
+		KazMath::Transform2D transform;
+		transform.pos = KazMath::Vec2<float>(1280.0f / 2.0f, 720.0f / 2.0f);
+		transform.scale = KazMath::Vec2<float>(1280.0f, 720.0f);
+		DrawFunc::DrawTextureIn2D(m_backGroundRender, transform, m_backGroundTexture, m_backGroundColor);
+		arg_rasterize.UIRender(m_backGroundRender);
+	}
+
+	//操作
+	if (m_isDisplayUI && !m_isChangeDisplayUI)
+	{
+		KazMath::Color color = KazMath::Color(255, 255, 255, 255);
+		KazMath::Transform2D transform;
+		transform.scale = KazMath::Vec2<float>(256.0f, 64.0f);
+		transform.pos = KazMath::Vec2<float>(1280.0f - transform.scale.x / 2.0f - 200.0f, 720.0f - transform.scale.y / 2.0f);
+		DrawFunc::DrawTextureIn2D(m_guideUI, transform, m_guideTex, color);
+		arg_rasterize.UIRender(m_guideUI);
+	}
 	//OnOffラインを描画
 	if (m_isRaytracingDebug) {
 
@@ -219,7 +238,7 @@ void OptionUI::Draw(DrawingByRasterize& arg_rasterize, float arg_sliderRate)
 
 		DrawFunc::DrawTextureIn2D(m_debugOnOffLineRender, m_debugOnOffLineTransform, m_debugOnOffLineStayBuffer, color);
 
-		arg_rasterize.ObjectRender(m_debugOnOffLineRender);
+		arg_rasterize.UIRender(m_debugOnOffLineRender);
 
 
 		//ON
@@ -242,7 +261,7 @@ void OptionUI::Draw(DrawingByRasterize& arg_rasterize, float arg_sliderRate)
 				transform.scale.x = OPTION_FONTSIZE;
 				transform.scale.y = OPTION_FONTSIZE;
 				DrawFunc::DrawTextureIn2D(m_onRender[index], transform, m_font[fontNum], color);
-				arg_rasterize.ObjectRender(m_onRender[index]);
+				arg_rasterize.UIRender(m_onRender[index]);
 
 
 			}
@@ -267,7 +286,7 @@ void OptionUI::Draw(DrawingByRasterize& arg_rasterize, float arg_sliderRate)
 				transform.scale.x = OPTION_FONTSIZE;
 				transform.scale.y = OPTION_FONTSIZE;
 				DrawFunc::DrawTextureIn2D(m_offRender[index], transform, m_font[fontNum], color);
-				arg_rasterize.ObjectRender(m_offRender[index]);
+				arg_rasterize.UIRender(m_offRender[index]);
 
 
 			}
@@ -275,33 +294,78 @@ void OptionUI::Draw(DrawingByRasterize& arg_rasterize, float arg_sliderRate)
 
 	}
 
-	//OPTIONの文字を描画する。
-	{
-		const int CHARA_COUNT = static_cast<int>(m_optionUI.front().m_name.m_string.size());
-		for (int index = 0; index < CHARA_COUNT; ++index) {
 
-			//この文字のFontの番号を調べる。
-			int fontNum = static_cast<int>(m_optionUI.front().m_name.m_string[index]) - ASCII_A;
+	//現在選択中のオプションの詳細を描画する。
+	const int NOW_SELECT_DETAIL_ID = m_optionDetails[m_nowSelectHeadline].m_selectID;
+	const int DETAIL_CHARA_COUNT = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_string.size());
+	KazMath::Vec2<float> detailPos = KazMath::Vec2<float>();
+	for (int index = 0; index < DETAIL_CHARA_COUNT; ++index) {
 
-			//フォント数が既定値を超えていたら飛ばす。
-			if (fontNum < 0 || static_cast<int>(m_font.size()) <= fontNum) continue;
+		//この文字のFontの番号を調べる。
+		int fontNum = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_string[index]) - ASCII_A;
 
-			m_optionUI.front().m_name.m_color[index] = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
+		//フォント数が既定値を超えていたら飛ばす。
+		if (fontNum < 0 || static_cast<int>(m_font.size()) <= fontNum) continue;
 
-			m_optionUI.front().m_fontSize = OPTION_FONTSIZE;
+		m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_color[index] = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
 
-			//トランスフォームを用意。
-			KazMath::Transform2D transform;
-			transform.pos = OPTION_BASEPOS;
-			transform.pos.x += (m_optionUI.front().m_fontSize / 2.0f) + (m_optionUI.front().m_fontSize * index);
-			transform.scale.x = m_optionUI.front().m_fontSize;
-			transform.scale.y = m_optionUI.front().m_fontSize;
-			DrawFunc::DrawTextureIn2D(m_optionUI.front().m_name.m_render[index], transform, m_font[fontNum], m_optionUI.front().m_name.m_color[index]);
-			arg_rasterize.ObjectRender(m_optionUI.front().m_name.m_render[index]);
+		//トランスフォームを用意。
+		KazMath::Transform2D transform;
+		transform.pos = DETAIL_BASEPOS;
+		transform.pos.x += (DETAIL_FONTSIZE / 2.0f) + (DETAIL_FONTSIZE * index) + DETAIL_FLAG_POS;
+		transform.pos.y += DETAIL_FONTSIZE / 2.0f + (BETWEEN_LINES * m_nowSelectHeadline);
+		transform.scale.x = DETAIL_FONTSIZE;
+		transform.scale.y = DETAIL_FONTSIZE;
+		DrawFunc::DrawTextureIn2D(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_render[index], transform, m_font[fontNum], m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_color[index]);
+		arg_rasterize.UIRender(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_render[index]);
 
-
-		}
+		detailPos = transform.pos;
 	}
+	//矢印を描画する。
+	if (m_nowSelectHeadline != EXIT) {
+		KazMath::Color color = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
+		KazMath::Transform2D transform;
+		transform.pos = detailPos;
+		transform.pos.x += DETAIL_FONTSIZE;
+		transform.scale.x = DETAIL_FONTSIZE;
+		transform.scale.y = DETAIL_FONTSIZE;
+		DrawFunc::DrawTextureIn2D(m_rightArrowRender, transform, m_rightArrowTexture, color);
+		arg_rasterize.UIRender(m_rightArrowRender);
+
+		transform.pos = detailPos;
+		transform.pos.x = DETAIL_BASEPOS.x + DETAIL_FLAG_POS;
+		transform.pos.x -= DETAIL_FONTSIZE / 2.0f;
+		transform.scale.x = DETAIL_FONTSIZE;
+		transform.scale.y = DETAIL_FONTSIZE;
+		DrawFunc::DrawTextureIn2D(m_leftArrowRender, transform, m_leftArrowTexture, color);
+		arg_rasterize.UIRender(m_leftArrowRender);
+
+	}
+
+	//オプションの詳細を描画
+	const int CHARA_COUNT = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_name.m_string.size());
+	for (int index = 0; index < CHARA_COUNT; ++index) {
+
+		//この文字のFontの番号を調べる。
+		int fontNum = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_name.m_string[index]) - ASCII_A;
+
+		//フォント数が既定値を超えていたら飛ばす。
+		if (fontNum < 0 || static_cast<int>(m_font.size()) <= fontNum) continue;
+
+		m_optionDetails[m_nowSelectHeadline].m_name.m_color[index] = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
+
+		//トランスフォームを用意。
+		KazMath::Transform2D transform;
+		transform.pos = DETAIL_BASEPOS;
+		transform.pos.x += (DETAIL_FONTSIZE / 2.0f) + (DETAIL_FONTSIZE * index);
+		transform.pos.y += DETAIL_FONTSIZE / 2.0f + (BETWEEN_LINES * m_nowSelectHeadline);
+		transform.scale.x = DETAIL_FONTSIZE;
+		transform.scale.y = DETAIL_FONTSIZE;
+		DrawFunc::DrawTextureIn2D(m_optionDetails[m_nowSelectHeadline].m_name.m_render[index], transform, m_font[fontNum], m_optionDetails[m_nowSelectHeadline].m_name.m_color[index]);
+		arg_rasterize.UIRender(m_optionDetails[m_nowSelectHeadline].m_name.m_render[index]);
+
+	}
+
 
 	//小見出しを描画
 	for (auto& headline : m_headlines) {
@@ -335,104 +399,45 @@ void OptionUI::Draw(DrawingByRasterize& arg_rasterize, float arg_sliderRate)
 			transform.scale.x = headline.m_fontSize;
 			transform.scale.y = headline.m_fontSize;
 			DrawFunc::DrawTextureIn2D(headline.m_name.m_render[index], transform, m_font[fontNum], headline.m_name.m_color[index]);
-			arg_rasterize.ObjectRender(headline.m_name.m_render[index]);
+			arg_rasterize.UIRender(headline.m_name.m_render[index]);
 
 
 		}
 
 	}
 
-	//オプションの詳細を描画
-	const int CHARA_COUNT = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_name.m_string.size());
-	for (int index = 0; index < CHARA_COUNT; ++index) {
 
-		//この文字のFontの番号を調べる。
-		int fontNum = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_name.m_string[index]) - ASCII_A;
-
-		//フォント数が既定値を超えていたら飛ばす。
-		if (fontNum < 0 || static_cast<int>(m_font.size()) <= fontNum) continue;
-
-		m_optionDetails[m_nowSelectHeadline].m_name.m_color[index] = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
-
-		//トランスフォームを用意。
-		KazMath::Transform2D transform;
-		transform.pos = DETAIL_BASEPOS;
-		transform.pos.x += (DETAIL_FONTSIZE / 2.0f) + (DETAIL_FONTSIZE * index);
-		transform.pos.y += DETAIL_FONTSIZE / 2.0f + (BETWEEN_LINES * m_nowSelectHeadline);
-		transform.scale.x = DETAIL_FONTSIZE;
-		transform.scale.y = DETAIL_FONTSIZE;
-		DrawFunc::DrawTextureIn2D(m_optionDetails[m_nowSelectHeadline].m_name.m_render[index], transform, m_font[fontNum], m_optionDetails[m_nowSelectHeadline].m_name.m_color[index]);
-		arg_rasterize.ObjectRender(m_optionDetails[m_nowSelectHeadline].m_name.m_render[index]);
-
-	}
-	//現在選択中のオプションの詳細を描画する。
-	const int NOW_SELECT_DETAIL_ID = m_optionDetails[m_nowSelectHeadline].m_selectID;
-	const int DETAIL_CHARA_COUNT = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_string.size());
-	KazMath::Vec2<float> detailPos = KazMath::Vec2<float>();
-	for (int index = 0; index < DETAIL_CHARA_COUNT; ++index) {
-
-		//この文字のFontの番号を調べる。
-		int fontNum = static_cast<int>(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_string[index]) - ASCII_A;
-
-		//フォント数が既定値を超えていたら飛ばす。
-		if (fontNum < 0 || static_cast<int>(m_font.size()) <= fontNum) continue;
-
-		m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_color[index] = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
-
-		//トランスフォームを用意。
-		KazMath::Transform2D transform;
-		transform.pos = DETAIL_BASEPOS;
-		transform.pos.x += (DETAIL_FONTSIZE / 2.0f) + (DETAIL_FONTSIZE * index) + DETAIL_FLAG_POS;
-		transform.pos.y += DETAIL_FONTSIZE / 2.0f + (BETWEEN_LINES * m_nowSelectHeadline);
-		transform.scale.x = DETAIL_FONTSIZE;
-		transform.scale.y = DETAIL_FONTSIZE;
-		DrawFunc::DrawTextureIn2D(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_render[index], transform, m_font[fontNum], m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_color[index]);
-		arg_rasterize.ObjectRender(m_optionDetails[m_nowSelectHeadline].m_selectName[NOW_SELECT_DETAIL_ID].m_render[index]);
-
-		detailPos = transform.pos;
-
-	}
-
-	//矢印を描画する。
-	if (m_nowSelectHeadline != EXIT) {
-		KazMath::Color color = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
-		KazMath::Transform2D transform;
-		transform.pos = detailPos;
-		transform.pos.x += DETAIL_FONTSIZE;
-		transform.scale.x = DETAIL_FONTSIZE;
-		transform.scale.y = DETAIL_FONTSIZE;
-		DrawFunc::DrawTextureIn2D(m_rightArrowRender, transform, m_rightArrowTexture, color);
-		arg_rasterize.ObjectRender(m_rightArrowRender);
-
-		transform.pos = detailPos;
-		transform.pos.x = DETAIL_BASEPOS.x + DETAIL_FLAG_POS;
-		transform.pos.x -= DETAIL_FONTSIZE / 2.0f;
-		transform.scale.x = DETAIL_FONTSIZE;
-		transform.scale.y = DETAIL_FONTSIZE;
-		DrawFunc::DrawTextureIn2D(m_leftArrowRender, transform, m_leftArrowTexture, color);
-		arg_rasterize.ObjectRender(m_leftArrowRender);
-
-	}
-
-	//操作
-	if (m_isDisplayUI && !m_isChangeDisplayUI)
+	//OPTIONの文字を描画する。
 	{
-		KazMath::Color color = KazMath::Color(255, 255, 255, 255);
-		KazMath::Transform2D transform;
-		transform.scale = KazMath::Vec2<float>(256.0f, 64.0f);
-		transform.pos = KazMath::Vec2<float>(1280.0f - transform.scale.x / 2.0f - 200.0f, 720.0f - transform.scale.y / 2.0f);
-		DrawFunc::DrawTextureIn2D(m_guideUI, transform, m_guideTex, color);
-		arg_rasterize.ObjectRender(m_guideUI);
+		const int CHARA_COUNT = static_cast<int>(m_optionUI.front().m_name.m_string.size());
+		for (int index = 0; index < CHARA_COUNT; ++index) {
+
+			//この文字のFontの番号を調べる。
+			int fontNum = static_cast<int>(m_optionUI.front().m_name.m_string[index]) - ASCII_A;
+
+			//フォント数が既定値を超えていたら飛ばす。
+			if (fontNum < 0 || static_cast<int>(m_font.size()) <= fontNum) continue;
+
+			m_optionUI.front().m_name.m_color[index] = KazMath::Color(255, 255, 255, m_backGroundColor.color.a);
+
+			m_optionUI.front().m_fontSize = OPTION_FONTSIZE;
+
+			//トランスフォームを用意。
+			KazMath::Transform2D transform;
+			transform.pos = OPTION_BASEPOS;
+			transform.pos.x += (m_optionUI.front().m_fontSize / 2.0f) + (m_optionUI.front().m_fontSize * index);
+			transform.scale.x = m_optionUI.front().m_fontSize;
+			transform.scale.y = m_optionUI.front().m_fontSize;
+			DrawFunc::DrawTextureIn2D(m_optionUI.front().m_name.m_render[index], transform, m_font[fontNum], m_optionUI.front().m_name.m_color[index]);
+			arg_rasterize.UIRender(m_optionUI.front().m_name.m_render[index]);
+
+
+		}
 	}
 
-	//背景を描画
-	{
-		KazMath::Transform2D transform;
-		transform.pos = KazMath::Vec2<float>(1280.0f / 2.0f, 720.0f / 2.0f);
-		transform.scale = KazMath::Vec2<float>(1280.0f, 720.0f);
-		DrawFunc::DrawTextureIn2D(m_backGroundRender, transform, m_backGroundTexture, m_backGroundColor);
-		arg_rasterize.ObjectRender(m_backGroundRender);
-	}
+
+
+
 }
 
 void OptionUI::Input()
