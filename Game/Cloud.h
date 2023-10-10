@@ -8,6 +8,7 @@ private:
 	static const int CLOUD_COUNT = 32;
 	std::array<DrawCallSet, CLOUD_COUNT> m_cloudModel;
 	std::array<KazMath::Transform3D, CLOUD_COUNT> m_transform;
+	std::array<KazMath::Transform3D, CLOUD_COUNT> m_baseTransform;
 	std::array<float, CLOUD_COUNT> m_cloudSpeed;
 	std::array<float, CLOUD_COUNT> m_movedAmount;
 
@@ -34,7 +35,7 @@ public:
 
 	Cloud();
 
-	void Update();
+	void Update(bool arg_disapperCloud);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 

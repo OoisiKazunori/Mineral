@@ -58,9 +58,11 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     //通常時挙動--------------------------------
     float4 color = float4(1,1,1,1);
     bool stopFlag = false;
+    float3 scale = float3(0.1f,50.0f,1.0f);
     if(!appearFlag && 500.0f <= updateData.pos.y)
     {
         stopFlag = true;
+        scale = float3(0.0f,50.0f,1.0f);
     }
 
     if(!stopFlag)
@@ -77,7 +79,7 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
 
 
     particleBuffer[index] = updateData;
-    matrix worldMat = CalucurateWorldMat(particleBuffer[index].pos,float3(0.1f,50.0f,1.0f),float3(0,0,0),billboard);
+    matrix worldMat = CalucurateWorldMat(particleBuffer[index].pos,scale,float3(0,0,0),billboard);
     
     OutputData outputMat;
     outputMat.mat = mul(viewProjectionMat,worldMat);

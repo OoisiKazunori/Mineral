@@ -124,7 +124,7 @@ SceneManager::SceneManager() :gameFirstInitFlag(false)
 
 	ShockWave::Instance()->Setting();
 
-	//OptionUI::Instance()->Setting();
+	OptionUI::Instance()->Setting();
 
 	EnemyDissolveParam::Instance()->Setting();
 
@@ -143,10 +143,7 @@ SceneManager::~SceneManager()
 
 void SceneManager::Update()
 {
-	if (TitleFlag::Instance()->m_isTitle)
-	{
 
-	}
 	DescriptorHeapMgr::Instance()->SetDescriptorHeap();
 
 	//シェイク量を更新。
@@ -248,38 +245,38 @@ void SceneManager::Update()
 	//ノイズ用のタイマーを加算。
 	GBufferMgr::Instance()->m_cameraEyePosData.m_noiseTimer += 0.02f;
 
-	////デバッグ実行中はOnOffのラインをつかんで動かせるようにする。
-	//if (OptionUI::Instance()->m_isRaytracingDebug) {
+	//デバッグ実行中はOnOffのラインをつかんで動かせるようにする。
+	if (OptionUI::Instance()->m_isRaytracingDebug) {
 
-	//	//左スティックでも動かせる。
-	//	const float STICK_SPEED = 10.0f;
-	//	bool rightFLag =
-	//		ControllerInputManager::Instance()->InputStickState(ControllerStickSide::RIGHT_STICK, ControllerSide::RIGHT_SIDE) ||
-	//		ControllerInputManager::Instance()->InputShoulderState(ControllerShoulderSide::RIGHT_SHOULDER) ||
-	//		ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_DPAD_RIGHT) ||
-	//		ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_RIGHT_THUMB) ||
-	//		KeyBoradInputManager::Instance()->InputState(DIK_E);
-	//	bool leftFLag =
-	//		ControllerInputManager::Instance()->InputStickState(ControllerStickSide::RIGHT_STICK, ControllerSide::LEFT_SIDE) ||
-	//		ControllerInputManager::Instance()->InputShoulderState(ControllerShoulderSide::LEFT_SHOULDER) ||
-	//		ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_DPAD_LEFT) ||
-	//		ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_LEFT_THUMB) ||
-	//		KeyBoradInputManager::Instance()->InputState(DIK_Q);
+		//左スティックでも動かせる。
+		const float STICK_SPEED = 10.0f;
+		bool rightFLag =
+			ControllerInputManager::Instance()->InputStickState(ControllerStickSide::RIGHT_STICK, ControllerSide::RIGHT_SIDE) ||
+			ControllerInputManager::Instance()->InputShoulderState(ControllerShoulderSide::RIGHT_SHOULDER) ||
+			ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_DPAD_RIGHT) ||
+			ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_RIGHT_THUMB) ||
+			KeyBoradInputManager::Instance()->InputState(DIK_E);
+		bool leftFLag =
+			ControllerInputManager::Instance()->InputStickState(ControllerStickSide::RIGHT_STICK, ControllerSide::LEFT_SIDE) ||
+			ControllerInputManager::Instance()->InputShoulderState(ControllerShoulderSide::LEFT_SHOULDER) ||
+			ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_DPAD_LEFT) ||
+			ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_LEFT_THUMB) ||
+			KeyBoradInputManager::Instance()->InputState(DIK_Q);
 
-	//	m_debugRaytracingParam.m_sliderRate += rightFLag * STICK_SPEED;
-	//	m_debugRaytracingParam.m_sliderRate -= leftFLag * STICK_SPEED;
-	//	m_debugRaytracingParam.m_sliderRate = std::clamp(m_debugRaytracingParam.m_sliderRate, 0.0f, 1280.0f);
+		m_debugRaytracingParam.m_sliderRate += rightFLag * STICK_SPEED;
+		m_debugRaytracingParam.m_sliderRate -= leftFLag * STICK_SPEED;
+		m_debugRaytracingParam.m_sliderRate = std::clamp(m_debugRaytracingParam.m_sliderRate, 0.0f, 1280.0f);
 
-	//	m_debugRaytracingParam.m_debugReflection = true;
-	//	m_debugRaytracingParam.m_debugShadow = true;
+		m_debugRaytracingParam.m_debugReflection = true;
+		m_debugRaytracingParam.m_debugShadow = true;
 
-	//}
-	//else {
-	//	m_debugRaytracingParam.m_debugReflection = false;
-	//	m_debugRaytracingParam.m_debugShadow = false;
-	//	m_debugRaytracingParam.m_sliderRate = 1280.0f / 2.0f;
+	}
+	else {
+		m_debugRaytracingParam.m_debugReflection = false;
+		m_debugRaytracingParam.m_debugShadow = false;
+		m_debugRaytracingParam.m_sliderRate = 1280.0f / 2.0f;
 
-	//}
+	}
 
 	//TimeZone::Instance()->Update();
 
@@ -287,9 +284,9 @@ void SceneManager::Update()
 
 	//EnemyDissolveParam::Instance()->Update();
 
-	//m_isOldDebugRaytracing = OptionUI::Instance()->m_isRaytracingDebug;
+	m_isOldDebugRaytracing = OptionUI::Instance()->m_isRaytracingDebug;
 
-	//OptionUI::Instance()->Update();
+	OptionUI::Instance()->Update();
 
 
 	//デバッグ用の値の更新処理

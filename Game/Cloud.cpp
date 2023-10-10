@@ -24,11 +24,12 @@ Cloud::Cloud()
 		m_movedAmount[index] = KazMath::Rand(0.0f, RETURN_MOVE_AMOUNT);
 		m_transform[index].pos += MOVE_VEC * m_movedAmount[index];
 
+		m_baseTransform[index] = m_transform[index];
 	}
 
 }
 
-void Cloud::Update()
+void Cloud::Update(bool arg_disapperCloud)
 {
 
 	for (int index = 0; index < CLOUD_COUNT; ++index) {
@@ -46,6 +47,30 @@ void Cloud::Update()
 
 		}
 
+		//â_Çè¡Ç∑èàóù
+		if (arg_disapperCloud)
+		{
+			if (0.0f < m_transform[index].scale.x)
+			{
+				m_transform[index].scale -= KazMath::Vec3<float>(0.1f, 0.1f, 0.1f);
+			}
+			else
+			{
+				m_transform[index].scale = {};
+			}
+		}
+		//â_Ç™åªÇÍÇÈèàóù
+		else
+		{
+			if (m_transform[index].scale.x < m_baseTransform[index].scale.x)
+			{
+				m_transform[index].scale += KazMath::Vec3<float>(1.0f, 1.0f, 1.0f);
+			}
+			else
+			{
+				m_transform[index].scale = m_baseTransform[index].scale;
+			}
+		}
 	}
 
 }
@@ -57,11 +82,11 @@ void Cloud::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_
 	static float offset = 0.0f;
 
 
-	ImGui::Begin("Cloud");
+	/*ImGui::Begin("Cloud");
 
 	ImGui::DragFloat("Y", &offset, 1.0f);
 
-	ImGui::End();
+	ImGui::End();*/
 
 	for (int index = 0; index < CLOUD_COUNT; ++index) {
 

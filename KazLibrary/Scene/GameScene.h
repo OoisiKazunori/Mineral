@@ -40,6 +40,7 @@ private:
 	KazMath::Transform3D m_stageTransform;
 
 	DrawCallSet m_ground;
+	DrawCallSet m_nonGround;
 	DrawCallSet m_fence;
 	DrawCallSet m_rock;
 	DrawCallSet m_tree;
@@ -121,6 +122,7 @@ private:
 	int m_stopTimer;
 
 	bool m_pauseFlag;
+	bool m_itWasRainFlag;
 public:
 	GameScene(DrawingByRasterize& arg_rasterize);
 	~GameScene();

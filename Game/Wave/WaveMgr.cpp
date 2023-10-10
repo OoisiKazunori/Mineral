@@ -21,8 +21,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 	initData.m_dayTime.m_time = 60;
 	initData.m_nightTime.m_time = 1800;
-	initData.m_dayTime.m_weather = SUNNY;
-	initData.m_nightTime.m_weather = SUNNY;
+	initData.m_dayTime.m_weather = RAIN;
+	initData.m_nightTime.m_weather = RAIN;
 	//ìGÇí«â¡ÇµÇƒÇ¢Ç≠ÅB
 
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
