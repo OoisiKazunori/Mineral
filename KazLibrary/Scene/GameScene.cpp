@@ -140,6 +140,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 		obj = std::make_unique<SlapSmokeEffect>();
 	}
 
+	m_rainSoundSE = KazSoundManager::Instance()->LoadSoundMem("Resource/Sound/rain.wav");
+	m_rainSoundSEVolume = 0;
+	m_maxRainSoundSEVolume = 100;
+	KazSoundManager::Instance()->PlaySoundMem(m_rainSoundSE, m_maxRainSoundSEVolume, true);
 }
 
 GameScene::~GameScene()
@@ -366,9 +370,27 @@ void GameScene::Update()
 	Transition::Instance()->Update();
 
 	Tutorial::Instance()->Update();
+	if (WaveMgr::Instance()->GetIsRain())
+	{
+		m_rainSoundSEVolume += 10;
+		if (m_maxRainSoundSEVolume <= m_rainSoundSEVolume)
+		{
+			m_rainSoundSEVolume = m_maxRainSoundSEVolume;
+		}
+	}
+	else
+	{
+		m_rainSoundSEVolume -= 10;
+		if (m_rainSoundSEVolume <= 0)
+		{
+			m_rainSoundSEVolume = 0;
+		}
+	}
+	KazSoundManager::Instance()->ChangeSoundMem(m_rainSoundSE, m_rainSoundSEVolume);
 
 	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight());
-
+	m_rainVFX.Update(WaveMgr::Instance()->GetIsRain(), m_player->GetPosZeroY());
+	m_ripplesVFX.Update(WaveMgr::Instance()->GetIsRain(), m_player->GetPosZeroY());
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -408,7 +430,9 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	m_rock.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 	m_line.Draw(arg_rasterize, arg_blasVec, m_stageTransform);
 
+	m_rainVFX.Draw(arg_rasterize);
 	m_fireFlyParticle.Draw(arg_rasterize);
+	m_ripplesVFX.Draw(arg_rasterize);
 
 	static KazMath::Transform3D transform;
 	static int a = 0;

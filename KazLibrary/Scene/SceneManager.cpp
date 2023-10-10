@@ -318,7 +318,6 @@ void SceneManager::Update()
 
 	//データを転送。一旦ここで。
 	GBufferMgr::Instance()->m_lightBuffer.bufferWrapper->TransData(&GBufferMgr::Instance()->m_lightConstData, sizeof(GBufferMgr::LightConstData));
-
 }
 
 void SceneManager::Draw()

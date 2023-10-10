@@ -231,6 +231,65 @@ namespace DrawFuncPipelineData
 		return gPipeline;
 	}
 
+
+	static D3D12_GRAPHICS_PIPELINE_STATE_DESC SetTexDepthLess()
+	{
+		//パイプラインの設定
+		D3D12_GRAPHICS_PIPELINE_STATE_DESC gPipeline{};
+
+		static D3D12_INPUT_ELEMENT_DESC input3DLayOut[2];
+		input3DLayOut[0] =
+		{
+			"POSITION",
+			0,
+			DXGI_FORMAT_R32G32B32_FLOAT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		};
+		input3DLayOut[1] =
+		{
+			"TEXCOORD",
+			0,
+			DXGI_FORMAT_R32G32_FLOAT,
+			0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,
+			0
+		};
+
+		gPipeline.InputLayout.pInputElementDescs = input3DLayOut;
+		gPipeline.InputLayout.NumElements = 2;
+
+		//サンプルマスク
+		gPipeline.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+		//ラスタライザ
+		//背面カリング、塗りつぶし、深度クリッピング有効
+		CD3DX12_RASTERIZER_DESC rasterrize(D3D12_DEFAULT);
+		rasterrize.CullMode = D3D12_CULL_MODE_NONE;
+		gPipeline.RasterizerState = rasterrize;
+
+		//ブレンドモード
+		gPipeline.BlendState.RenderTarget[0] = SetAddBlend();
+
+		//図形の形状
+		gPipeline.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+
+		//その他設定
+		gPipeline.NumRenderTargets = 1;
+		gPipeline.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		gPipeline.SampleDesc.Count = 1;
+
+		//デプスステンシルステートの設定
+		gPipeline.DepthStencilState.DepthEnable = true;							//深度テストを行う
+		gPipeline.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;//書き込み許可
+		gPipeline.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;		//小さければOK
+		gPipeline.DSVFormat = DXGI_FORMAT_D32_FLOAT;							//深度値フォーマット
+
+		return gPipeline;
+	}
+
 	static D3D12_GRAPHICS_PIPELINE_STATE_DESC SetPos()
 	{
 		//パイプラインの設定
@@ -1691,12 +1750,45 @@ namespace DrawFuncData
 		return lData;
 	};
 
-	static DrawFuncData::PipelineGenerateData GetSpriteInstanceShader()
+	static DrawFuncData::PipelineGenerateData GetBasicInstancePosUvShader()
 	{
 		DrawFuncData::PipelineGenerateData lData;
 		lData.desc = DrawFuncPipelineData::SetTex();
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "VSPlaneMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "BasicInstance.hlsl", "PSmain", "ps_6_4", SHADER_TYPE_PIXEL);
+		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+
+		//その他設定
+		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		return lData;
+	};
+	static DrawFuncData::PipelineGenerateData GetSpriteInstanceShader()
+	{
+		DrawFuncData::PipelineGenerateData lData;
+		lData.desc = DrawFuncPipelineData::SetTexDepthLess();
 		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "InstanceVSMain", "vs_6_4", SHADER_TYPE_VERTEX);
 		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "InstancePSMain", "ps_6_4", SHADER_TYPE_PIXEL);
+		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
+
+		//その他設定
+		lData.desc.NumRenderTargets = static_cast<UINT>(GBufferMgr::Instance()->GetRenderTargetFormat().size());
+		for (int i = 0; i < GBufferMgr::Instance()->GetRenderTargetFormat().size(); ++i)
+		{
+			lData.desc.RTVFormats[i] = GBufferMgr::Instance()->GetRenderTargetFormat()[i];
+		}
+		return lData;
+	};
+
+	static DrawFuncData::PipelineGenerateData GetSpriteEmissiveInstanceShader()
+	{
+		DrawFuncData::PipelineGenerateData lData;
+		lData.desc = DrawFuncPipelineData::SetTexDepthLess();
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "InstanceVSMain", "vs_6_4", SHADER_TYPE_VERTEX);
+		lData.shaderDataArray.emplace_back(KazFilePathName::RelativeShaderPath + "ShaderFile/" + "Sprite.hlsl", "InstanceEmissivePSMain", "ps_6_4", SHADER_TYPE_PIXEL);
 		lData.blendMode = DrawFuncPipelineData::PipelineBlendModeEnum::ALPHA;
 
 		//その他設定

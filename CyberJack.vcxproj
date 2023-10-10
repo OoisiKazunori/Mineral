@@ -167,6 +167,8 @@
     <ClCompile Include="Game\UI\OptionUI.cpp" />
     <ClCompile Include="Game\VFX\BulidSmokeEmitter.cpp" />
     <ClCompile Include="Game\VFX\GPUFireFlyParticle.cpp" />
+    <ClCompile Include="Game\VFX\GPURainEffect.cpp" />
+    <ClCompile Include="Game\VFX\GPURipplesEffect.cpp" />
     <ClCompile Include="Game\VFX\HideSmokeEmitter.cpp" />
     <ClCompile Include="Game\VFX\HitEmitter.cpp" />
     <ClCompile Include="Game\VFX\SlapSmokeEffect.cpp" />
@@ -274,6 +276,7 @@
     <ClCompile Include="KazLibrary\Scene\StageSelectScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\TitleScene.cpp" />
     <ClCompile Include="KazLibrary\Sound\IAXAudio2VoiceCallback.cpp" />
+    <ClCompile Include="KazLibrary\Sound\KazSoundManager.cpp" />
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
@@ -339,6 +342,8 @@
     <ClInclude Include="Game\UI\OptionUI.h" />
     <ClInclude Include="Game\VFX\BulidSmokeEmitter.h" />
     <ClInclude Include="Game\VFX\GPUFireFlyParticle.h" />
+    <ClInclude Include="Game\VFX\GPURainEffect.h" />
+    <ClInclude Include="Game\VFX\GPURipplesEffect.h" />
     <ClInclude Include="Game\VFX\HideSmokeEmitter.h" />
     <ClInclude Include="Game\VFX\HitEmitter.h" />
     <ClInclude Include="Game\VFX\SlapSmokeEffect.h" />
@@ -459,6 +464,7 @@
     <ClInclude Include="KazLibrary\Scene\StageSelectScene.h" />
     <ClInclude Include="KazLibrary\Scene\TitleScene.h" />
     <ClInclude Include="KazLibrary\Sound\IAXAudio2VoiceCallback.h" />
+    <ClInclude Include="KazLibrary\Sound\KazSoundManager.h" />
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />
     <ClInclude Include="KazLibrary\WinApi\WinApi.h" />

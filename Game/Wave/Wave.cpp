@@ -9,20 +9,19 @@
 #include "../Game/Tutorial.h"
 #include "../Wave/WaveMgr.h"
 
-Wave::Wave(int arg_dayTime, int arg_nightTime, std::vector<int> arg_tree, std::vector<int> arg_rock, std::vector<int> arg_mineralRock, std::vector<EnemyWaveInfo> arg_enemyWaveInfo, std::weak_ptr<Core> core)
+Wave::Wave(const InitWaveData& arg_initData)
 {
-
-	m_dayTime = arg_dayTime;
-	m_nighTime = arg_nightTime;
-	m_tree = arg_tree;
-	m_rock = arg_rock;
-	m_mineralRock = arg_mineralRock;
-	m_enemyWaveInfo = arg_enemyWaveInfo;
-	m_nowTime = 0;
-	m_isNight = false;
+	m_dayTime = arg_initData.m_dayTime;
+	m_nightTime = arg_initData.m_nightTime;
+	m_tree = arg_initData.m_tree;
+	m_rock = arg_initData.m_rock;
+	m_mineralRock = arg_initData.m_mineralRock;
+	m_enemyWaveInfo = arg_initData.m_enemyWaveInfo;
+	m_nowTime = { SUNNY,0 };
 	m_isActiveWave = false;
+	m_isNight = false;
 
-	m_core = core;
+	m_core = arg_initData.m_core;
 	m_core.lock()->SetHp(25);
 	night_start = SoundManager::Instance()->SoundLoadWave("Resource/Sound/night_start.wav");
 	night_start.volume = 0.1f;
@@ -36,15 +35,24 @@ Wave::Wave(int arg_dayTime, int arg_nightTime, std::vector<int> arg_tree, std::v
 void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 {
 
+	if (m_isNight)
+	{
+		m_nowTime.m_weather = m_nightTime.m_weather;
+	}
+	else
+	{
+		m_nowTime.m_weather = m_dayTime.m_weather;
+	}
+
 	//タイトルだったらタイマーを1二固定する。
 	if (TitleFlag::Instance()->m_isTitle) {
-		m_nowTime = 1;
+		m_nowTime.m_time = 1;
 	}
 
 	//チュートリアルだったらタイマーを1に固定する
 	if (Tutorial::Instance()->is_tutorial)
 	{
-		m_nowTime = 1;
+		m_nowTime.m_time = 1;
 		//時間の設定
 		switch (Tutorial::Instance()->tutorial_num)
 		{
@@ -52,7 +60,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			//ミネクジが湧く
 			if (!Tutorial::Instance()->spawn_minekuzi)
 			{
-				m_nowTime = 1;
+				m_nowTime.m_time = 1;
 				Tutorial::Instance()->spawn_minekuzi = true;
 				arg_enemyMgr.lock()->GenerateMinekuji(EnemyRoute::A, true);
 			}
@@ -100,7 +108,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			//この時間に湧く敵がいたら湧かせる。
 			for (auto& enemy : m_enemyWaveInfo) {
 
-				if (enemy.m_spawnFrame != m_nowTime) continue;
+				if (enemy.m_spawnFrame != m_nowTime.m_time) continue;
 
 				//敵を湧かせる。
 				if (enemy.m_enemyID == ENEMY_ID::MINEKUJI) {
@@ -122,7 +130,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			}
 
 			//時間を進める。
-			m_nowTime = std::clamp(m_nowTime + 1, 0, m_nighTime);
+			m_nowTime.m_time = std::clamp(m_nowTime.m_time + 1, 0, m_nightTime.m_time);
 
 			bool isEnemyZero = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
 			bool isFinalWave = WaveMgr::Instance()->IsFinalWave();
@@ -132,7 +140,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 				if (isEnemyZero) {
 
 					//時間が終わったWaveを無効化する。
-					if (m_nighTime <= m_nowTime) {
+					if (m_nightTime.m_time <= m_nowTime.m_time) {
 						if (!m_isPlayNiwatori && !WaveMgr::Instance()->IsNextWave()) {
 							SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
 							m_isPlayNiwatori = true;
@@ -150,7 +158,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			else {
 
 				//時間が終わったWaveを無効化する。
-				if (m_nighTime <= m_nowTime) {
+				if (m_nightTime.m_time <= m_nowTime.m_time) {
 					if (!m_isPlayNiwatori && !WaveMgr::Instance()->IsNextWave()) {
 						SoundManager::Instance()->SoundPlayerWave(WaveMgr::Instance()->start_morning, 0);
 						m_isPlayNiwatori = true;
@@ -170,13 +178,13 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 
 			//時間を進める。
-			m_nowTime = std::clamp(m_nowTime + 1, 0, m_dayTime);
+			m_nowTime.m_time = std::clamp(m_nowTime.m_time + 1, 0, m_dayTime.m_time);
 
 			//時間が終わったWaveを無効化する。
-			if (m_dayTime <= m_nowTime) {
+			if (m_dayTime.m_time <= m_nowTime.m_time) {
 
 				//夜時間へ
-				m_nowTime = 0;
+				m_nowTime.m_time = 0;
 				m_isNight = true;
 				SoundManager::Instance()->SoundPlayerWave(night_start, 0);
 
@@ -192,12 +200,22 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 		if (!TitleFlag::Instance()->m_isTitle) {
 
 			//ディレクショナルライトの方向を変えて昼夜を表現
-			if (!m_isNight) {
-				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
-			}
-			else if (m_isNight) {
+			if (m_isNight)
+			{
+				//夜
 				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.4472f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
 			}
+			else
+			{
+				//昼
+				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+			}
+			//日中の雨の時間帯
+			if (!m_isNight && m_nowTime.m_weather == RAIN)
+			{
+				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.648f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+			}
+
 			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.Normalize();
 
 			//ライトのアップデート
@@ -220,12 +238,12 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 	if (m_isNight) {
 
 		//最後の敵が沸いていたら。
-		bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime;
+		bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime.m_time;
 		bool isZeroEnemy = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
 		if (isEnemyEnd && isZeroEnemy) {
 
 			//時間経過を速める。
-			m_nowTime = std::clamp(m_nowTime + 20, 0, m_nighTime);
+			m_nowTime.m_time = std::clamp(m_nowTime.m_time + 20, 0, m_nightTime.m_time);
 
 		}
 
@@ -238,9 +256,9 @@ void Wave::Active()
 
 	//ウェーブを有効化。
 	m_isActiveWave = true;
-	m_isNight = false;
 	m_isPlayNiwatori = false;
-	m_nowTime = 0;
+	m_isNight = false;
+	m_nowTime.m_time = 0;
 
 
 	//木と岩をランダムで配置。
@@ -281,9 +299,9 @@ float Wave::WaveTimerRate()
 
 	if (m_isNight) {
 
-		return static_cast<float>(m_nowTime) / static_cast<float>(m_nighTime);
+		return static_cast<float>(m_nowTime.m_time) / static_cast<float>(m_nightTime.m_time);
 
 	}
 
-	return static_cast<float>(m_nowTime) / static_cast<float>(m_dayTime);
+	return static_cast<float>(m_nowTime.m_time) / static_cast<float>(m_dayTime.m_time);
 }

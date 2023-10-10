@@ -15,6 +15,13 @@ namespace PostEffect {
 }
 class ComputeShader;
 
+enum eWeather
+{
+	SUNNY,
+	RAIN,
+	NIGHT
+};
+
 /// <summary>
 /// G-Buffer‚ÌŠÇ—ƒNƒ‰ƒX
 /// </summary>
