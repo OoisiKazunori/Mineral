@@ -182,18 +182,18 @@ void Tutorial::Update()
 
 void Tutorial::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
 {
-	if (!TitleFlag::Instance()->m_isTitle)
-	{
-		for (int i = 0; i < static_cast<int>(tutorial_tex.size()); i++)
-		{
-			tutorial_tex[i].Draw(arg_rasterize);
-		}
-	}
+	//if (!TitleFlag::Instance()->m_isTitle)
+	//{
+	//	for (int i = 0; i < static_cast<int>(tutorial_tex.size()); i++)
+	//	{
+	//		tutorial_tex[i].Draw(arg_rasterize);
+	//	}
+	//}
 
-	if (is_tutorial) {
+	//if (is_tutorial) {
 
-		m_tutorialArrow.Draw(arg_rasterize, arg_blasVec, m_drawTutorialArrowTransform);
+	//	m_tutorialArrow.Draw(arg_rasterize, arg_blasVec, m_drawTutorialArrowTransform);
 
-	}
+	//}
 
 }
