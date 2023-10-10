@@ -780,7 +780,7 @@ void GameScene::UpdateResult()
 
 		//太陽の方向を昼に設定
 		GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir = KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f);
-
+		m_itWasRainFlag = false;
 	}
 	if ((m_isResultToTitle) && Transition::Instance()->GetIsFinish()) {
 
@@ -791,7 +791,7 @@ void GameScene::UpdateResult()
 		m_isResultToTitle = false;
 
 		EnemyScore::Instance()->m_score = 0;
-
+		m_itWasRainFlag = false;
 	}
 
 	//タイトルか再挑戦が選ばれていて、遷移が終わっていたら。
@@ -820,7 +820,7 @@ void GameScene::UpdateResult()
 
 		//太陽の方向を昼に設定
 		GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir = KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f);
-
+		m_itWasRainFlag = false;
 	}
 	if ((m_isResultToGame) && Transition::Instance()->GetIsFinish()) {
 
@@ -830,7 +830,7 @@ void GameScene::UpdateResult()
 		m_isResultToGame = false;
 
 		EnemyScore::Instance()->m_score = 0;
-
+		m_itWasRainFlag = false;
 	}
 
 	//タイトルロゴを消すまでのタイマー
