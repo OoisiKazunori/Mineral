@@ -21,6 +21,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 	initData.m_dayTime.m_time = 60;
 	initData.m_nightTime.m_time = 1800;
+	initData.m_dayTime.m_weather = RAIN;
+	initData.m_nightTime.m_weather = SUNNY;
 	//敵を追加していく。
 
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
@@ -43,6 +45,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//1ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 60;
 	initData.m_nightTime.m_time = 1800;
+	initData.m_dayTime.m_weather = RAIN;
+	initData.m_nightTime.m_weather = SUNNY;
 
 	initData.m_tree = { 1 };		//有効化時に生成される木のIndex 1スタート
 	initData.m_rock = {  };		//有効化時に生成される岩のIndex 1スタート
@@ -69,6 +73,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//2ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 3200;	//夜の時間 フレーム数
+	initData.m_dayTime.m_weather = SUNNY;
+	initData.m_nightTime.m_weather = SUNNY;
 	initData.m_tree = { 4 };
 	initData.m_rock = {  };		//有効化時に生成される岩の数
 	initData.m_mineralRock = { 3 };		//有効化時に生成されるミネラル岩の数
@@ -96,6 +102,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//3ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 3200;	//夜の時間 フレーム数
+	initData.m_dayTime.m_weather = SUNNY;
+	initData.m_nightTime.m_weather = SUNNY;
 	initData.m_tree = { 2,1 };		//有効化時に生成される木の数
 	initData.m_rock = {  };		//有効化時に生成される岩の数
 	initData.m_mineralRock = { 1,4 };		//有効化時に生成されるミネラル岩の数
@@ -127,6 +135,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//4ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 3200;	//夜の時間 フレーム数
+	initData.m_dayTime.m_weather = SUNNY;
+	initData.m_nightTime.m_weather = SUNNY;
 	initData.m_tree = { 3,8 };		//有効化時に生成される木の数
 	initData.m_rock = { };		//有効化時に生成される岩の数
 	initData.m_mineralRock = { 2,6 };		//有効化時に生成されるミネラル岩の数
@@ -171,6 +181,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//5ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 3200;	//夜の時間 フレーム数
+	initData.m_dayTime.m_weather = SUNNY;
+	initData.m_nightTime.m_weather = SUNNY;
 	initData.m_tree = { 6 };		//有効化時に生成される木の数
 	initData.m_rock = { 4 };		//有効化時に生成される岩の数
 	initData.m_mineralRock = { 2 };		//有効化時に生成されるミネラル岩の数
@@ -203,6 +215,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//6ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 3200;	//夜の時間 フレーム数
+	initData.m_dayTime.m_weather = SUNNY;
+	initData.m_nightTime.m_weather = SUNNY;
 	initData.m_tree = { 4 };		//有効化時に生成される木の数
 	initData.m_rock = { 2 };		//有効化時に生成される岩の数
 	initData.m_mineralRock = { 3 };		//有効化時に生成されるミネラル岩の数
@@ -233,6 +247,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//7ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 4800;	//夜の時間 フレーム数
+	initData.m_dayTime.m_weather = SUNNY;
+	initData.m_nightTime.m_weather = SUNNY;
 	initData.m_tree = { 4,6 };		//有効化時に生成される木の数
 	initData.m_rock = { 4,3 };		//有効化時に生成される岩の数
 	initData.m_mineralRock = { 1 };		//有効化時に生成されるミネラル岩の数
