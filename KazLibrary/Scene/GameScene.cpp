@@ -29,6 +29,8 @@
 #include"../Game/EnemyScore.h"
 #include"../Game/PointLightMgr.h"
 #include"../Game/Effect/StopMgr.h"
+#include"../Game/Effect/ShockWave.h"
+#include"../Game/Cloud.h"
 
 GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 {
@@ -66,8 +68,10 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 	WaveMgr::Instance()->Setting(m_goldCore);
 	Transition::Instance()->Setting();
 
+	ShockWave::Instance()->Setting();
 
-	m_ground.LoadOutline("Resource/Stage/", "Stage_Ground.gltf");
+
+	m_ground.LoadOutline("Resource/Stage/", "Stage_Ground_hole.gltf");
 	m_fence.Load("Resource/Stage/", "Stage_Fence.gltf");
 	m_tree.Load("Resource/Stage/", "Stage_Tree.gltf");
 	m_rock.Load("Resource/Stage/", "Stage_Rock.gltf");
@@ -132,6 +136,8 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 
 	NumberFont::Instance()->Load();
 	Tutorial::Instance()->setting();
+
+	m_cloud = std::make_shared<Cloud>();
 
 	//Tutorial::Instance()->is_tutorial = false;
 
@@ -391,6 +397,16 @@ void GameScene::Update()
 	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight());
 	m_rainVFX.Update(WaveMgr::Instance()->GetIsRain(), m_player->GetPosZeroY());
 	m_ripplesVFX.Update(WaveMgr::Instance()->GetIsRain(), m_player->GetPosZeroY());
+
+	GBufferMgr::Instance()->m_cameraEyePosData.m_noiseTimer += 0.1f;
+
+	GBufferMgr::Instance()->m_cameraEyePosData.m_eyePos = m_player->GetTransformDefaultY() + m_cameraEyeDir * m_cameraEyeDistance;
+	GBufferMgr::Instance()->m_cameraEyePosData.m_viewMat = CameraMgr::Instance()->GetViewMatrix(0);
+	GBufferMgr::Instance()->m_cameraEyePosData.m_projMat = CameraMgr::Instance()->GetPerspectiveMatProjection(0);
+
+	ShockWave::Instance()->Update();
+
+	m_cloud->Update();
 }
 
 void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
@@ -413,6 +429,7 @@ void GameScene::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& 
 	DestructibleObjectMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 	BuildingMaterialMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
 	BuildingMgr::Instance()->Draw(arg_rasterize, arg_blasVec);
+	m_cloud->Draw(arg_rasterize, arg_blasVec);
 
 	static UINT reflection = 1;
 	m_puddle.m_model.extraBufferArray[1].bufferWrapper->TransData(&reflection, sizeof(UINT));

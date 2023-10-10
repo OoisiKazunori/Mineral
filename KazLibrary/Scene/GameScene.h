@@ -22,6 +22,7 @@ class MineralMgr;
 class MineralTarget;
 class Core;
 class EnemyMgr;
+class Cloud;
 
 class GameScene :public SceneBase
 {
@@ -54,6 +55,8 @@ private:
 	DrawCallUISet m_resultBackGroundUI;
 	DrawCallUISet m_resultTitleUI;
 	DrawCallUISet m_resultRetryUI;
+
+	std::shared_ptr<Cloud> m_cloud;
 
 	KazMath::Vec3<float> m_cameraEyeDir;
 	KazMath::Vec3<float> m_targetOffset;

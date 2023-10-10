@@ -108,7 +108,7 @@ struct ShockWave
 };
 struct ShockWaveParam
 {
-    ShockWave m_shockWave[10];
+    ShockWave m_shockWave[8];
 };
 
 
@@ -126,6 +126,7 @@ RaytracingAccelerationStructure gRtScene : register(t0);
 //カメラ座標用定数バッファ
 ConstantBuffer<CameraEyePosConstData> cameraEyePos : register(b0);
 ConstantBuffer<LightData> lightData : register(b1);
+ConstantBuffer<ShockWaveParam> shockWaveData : register(b2);
 
 //GBuffer
 Texture2D<float4> albedoMap : register(t1);
@@ -209,7 +210,7 @@ void LightingPass(inout float arg_bright, inout float arg_pointlightBright, floa
         payloadData.m_rayID = 1;
         
         //レイを撃つ
-        CastRay(payloadData, arg_worldPosMap.xyz, -arg_lightData.m_dirLight.m_dir, 1000.0f, MISS_LIGHTING, RAY_FLAG_NONE, arg_scene, 0x01);
+        CastRay(payloadData, arg_worldPosMap.xyz + arg_normalMap.xyz, -arg_lightData.m_dirLight.m_dir, 1000.0f, MISS_LIGHTING, RAY_FLAG_NONE, arg_scene, 0x01);
                 
         //ライトのベクトルと法線から明るさを計算する。
         float bright = saturate(dot(arg_normalMap.xyz, -arg_lightData.m_dirLight.m_dir));
@@ -304,8 +305,8 @@ float Specular(float3 arg_normal, float3 arg_light, float3 arg_eye, float arg_sp
 }
 
 //海の色を取得
-static const float3 SEA_BASE = float3(0.1f, 0.19f, 0.22f); //謎。 海が完成したら動かしてみて何かを判断する。
-static const float3 SEA_WATER_COLOR = float3(0.8f, 0.9f, 0.6f); //名前的に水の色
+static const float3 SEA_BASE = float3(0.12f, 0.19f, 0.29f); //謎。 海が完成したら動かしてみて何かを判断する。
+static const float3 SEA_WATER_COLOR = float3(0.60f, 0.90f, 0.84f); //名前的に水の色
 float3 GetSeaColor(float3 arg_position, float3 arg_normal, float3 arg_light, float3 arg_rayDir, float3 arg_dist /*arg_position - レイの原点*/)
 {
     //海に関する定数 実装出来たらこれらを定数バッファに入れて変えられるようにする。
@@ -583,4 +584,136 @@ float3 AtmosphericScattering(float3 pos, inout float3 mieColor)
     
     return col + float3(sunWhite, sunWhite, sunWhite);
 
+}
+
+//波を計算。
+float SeaOctave(float2 arg_uv, float arg_choppy)
+{
+    arg_uv *= 0.6f;
+    arg_uv += ValueNoise(arg_uv, 0);
+    float2 wv = 1.0f - abs(sin(arg_uv));
+    float2 swv = abs(cos(arg_uv));
+    wv = lerp(wv, swv, wv);
+    return pow(1.0f - pow(wv.x * wv.y, 0.65f), arg_choppy);
+}
+
+//海のハイトマップの計算の際にレイマーチングしている位置のノイズを計算する。
+float MappingHeightNoise(float3 arg_position)
+{
+    
+    //定数 いずれ定数バッファにする。
+    float freq = 0.36f;
+    float amp = 0.6f;
+    float choppy = 4.0f;
+    float seaSpeed = 1.2f;
+    
+    float thickness = 12.0f;
+    for (int index = 0; index < 8; ++index)
+    {
+        if (!shockWaveData.m_shockWave[index].m_isActive)
+            continue;
+        
+        float waveLength = length(arg_position - shockWaveData.m_shockWave[index].m_pos) - shockWaveData.m_shockWave[index].m_radius;
+        if (abs(waveLength) <= thickness)
+        {
+    
+            float easing = (1.0f - abs(waveLength / thickness));
+            //easing = easing ==  0 ? 0 : pow(2, 10 * easing - 10);
+            easing = -(cos(PI * easing) - 1.0f) / 2.0f;
+            amp += shockWaveData.m_shockWave[index].m_power * easing * 20.0f;
+        
+        }
+    }
+
+    //XZ平面による計算
+    float2 uv = arg_position.xz;
+
+    float d, h = 0.0f;
+    
+    //ここで「フラクタルブラウン運動」によるノイズの計算を行っている
+    for (int i = 0; i < 4; ++i)
+    {
+        
+        float seaTimer = (1.0f + cameraEyePos.m_timer * seaSpeed);
+        
+        //単純に、iTime（時間経過）によってUV値を微妙にずらしてアニメーションさせている
+        //iTimeのみを指定してもほぼ同じアニメーションになる
+        //SEA_TIMEのプラス分とマイナス分を足して振幅を大きくしている・・・？
+        d = SeaOctave((uv + seaTimer) * freq, choppy);
+        d += SeaOctave((uv - seaTimer) * freq, choppy);
+
+        h += d * amp;
+
+        float octave_m = float2x2(1.6f, 1.2f, -1.2f, 1.6f);
+        //これは回転行列・・・？
+        //uv値を回転させている風。これをなくすと平坦な海になる
+        uv *= octave_m;
+
+        //fbm関数として、振幅を0.2倍、周波数を2.0倍して次の計算を行う
+        freq *= 2.0f;
+        amp *= 0.2f;
+
+        //choppyを翻訳すると「波瀾」という意味
+        //これを小さくすると海が「おとなしく」なる
+        choppy = lerp(choppy, 1.0f, 0.2f);
+    }
+
+    //最後に、求まった高さ`h`を、現在のレイの高さから引いたものを「波の高さ」としている
+    return arg_position.y - h;
+}
+
+//水面に向かってレイマーチングを行う。
+float HeightMapRayMarching(float3 arg_origin, float3 arg_direction, out float3 arg_position)
+{
+    float tm = 0.0f;
+
+    float tx = 2000.0f;
+
+    //一旦遠くの位置のサンプリングを行い、結果の高さが0以上だったらレイが海に当たらないということなのでReturnする。
+    float hx = MappingHeightNoise(arg_origin + arg_direction * tx);
+    if (0.0f < hx)
+    {
+        arg_position = float3(0.0f, 0.0f, 0.0f);
+        return tx;
+    }
+
+    //ここからが本格的なレイマーチング。
+    float hm = MappingHeightNoise(arg_origin + arg_direction * tm); //開始地点でのハイトマップの値。
+    float tmid = 0.0f;
+    for (int i = 0; i < 8; ++i)
+    {
+        //現在の位置でのハイトマップの値をレイマーチングの到達点の値で正規化する。
+        float f = hm / (hm - hx);
+
+        tmid = lerp(tm, tx, f);
+        arg_position = arg_origin + arg_direction * tmid;
+
+        //次なる位置のハイトマップを取得する。
+        float hmid = MappingHeightNoise(arg_position);
+
+        //サンプリング位置の高さがマイナス距離の場合は`hx`, `tx`を更新する
+        if (hmid < 0.0f)
+        {
+            tx = tmid;
+            hx = hmid;
+        }
+        //そうでない場合は、`hm`, `tm`を更新する
+        else
+        {
+            tm = tmid;
+            hm = hmid;
+        }
+    }
+
+    return tmid;
+}
+
+float3 GetNormal(float3 arg_position, float arg_eps)
+{
+    float3 n;
+    n.y = MappingHeightNoise(arg_position);
+    n.x = MappingHeightNoise(float3(arg_position.x + arg_eps, arg_position.y, arg_position.z)) - n.y;
+    n.z = MappingHeightNoise(float3(arg_position.x, arg_position.y, arg_position.z + arg_eps)) - n.y;
+    n.y = arg_eps;
+    return normalize(n);
 }
