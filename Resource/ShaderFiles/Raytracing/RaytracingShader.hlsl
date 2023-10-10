@@ -22,6 +22,11 @@ void mainRayGen()
     float4 worldColor = worldMap[launchIndex];
     float4 emissiveColor = emissiveMap[launchIndex];
     
+    Payload payload;
+    payload.m_rayID = 0;
+    CastRay(payload, cameraEyePos.m_eye, dir, 10000, 0, RAY_FLAG_NONE, gRtScene, 0xFF);
+    albedoColor.xyz = payload.m_color;
+    
     //夜のときのディレクショナルライトのY 絶対値
     const float NIGHT_DIRLIGHT_Y = 0.4472f;
     //昼のときのディレクショナルライトのY 絶対値
