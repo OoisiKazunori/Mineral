@@ -3,6 +3,7 @@
 #include"../KazLibrary/Buffer/DrawFuncData.h"
 #include"../KazLibrary/Render/DrawFunc.h"
 #include"../KazLibrary/Sound/SoundManager.h"
+#include"../KazLibrary/Sound/KazSoundManager.h"
 #include"../KazLibrary/Loader/ModelLoader.h"
 #include"../KazLibrary/DrawFunc/DrawFuncHelper.h"
 #include"../Game/Debug/DebugCamera.h"
@@ -110,6 +111,11 @@ private:
 	GPUFireFlyParticle m_fireFlyParticle;
 	GPURainEffect m_rainVFX;
 	GPURipplesEffect m_ripplesVFX;
+
+	RESOURCE_HANDLE m_rainSoundSE;
+	int m_rainSoundSEVolume;
+	int m_maxRainSoundSEVolume;
+	int m_stopTimer;
 
 	bool m_pauseFlag;
 public:

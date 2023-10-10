@@ -15,7 +15,7 @@ GPUFireFlyParticle::GPUFireFlyParticle()
 	//バッファ生成--------------------------------
 
 	m_executeIndirect = DrawFuncData::SetExecuteIndirect(
-		DrawFuncData::GetSpriteInstanceShader(),
+		DrawFuncData::GetSpriteEmissiveInstanceShader(),
 		m_outputBuffer.bufferWrapper->GetGpuAddress(),					//バッファのアドレス
 		PARTICLE_MAX_NUM					//パーティクル数
 	);

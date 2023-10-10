@@ -276,6 +276,7 @@
     <ClCompile Include="KazLibrary\Scene\StageSelectScene.cpp" />
     <ClCompile Include="KazLibrary\Scene\TitleScene.cpp" />
     <ClCompile Include="KazLibrary\Sound\IAXAudio2VoiceCallback.cpp" />
+    <ClCompile Include="KazLibrary\Sound\KazSoundManager.cpp" />
     <ClCompile Include="KazLibrary\Sound\SoundManager.cpp" />
     <ClCompile Include="KazLibrary\WinApi\Msg.cpp" />
     <ClCompile Include="KazLibrary\WinApi\WinApi.cpp" />
@@ -463,6 +464,7 @@
     <ClInclude Include="KazLibrary\Scene\StageSelectScene.h" />
     <ClInclude Include="KazLibrary\Scene\TitleScene.h" />
     <ClInclude Include="KazLibrary\Sound\IAXAudio2VoiceCallback.h" />
+    <ClInclude Include="KazLibrary\Sound\KazSoundManager.h" />
     <ClInclude Include="KazLibrary\Sound\SoundManager.h" />
     <ClInclude Include="KazLibrary\WinApi\Msg.h" />
     <ClInclude Include="KazLibrary\WinApi\WinApi.h" />

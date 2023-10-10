@@ -73,5 +73,6 @@ public:
 
 	bool GetIsActiveWave() { return m_isActiveWave; }
 	bool GetIsNight() { return m_isNight; }
+	bool GetIsRain() { return m_nowTime.m_weather == RAIN; }
 	void SetMNowTime(int set_time) { m_nowTime.m_time = set_time; }
 };

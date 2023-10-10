@@ -167,6 +167,7 @@
     <ClCompile Include="Game\VFX\GPUFireFlyParticle.cpp" />
     <ClCompile Include="Game\VFX\GPURainEffect.cpp" />
     <ClCompile Include="Game\VFX\GPURipplesEffect.cpp" />
+    <ClCompile Include="KazLibrary\Sound\KazSoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -359,6 +360,7 @@
     <ClInclude Include="Game\VFX\GPUFireFlyParticle.h" />
     <ClInclude Include="Game\VFX\GPURainEffect.h" />
     <ClInclude Include="Game\VFX\GPURipplesEffect.h" />
+    <ClInclude Include="KazLibrary\Sound\KazSoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -71,7 +71,7 @@ void GPURainEffect::Update(bool arg_generateRain, const KazMath::Vec3<float>& ar
 	}
 	else
 	{
-		data.m_appearFlag = 1;
+		data.m_appearFlag = 0;
 	}
 	data.m_pos = arg_pos.ConvertXMFLOAT3();
 	m_cameraBuffer.bufferWrapper->TransData(&data, sizeof(CameraData));

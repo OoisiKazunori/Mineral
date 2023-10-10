@@ -28,7 +28,7 @@ cbuffer RootConstants : register(b0)
 
 RWStructuredBuffer<ParticleUpdate> particleBuffer : register(u0);
 RWStructuredBuffer<uint> shaderTable : register(u1);
-RWStructuredBuffer<OutputData> drawData : register(u2);
+AppendStructuredBuffer<OutputData> drawData : register(u2);
 
 static const float range = 400.0f;
 
@@ -45,7 +45,7 @@ void InitMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 
     particleBuffer[index].scale = float3(0.0f,0.0f,0.0f);
 
     particleBuffer[index].coolTimeFlag = 1;
-    particleBuffer[index].coolMaxTimer = RandVec3(shaderTable[index],60 * 4,30).x;
+    particleBuffer[index].coolMaxTimer = RandVec3(shaderTable[particleBuffer[index].pos.x + index + particleBuffer[index].pos.z],60 * 5,30).y;
     particleBuffer[index].coolTimer = 0;
 }
 
@@ -58,18 +58,20 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     ParticleUpdate updateData = particleBuffer[index];
     //通常時挙動--------------------------------
     float4 color = float4(1,1,1,1);
-    if(!appearFlag)
-    {
-        color.a = 0.0f;
-    }
-    else
-    {
-        color.a = 1.0f;
-    }
-
     //一度発生したら間隔をあける
     if(updateData.coolTimeFlag)
     {
+        if(!appearFlag)
+        {
+            particleBuffer[index] = updateData;
+            matrix worldMat = CalucurateWorldMat(particleBuffer[index].pos, float3(0,0,0),float3(90,0,0),MatrixIdentity());
+
+            OutputData outputMat;
+            outputMat.mat = mul(viewProjectionMat,worldMat);
+            outputMat.color = color;
+            drawData.Append(outputMat);
+            return;
+        }
         ++updateData.coolTimer;
 
         if(updateData.coolMaxTimer <= updateData.coolTimer)
@@ -77,6 +79,7 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
             updateData.coolTimeFlag = 0;
             updateData.coolTimer = 0;
         }
+
     }
     //通常時
     else
@@ -98,9 +101,9 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     else
     {
         float rate = (float)updateData.timer / MAX_TIMER;
-        updateData.scale.x = rate * 10.0f;
-        updateData.scale.y = rate * 10.0f;
-        updateData.scale.z = rate * 10.0f;
+        updateData.scale.x = rate * 4.0f;
+        updateData.scale.y = rate * 4.0f;
+        updateData.scale.z = rate * 4.0f;
         color.a = 1.0f - rate;
     }
 
@@ -110,5 +113,5 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     OutputData outputMat;
     outputMat.mat = mul(viewProjectionMat,worldMat);
     outputMat.color = color;
-    drawData[index] = (outputMat);
+    drawData.Append(outputMat);
 }

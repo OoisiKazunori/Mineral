@@ -57,13 +57,15 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
     ParticleUpdate updateData = particleBuffer[index];
     //通常時挙動--------------------------------
     float4 color = float4(1,1,1,1);
-    if(!appearFlag)
+    bool stopFlag = false;
+    if(!appearFlag && 500.0f <= updateData.pos.y)
     {
-        color.a = 0.0f;
+        stopFlag = true;
     }
-    else
+
+    if(!stopFlag)
     {
-        color.a = 0.1f;
+        updateData.pos.y -= 10.0f;
     }
     //上下移動
     if(updateData.pos.y <= -100.0f)
@@ -72,10 +74,7 @@ void UpdateMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint
         updateData.pos.y = updateData.basePos.y;
         updateData.pos.z = updateData.basePos.z + playerPos.z;
     }
-    else
-    {
-        updateData.pos.y -= 10.0f;
-    }
+
 
     particleBuffer[index] = updateData;
     matrix worldMat = CalucurateWorldMat(particleBuffer[index].pos,float3(0.1f,50.0f,1.0f),float3(0,0,0),billboard);

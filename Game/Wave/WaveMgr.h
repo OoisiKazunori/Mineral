@@ -48,6 +48,7 @@ public:
 	void GameStart();
 
 	bool GetIsNight();
+	bool GetIsRain();
 
 	void SetTime(int wave_index, int wave_time);
 
