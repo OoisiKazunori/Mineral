@@ -25,7 +25,7 @@ void Tutorial::setting()
 	m_tutorialArrowTransform.rotation.y = 45.0f;
 	m_tutorialArrowTransform.rotation.x = -90.0f;
 
-	is_tutorial = false;
+	is_tutorial = true;
 	tutorial_num = 0;
 	tex_transform.pos = { 1280.0f / 2.0f, 720.0f / 2.0f };
 	tex_transform.scale = { 1280.0f, 720.0f };
