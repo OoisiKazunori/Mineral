@@ -24,7 +24,7 @@ Wall::Wall()
 	m_brokenModel[1].LoadOutline("Resource/Building/Wall/", "rubbleB.gltf");
 	m_brokenModel[2].LoadOutline("Resource/Building/Wall/", "rubbleC.gltf");
 
-	m_buildingBoxModel.LoadOutline("Resource/Building/", "BuildingBox.gltf");
+	m_buildingBoxModel.LoadOutline("Resource/Building/Wall/", "WallA.gltf");
 	m_numberModel.LoadNoLighting("Resource/UI/NumFont/", "number.gltf");
 	/*オカモトゾーン*/
 	m_hpBoxModel.LoadNoLighting("Resource/HpBox/", "Hp_Box.gltf");
