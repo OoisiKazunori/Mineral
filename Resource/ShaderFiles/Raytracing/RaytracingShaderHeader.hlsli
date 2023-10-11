@@ -127,6 +127,7 @@ RaytracingAccelerationStructure gRtScene : register(t0);
 ConstantBuffer<CameraEyePosConstData> cameraEyePos : register(b0);
 ConstantBuffer<LightData> lightData : register(b1);
 ConstantBuffer<ShockWaveParam> shockWaveData : register(b2);
+ConstantBuffer<DebugRaytracingParam> debugRaytracingParam : register(b3);
 
 //GBuffer
 Texture2D<float4> albedoMap : register(t1);
@@ -215,6 +216,13 @@ void LightingPass(inout float arg_bright, inout float arg_pointlightBright, floa
         //ライトのベクトルと法線から明るさを計算する。
         float bright = saturate(dot(arg_normalMap.xyz, -arg_lightData.m_dirLight.m_dir));
         
+        
+    
+        if (debugRaytracingParam.m_debugShadow && arg_launchIndex.x <= debugRaytracingParam.m_sliderRate)
+        {
+            payloadData.m_color.x = 1.0f;
+        }
+        
         //トゥーンっぽくするためにライトの明るさをステップ
         if (bright <= 0.6f)
         {
@@ -266,6 +274,12 @@ void LightingPass(inout float arg_bright, inout float arg_pointlightBright, floa
         
             //仮で明るさにイージングをかける。
                 bright *= 1.0f - brightRate;
+                
+                    
+                if (debugRaytracingParam.m_debugShadow && arg_launchIndex.x <= debugRaytracingParam.m_sliderRate)
+                {
+                    payloadData.m_color.x = 1.0f;
+                }
 
                
             //レイトレの結果の影情報を書き込む。
