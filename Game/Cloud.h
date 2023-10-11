@@ -26,10 +26,10 @@ private:
 
 	const float RETURN_MOVE_AMOUNT = 1500.0f;
 
-	const float MIN_SCALE_X = 9.0f;
-	const float MAX_SCALE_X = 50.0f;
-	const float MIN_SCALE_Z = 9.0f;
-	const float MAX_SCALE_Z = 50.0f;
+	const float MIN_SCALE_X = 30.0f;
+	const float MAX_SCALE_X = 40.0f;
+	const float MIN_SCALE_Z = 30.0f;
+	const float MAX_SCALE_Z = 40.0f;
 
 public:
 

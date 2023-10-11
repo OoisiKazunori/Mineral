@@ -222,6 +222,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			}
 
 		}
+
 	}
 
 	if (!TitleFlag::Instance()->m_isTitle &&
