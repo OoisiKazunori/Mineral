@@ -213,7 +213,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			//“ú’†‚Ì‰J‚ÌŽžŠÔ‘Ñ
 			if (!m_isNight && m_nowTime.m_weather == RAIN)
 			{
-				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.648f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.548f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
 			}
 
 			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.Normalize();
