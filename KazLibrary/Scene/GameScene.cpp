@@ -236,9 +236,12 @@ void GameScene::Input()
 	}
 }
 
+#include "../Game/UI/OptionUI.h"
 void GameScene::Update()
 {
 	using namespace KazMath;
+
+	m_pauseFlag = OptionUI::Instance()->m_isPause;
 
 	if (StopMgr::Instance()->GetGameSpeed() != 1.0f)
 	{

@@ -210,8 +210,8 @@ void SceneManager::Update()
 
 		if (StopMgr::Instance()->GetGameSpeed() != 1.0f) {
 			StopMgr::Instance()->Update();
-			m_blasVector.Update();
-			return;
+			//m_blasVector.Update();
+			//return;
 		}
 
 

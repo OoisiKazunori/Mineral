@@ -31,14 +31,14 @@ void OptionUI::Setting()
 	//小見出しを設定。
 	m_headlines.emplace_back(OptionHeadline("RAYTRACING", KazMath::Vec2<float>(0, 0), 32.0f, RAYTRACING));
 	m_headlines.emplace_back(OptionHeadline("TIMEZONE", KazMath::Vec2<float>(0, 0), 32.0f, TIMEZONE));
-	m_headlines.emplace_back(OptionHeadline("SEA", KazMath::Vec2<float>(0, 0), 32.0f, SEA));
+	m_headlines.emplace_back(OptionHeadline("PAUSE", KazMath::Vec2<float>(0, 0), 32.0f, PAUSE));
 	m_headlines.emplace_back(OptionHeadline("EXIT", KazMath::Vec2<float>(0, 0), 32.0f, EXIT));
 	m_optionUI.emplace_back(OptionHeadline("OPTION", KazMath::Vec2<float>(0, 0), OPTION_FONTSIZE, 0));
 
 	//オプション詳細を設定。
-	m_optionDetails.emplace_back(OptionDetails("DEBUG", { DrawStringData("ON"),DrawStringData("OFF") }, KazMath::Vec2<float>(), RAYTRACING));
+	m_optionDetails.emplace_back(OptionDetails("DEBUG", { DrawStringData("OFF"),DrawStringData("ON") }, KazMath::Vec2<float>(), RAYTRACING));
 	m_optionDetails.emplace_back(OptionDetails("TIME", { DrawStringData("EVENING"),DrawStringData("NOON") }, KazMath::Vec2<float>(), TIMEZONE));
-	m_optionDetails.emplace_back(OptionDetails("STATE", { DrawStringData("A"),DrawStringData("B"),DrawStringData("C") }, KazMath::Vec2<float>(), SEA));
+	m_optionDetails.emplace_back(OptionDetails("", { DrawStringData("OFF"),DrawStringData("ON"), }, KazMath::Vec2<float>(), PAUSE));
 	m_optionDetails.emplace_back(OptionDetails("", { DrawStringData("") }, KazMath::Vec2<float>(), EXIT));
 
 	//背景をロード
@@ -81,6 +81,7 @@ void OptionUI::Setting()
 	m_isChangeDisplayUI = false;
 	m_isRaytracingDebug = false;
 	m_isExit = false;
+	m_isPause = false;
 
 
 	m_doneSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/done.wav");
@@ -92,7 +93,7 @@ void OptionUI::Setting()
 	m_selectSE = SoundManager::Instance()->SoundLoadWave("Resource/Sound/select.wav");
 	m_selectSE.volume = 0.01f;
 
-	m_optionDetails[RAYTRACING].m_selectID = 1;
+	m_optionDetails[RAYTRACING].m_selectID = 0;
 }
 
 void OptionUI::Update()
@@ -107,7 +108,7 @@ void OptionUI::Update()
 	{
 
 		//選択している詳細のIDを反映。
-		m_isRaytracingDebug = !m_optionDetails[RAYTRACING].m_selectID;
+		m_isRaytracingDebug = m_optionDetails[RAYTRACING].m_selectID;
 
 		break;
 	}
@@ -119,11 +120,11 @@ void OptionUI::Update()
 
 		break;
 	}
-	case SEA:
+	case PAUSE:
 	{
 
 		//選択している詳細のIDを反映。
-		SeaEffect::Instance()->ChangeSeaEffect(m_optionDetails[SEA].m_selectID);
+		m_isPause = m_optionDetails[PAUSE].m_selectID;
 
 		break;
 	}
