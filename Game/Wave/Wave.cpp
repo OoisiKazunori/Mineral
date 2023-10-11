@@ -8,6 +8,7 @@
 #include "../Game/ResultFlag.h"
 #include "../Game/Tutorial.h"
 #include "../Wave/WaveMgr.h"
+#include "../Game/UI/OptionUI.h"
 
 Wave::Wave(const InitWaveData& arg_initData)
 {
@@ -45,7 +46,8 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 	}
 
 	//タイトルだったらタイマーを1二固定する。
-	if (TitleFlag::Instance()->m_isTitle) {
+	if (TitleFlag::Instance()->m_isTitle)
+	{
 		m_nowTime.m_time = 1;
 	}
 
@@ -100,7 +102,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 	}
 
 	//リザルト中は時間を進めない。
-	if (!ResultFlag::Instance()->m_isResult) {
+	if (!ResultFlag::Instance()->m_isResult && !OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID) {
 
 		//夜時間だったら
 		if (m_isNight) {
@@ -197,58 +199,81 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			}
 		}
 
-		if (!TitleFlag::Instance()->m_isTitle) {
+		//敵のスポーンの最大時間
+		int enemyMaxSpawnTime = 0;
+		for (auto& index : m_enemyWaveInfo) {
 
-			//ディレクショナルライトの方向を変えて昼夜を表現
-			if (m_isNight)
-			{
-				//夜
-				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.4472f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
-			}
-			else
-			{
-				//昼
-				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
-			}
-			//日中の雨の時間帯
-			if (!m_isNight && m_nowTime.m_weather == RAIN)
-			{
-				GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.648f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
-			}
+			if (index.m_spawnFrame < enemyMaxSpawnTime) continue;
 
-			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.Normalize();
-
-			//ライトのアップデート
-			PointLightMgr::Instance()->Update(m_isNight);
-
+			enemyMaxSpawnTime = index.m_spawnFrame;
 		}
 
-	}
+		if (m_isNight) {
 
-	//敵のスポーンの最大時間
-	int enemyMaxSpawnTime = 0;
-	for (auto& index : m_enemyWaveInfo) {
 
-		if (index.m_spawnFrame < enemyMaxSpawnTime) continue;
+			//最後の敵が沸いていたら。
+			bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime.m_time;
+			bool isZeroEnemy = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
+			if (isEnemyEnd && isZeroEnemy) {
 
-		enemyMaxSpawnTime = index.m_spawnFrame;
+				//時間経過を速める。
+				m_nowTime.m_time = std::clamp(m_nowTime.m_time + 20, 0, m_nightTime.m_time);
 
-	}
-
-	if (m_isNight) {
-
-		//最後の敵が沸いていたら。
-		bool isEnemyEnd = enemyMaxSpawnTime < m_nowTime.m_time;
-		bool isZeroEnemy = arg_enemyMgr.lock()->GetAliveEnemyCount() <= 0;
-		if (isEnemyEnd && isZeroEnemy) {
-
-			//時間経過を速める。
-			m_nowTime.m_time = std::clamp(m_nowTime.m_time + 20, 0, m_nightTime.m_time);
+			}
 
 		}
-
 	}
 
+	if (!TitleFlag::Instance()->m_isTitle &&
+		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 0)
+	{
+		//ディレクショナルライトの方向を変えて昼夜を表現
+		if (m_isNight)
+		{
+			//夜
+			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.4472f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+		}
+		//日中の雨の時間帯
+		else if (!m_isNight && m_nowTime.m_weather == RAIN)
+		{
+			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.648f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+		}
+		else
+		{
+			//昼
+			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+		}
+
+
+		GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.Normalize();
+
+		//ライトのアップデート
+		PointLightMgr::Instance()->Update(m_isNight);
+	}
+	else if (OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID)
+	{
+		//昼
+		if (OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1 &&
+			!OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID)
+		{
+			//昼
+			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+		}
+		//日中の雨の時間帯
+		else if (OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1 &&
+			OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID)
+		{
+			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.648f, 0.894f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+		}
+		else
+		{
+			//昼
+			GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir += (KazMath::Vec3<float>(0.0f, -0.894f, 0.4472f) - GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir) / 30.0f;
+		}
+		GBufferMgr::Instance()->m_lightConstData.m_dirLight.m_dir.Normalize();
+		//ライトのアップデート
+		PointLightMgr::Instance()->Update(OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 2);
+	}
 }
 
 void Wave::Active()

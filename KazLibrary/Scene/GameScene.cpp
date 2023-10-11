@@ -382,9 +382,14 @@ void GameScene::Update()
 
 	Tutorial::Instance()->Update();
 
-
-
-	if (WaveMgr::Instance()->GetIsRain())
+	//ゲーム内で雨が降っている時か、設定で降らす時はtrue
+	bool rainFlag = WaveMgr::Instance()->GetIsRain() || OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 2;
+	//Optionで雨をOffに変更したら雨を降らせない
+	if (OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 1)
+	{
+		rainFlag = false;
+	}
+	if (rainFlag)
 	{
 		m_itWasRainFlag = true;
 		m_rainSoundSEVolume += 10;
@@ -403,8 +408,9 @@ void GameScene::Update()
 	}
 	KazSoundManager::Instance()->ChangeSoundMem(m_rainSoundSE, m_rainSoundSEVolume);
 
-	bool rainFlag = WaveMgr::Instance()->GetIsRain() || OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID;
-	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight());
+
+
+	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight() && OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID != 1);
 	m_rainVFX.Update(rainFlag, m_player->GetPosZeroY());
 	m_ripplesVFX.Update(rainFlag, m_player->GetPosZeroY());
 
