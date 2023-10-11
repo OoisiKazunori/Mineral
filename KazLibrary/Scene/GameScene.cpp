@@ -241,7 +241,7 @@ void GameScene::Update()
 {
 	using namespace KazMath;
 
-	m_pauseFlag = OptionUI::Instance()->m_isPause;
+	m_pauseFlag = OptionUI::Instance()->m_isPause || OptionUI::Instance()->m_isDisplayUI || OptionUI::Instance()->m_isChangeDisplayUI;
 
 	if (StopMgr::Instance()->GetGameSpeed() != 1.0f)
 	{
