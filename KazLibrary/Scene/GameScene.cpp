@@ -384,11 +384,13 @@ void GameScene::Update()
 
 	//ゲーム内で雨が降っている時か、設定で降らす時はtrue
 	bool rainFlag = WaveMgr::Instance()->GetIsRain() || OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 2;
-	//Optionで雨をOffに変更したら雨を降らせない
-	if (OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 1)
+	//Optionで雨をOffに変更したら雨を降らせない.昼の間は降らせない
+	if (OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 1||
+		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1)
 	{
 		rainFlag = false;
 	}
+
 	if (rainFlag)
 	{
 		m_itWasRainFlag = true;
