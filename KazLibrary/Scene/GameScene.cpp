@@ -149,8 +149,7 @@ GameScene::GameScene(DrawingByRasterize& arg_rasterize)
 
 	m_rainSoundSE = KazSoundManager::Instance()->LoadSoundMem("Resource/Sound/rain.wav");
 	m_rainSoundSEVolume = 0;
-	m_maxRainSoundSEVolume = 100;
-	KazSoundManager::Instance()->PlaySoundMem(m_rainSoundSE, m_maxRainSoundSEVolume, true);
+	m_maxRainSoundSEVolume = 10;
 }
 
 GameScene::~GameScene()
@@ -210,6 +209,8 @@ void GameScene::Init()
 	m_slapEffectIndex = 0;
 	m_pauseFlag = false;
 	m_itWasRainFlag = false;
+
+	KazSoundManager::Instance()->PlaySoundMem(m_rainSoundSE, m_maxRainSoundSEVolume, true);
 }
 
 void GameScene::PreInit()
@@ -393,9 +394,13 @@ void GameScene::Update()
 	const bool offRainFlag = OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 1;
 	//ゲーム内では雨だが、設定で昼にしたい場合
 	const bool rainButNoonFlag = rainFlag && OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1;
+	//雨の設定はONだが時間帯はゲーム基準にしている
+	const bool onRainButInGameTimeFlag =
+		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 0 &&
+		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 2;
 
 	//雨の有効化
-	bool enableToRainFlag = rainFlag || rainAndNoonOrNightFlag;
+	bool enableToRainFlag = rainFlag || rainAndNoonOrNightFlag || onRainButInGameTimeFlag;
 	//雨の無効化
 	if (offRainFlag || (rainButNoonFlag && !rainAndNoonOrNightFlag))
 	{
@@ -406,7 +411,7 @@ void GameScene::Update()
 	if (enableToRainFlag)
 	{
 		m_itWasRainFlag = true;
-		m_rainSoundSEVolume += 10;
+		m_rainSoundSEVolume += 1;
 		if (m_maxRainSoundSEVolume <= m_rainSoundSEVolume)
 		{
 			m_rainSoundSEVolume = m_maxRainSoundSEVolume;
@@ -414,7 +419,7 @@ void GameScene::Update()
 	}
 	else
 	{
-		m_rainSoundSEVolume -= 10;
+		m_rainSoundSEVolume -= 1;
 		if (m_rainSoundSEVolume <= 0)
 		{
 			m_rainSoundSEVolume = 0;
