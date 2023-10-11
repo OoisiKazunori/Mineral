@@ -121,6 +121,7 @@ public:
 	enum DEBUG_NAME {
 		RAYTRACING,
 		TIMEZONE,
+		RAIN,
 		PAUSE,
 		EXIT,
 	};

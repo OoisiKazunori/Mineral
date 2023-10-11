@@ -31,13 +31,15 @@ void OptionUI::Setting()
 	//小見出しを設定。
 	m_headlines.emplace_back(OptionHeadline("RAYTRACING", KazMath::Vec2<float>(0, 0), 32.0f, RAYTRACING));
 	m_headlines.emplace_back(OptionHeadline("TIMEZONE", KazMath::Vec2<float>(0, 0), 32.0f, TIMEZONE));
+	m_headlines.emplace_back(OptionHeadline("RAIN", KazMath::Vec2<float>(0, 0), 32.0f, RAIN));
 	m_headlines.emplace_back(OptionHeadline("PAUSE", KazMath::Vec2<float>(0, 0), 32.0f, PAUSE));
 	m_headlines.emplace_back(OptionHeadline("EXIT", KazMath::Vec2<float>(0, 0), 32.0f, EXIT));
 	m_optionUI.emplace_back(OptionHeadline("OPTION", KazMath::Vec2<float>(0, 0), OPTION_FONTSIZE, 0));
 
 	//オプション詳細を設定。
 	m_optionDetails.emplace_back(OptionDetails("DEBUG", { DrawStringData("OFF"),DrawStringData("ON") }, KazMath::Vec2<float>(), RAYTRACING));
-	m_optionDetails.emplace_back(OptionDetails("TIME", { DrawStringData("EVENING"),DrawStringData("NOON") }, KazMath::Vec2<float>(), TIMEZONE));
+	m_optionDetails.emplace_back(OptionDetails("TIME", { DrawStringData("IN-GAME TIME"),DrawStringData("NOON"),DrawStringData("NIGHT") }, KazMath::Vec2<float>(), TIMEZONE));
+	m_optionDetails.emplace_back(OptionDetails("", { DrawStringData("OFF"),DrawStringData("ON"), }, KazMath::Vec2<float>(), RAIN));
 	m_optionDetails.emplace_back(OptionDetails("", { DrawStringData("OFF"),DrawStringData("ON"), }, KazMath::Vec2<float>(), PAUSE));
 	m_optionDetails.emplace_back(OptionDetails("", { DrawStringData("") }, KazMath::Vec2<float>(), EXIT));
 
@@ -125,13 +127,6 @@ void OptionUI::Update()
 
 		//選択している詳細のIDを反映。
 		m_isPause = m_optionDetails[PAUSE].m_selectID;
-
-		break;
-	}
-	case EXIT:
-	{
-
-		//EXITが選ばれている状態！
 
 		break;
 	}
