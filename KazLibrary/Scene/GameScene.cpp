@@ -382,19 +382,28 @@ void GameScene::Update()
 
 	Tutorial::Instance()->Update();
 
-	//ゲーム内で雨が降っている時か、設定で降らす時はtrue
-	bool rainFlag = WaveMgr::Instance()->GetIsRain() ||
-		(OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 2 &&
-		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1);
-	//Optionで雨をOffに変更したら雨を降らせない.昼の設定は降らせない
-	if (OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 1 ||
-		(OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 0 &&
-		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1))
-	{
-		rainFlag = false;
-	}
+	//ゲーム内で雨が降っている場合
+	const bool rainFlag = WaveMgr::Instance()->GetIsRain();
+	//雨の設定で昼か夜を設定している場合
+	const bool rainAndNoonOrNightFlag =
+		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 2 &&
+		(OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1 ||
+			OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 2);
+	//雨の設定は無効
+	const bool offRainFlag = OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::RAIN].m_selectID == 1;
+	//ゲーム内では雨だが、設定で昼にしたい場合
+	const bool rainButNoonFlag = rainFlag && OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1;
 
-	if (rainFlag)
+	//雨の有効化
+	bool enableToRainFlag = rainFlag || rainAndNoonOrNightFlag;
+	//雨の無効化
+	if (offRainFlag || (rainButNoonFlag && !rainAndNoonOrNightFlag))
+	{
+		enableToRainFlag = false;
+	}
+	//Optionで雨をOffに変更したら雨を降らせない.昼の設定は降らせない
+
+	if (enableToRainFlag)
 	{
 		m_itWasRainFlag = true;
 		m_rainSoundSEVolume += 10;
@@ -416,8 +425,8 @@ void GameScene::Update()
 
 
 	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight() && OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID != 1);
-	m_rainVFX.Update(rainFlag, m_player->GetPosZeroY());
-	m_ripplesVFX.Update(rainFlag, m_player->GetPosZeroY());
+	m_rainVFX.Update(enableToRainFlag, m_player->GetPosZeroY());
+	m_ripplesVFX.Update(enableToRainFlag, m_player->GetPosZeroY());
 
 	GBufferMgr::Instance()->m_cameraEyePosData.m_noiseTimer += 0.1f;
 

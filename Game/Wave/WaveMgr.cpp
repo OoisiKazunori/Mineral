@@ -73,7 +73,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	//2ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 3200;	//夜の時間 フレーム数
-	initData.m_dayTime.m_weather = RAIN;
+	initData.m_dayTime.m_weather = SUNNY;
 	initData.m_nightTime.m_weather = SUNNY;
 	initData.m_tree = { 4 };
 	initData.m_rock = {  };		//有効化時に生成される岩の数
