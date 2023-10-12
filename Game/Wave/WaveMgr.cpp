@@ -5,6 +5,7 @@
 #include "../Game/ResultFlag.h"
 #include "../Game/Tutorial.h"
 #include "../Game/UI/NumberFont.h"
+#include "../KazLibrary/Easing/easing.h"
 #include <Imgui/imgui.h>
 
 void WaveMgr::Setting(std::weak_ptr<Core> m_core)
@@ -43,7 +44,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 
 	//1ウェーブ目 -----------------------------------------------------------------------------------------
-	initData.m_dayTime.m_time = 60;
+	initData.m_dayTime.m_time = 10;
 	initData.m_nightTime.m_time = 1800;
 	initData.m_dayTime.m_weather = SUNNY;
 	initData.m_nightTime.m_weather = SUNNY;
@@ -53,11 +54,11 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	initData.m_mineralRock = { 1 };		//有効化時に生成されるミネラル岩のIndex 1スタート
 	//敵を追加していく。
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
+	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);/*
+	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
+	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);*/
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINETSUMURI, 180);
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	//enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINETSUMURI, 0);
@@ -305,6 +306,15 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	m_timerUI.Load("Resource/UI/Timer/Timer.png");
 	m_frameUI.Load("Resource/UI/Timer/Frame.png");
 
+	m_waveCountUI.Load("Resource/UI/waveCount.png");
+	m_waveCountUI.m_transform.scale = { 813.0f * 0.5f, 131.0f * 0.5f };
+
+	m_waveCountNumberUI.Load("Resource/UI/waveCount.png");
+	m_waveCountNumberUI.m_transform.scale = { 131.0f * 0.5f, 131.0f * 0.5f };
+
+	m_drawWaveCountUIStatus = DrawWaveCountUIStatus::EXIT;
+	m_drawWaveCountTimer = DRAW_WAVE_COUNT_TIMER;
+
 	//日数表示用UI
 	m_daysUI.Load("Resource/UI/NumFont/Day.png");
 	m_daysUI.m_transform.pos = { 108,230 };
@@ -392,6 +402,9 @@ void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 			++m_nowWaveIndex;
 			m_waves[m_nowWaveIndex]->Active();
 
+			m_drawWaveCountUIStatus = DrawWaveCountUIStatus::APPEAR;
+			m_drawWaveCountTimer = 0.0f;
+
 		}
 
 	}
@@ -410,6 +423,64 @@ void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 	//日数を表示。
 	m_dayNumerUI.m_texture = NumberFont::Instance()->m_font[std::clamp(static_cast<int>(m_nowWaveIndex + 1), 0, 9)];
+
+	//残りウェーブ数のUIを更新。
+	switch (m_drawWaveCountUIStatus)
+	{
+	case WaveMgr::DrawWaveCountUIStatus::APPEAR:
+	{
+		m_drawWaveCountTimer = std::clamp(m_drawWaveCountTimer + 1.0f, 0.0f, DRAW_WAVE_COUNT_TIMER);
+
+		//場所を更新。
+		float easingTimer = EasingMaker(Out, Cubic, m_drawWaveCountTimer / DRAW_WAVE_COUNT_TIMER);
+
+		m_waveCountUI.m_transform.pos.y = 720.0f / 2.0f;
+		m_waveCountUI.m_transform.pos.x = DRAW_WAVE_COUNT_APPEAR_X + (DRAW_WAVE_COUNT_STAY_X - DRAW_WAVE_COUNT_APPEAR_X) * easingTimer;
+
+		if (DRAW_WAVE_COUNT_TIMER <= m_drawWaveCountTimer) {
+
+			m_drawWaveCountUIStatus = DrawWaveCountUIStatus::STAY;
+			m_drawWaveCountTimer = 0.0f;
+
+		}
+
+	}
+	break;
+	case WaveMgr::DrawWaveCountUIStatus::STAY:
+	{
+
+		m_drawWaveCountTimer = std::clamp(m_drawWaveCountTimer + 1.0f, 0.0f, DRAW_WAVE_COUNT_TIMER_STAY);
+
+		if (DRAW_WAVE_COUNT_TIMER_STAY <= m_drawWaveCountTimer) {
+
+			m_drawWaveCountUIStatus = DrawWaveCountUIStatus::EXIT;
+			m_drawWaveCountTimer = 0.0f;
+
+		}
+
+	}
+	break;
+	case WaveMgr::DrawWaveCountUIStatus::EXIT:
+	{
+
+		m_drawWaveCountTimer = std::clamp(m_drawWaveCountTimer + 1.0f, 0.0f, DRAW_WAVE_COUNT_TIMER);
+
+		//場所を更新。
+		float easingTimer = EasingMaker(In, Cubic, m_drawWaveCountTimer / DRAW_WAVE_COUNT_TIMER);
+
+		m_waveCountUI.m_transform.pos.y = 720.0f / 2.0f;
+		m_waveCountUI.m_transform.pos.x = DRAW_WAVE_COUNT_STAY_X + (DRAW_WAVE_COUNT_EXIT_X - DRAW_WAVE_COUNT_STAY_X) * easingTimer;
+
+	}
+	break;
+	default:
+		break;
+	}
+
+
+	m_waveCountNumberUI.m_transform.pos = m_waveCountUI.m_transform.pos;
+	m_waveCountNumberUI.m_transform.pos.x -= 50.0f;
+	m_waveCountNumberUI.m_texture = NumberFont::Instance()->m_font[std::clamp(static_cast<int>(7 - m_nowWaveIndex), 0, 9)];
 
 }
 
@@ -467,6 +538,9 @@ void WaveMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& ar
 
 	m_dayNumerUI.m_transform.pos = { 170.0f, 230.0f };
 	m_dayNumerUI.m_transform.scale = { 30.0f, 30.0f };
+
+	m_waveCountUI.Draw(arg_rasterize);
+	m_waveCountNumberUI.Draw(arg_rasterize);
 
 }
 

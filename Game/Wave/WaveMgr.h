@@ -33,6 +33,20 @@ private:
 	//ì˙êîÇÃUI
 	DrawCallUISet m_daysUI;
 	DrawCallUISet m_dayNumerUI;
+	DrawCallUISet m_waveCountUI;
+	DrawCallUISet m_waveCountNumberUI;
+
+	enum class DrawWaveCountUIStatus {
+		APPEAR,
+		STAY,
+		EXIT,
+	}m_drawWaveCountUIStatus;
+	float m_drawWaveCountTimer;
+	const float DRAW_WAVE_COUNT_TIMER = 30.0f;
+	const float DRAW_WAVE_COUNT_TIMER_STAY = 30.0f;
+	const float DRAW_WAVE_COUNT_APPEAR_X = -1000.0f;
+	const float DRAW_WAVE_COUNT_STAY_X = 1280.0f / 2.0f + 40.0f;
+	const float DRAW_WAVE_COUNT_EXIT_X = DRAW_WAVE_COUNT_STAY_X + 1000.0f;
 
 public:
 
