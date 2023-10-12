@@ -30,7 +30,7 @@ RWStructuredBuffer<ParticleUpdate> particleBuffer : register(u0);
 RWStructuredBuffer<uint> shaderTable : register(u1);
 AppendStructuredBuffer<OutputData> drawData : register(u2);
 
-static const float range = 400.0f;
+static const float range = 800.0f;
 
 [numthreads(1024, 1, 1)]
 void InitMain(uint3 groupId : SV_GroupID, uint groupIndex : SV_GroupIndex,uint3 groupThreadID : SV_GroupThreadID)
