@@ -5,7 +5,7 @@ Cloud::Cloud()
 
 	for (int index = 0; index < CLOUD_COUNT; ++index) {
 
-		m_cloudModel[index].Load("Resource/Cloud/", "Cloud.gltf");
+		m_cloudModel[index].Load("Resource/VFX/smoke/", "Slap_VFX.gltf");
 
 		m_cloudSpeed[index] = KazMath::Rand(MIN_SPEED, MAX_SPEED);
 
