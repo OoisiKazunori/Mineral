@@ -162,7 +162,7 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 	if (m_isActive && m_isShell) {
 		const float KING_SHELL_SCALE = 2.0f;
 		m_shellTransform.scale = { SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE ,SCALE + KING_SHELL_SCALE };
-		m_shellTransform.pos -= m_forwardVec * 10.0f;
+		m_shellTransform.pos -= m_forwardVec * 20.0f;
 
 		//ÇøÇÂÇ¡Ç∆Xé≤Ç…âÒì]Ç≥ÇπÇÈÅB
 		//m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 0,0,1 }, m_shellTransform.quaternion).ConvertXMVECTOR(), 0.1f));
@@ -1228,7 +1228,7 @@ void MineTsumuri::UpdateShell() {
 	m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis({ 0,1,0 }, -DirectX::XM_PIDIV2));
 
 	//äkÇÃà íuÇåvéZÅB
-	const float SHELL_POS_Z = 2.0f;
+	const float SHELL_POS_Z = 10.0f;
 	m_shellTransform.pos -= m_forwardVec * SHELL_POS_Z;
 	m_shellPosY += (SHELL_POS_Y - m_shellPosY) / 5.0f;
 	m_shellTransform.pos += KazMath::Vec3<float>(0, 1, 0) * m_shellPosY;

@@ -44,7 +44,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 	//1ウェーブ目 -----------------------------------------------------------------------------------------
 	initData.m_dayTime.m_time = 60;
-	initData.m_nightTime.m_time = 60 * 10;
+	initData.m_nightTime.m_time = 1800;
 	initData.m_dayTime.m_weather = SUNNY;
 	initData.m_nightTime.m_weather = SUNNY;
 
@@ -57,7 +57,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 180);
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINETSUMURI, 360);
+	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINETSUMURI, 180);
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
 	//enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINETSUMURI, 0);
