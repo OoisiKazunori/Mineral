@@ -71,7 +71,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 
 	//2ウェーブ目 -----------------------------------------------------------------------------------------
-	initData.m_dayTime.m_time = 1800;		//日中の時間 フレーム数
+	initData.m_dayTime.m_time = 60 * 25;		//日中の時間 フレーム数
 	initData.m_nightTime.m_time = 3200;	//夜の時間 フレーム数
 	initData.m_dayTime.m_weather = SUNNY;
 	initData.m_nightTime.m_weather = SUNNY;
@@ -94,6 +94,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 360);
 	initData.m_enemyWaveInfo = enemyInfo;
 	//ウェーブを追加。
+	initData.m_enemyWaveInfo = enemyInfo;
 	m_waves.emplace_back(std::make_shared<Wave>(initData));
 	enemyInfo.clear();
 
@@ -129,6 +130,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 360);
 	initData.m_enemyWaveInfo = enemyInfo;
 	//ウェーブを追加。
+	initData.m_enemyWaveInfo = enemyInfo;
 	m_waves.emplace_back(std::make_shared<Wave>(initData));
 	enemyInfo.clear();
 
@@ -177,6 +179,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 360);
 	initData.m_enemyWaveInfo = enemyInfo;
 	//ウェーブを追加。
+	initData.m_enemyWaveInfo = enemyInfo;
 	m_waves.emplace_back(std::make_shared<Wave>(initData));
 	enemyInfo.clear();
 
@@ -212,6 +215,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 360);
 	initData.m_enemyWaveInfo = enemyInfo;
 	//ウェーブを追加。
+	initData.m_enemyWaveInfo = enemyInfo;
 	m_waves.emplace_back(std::make_shared<Wave>(initData));
 	enemyInfo.clear();
 
@@ -245,6 +249,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKING, 0);
 	initData.m_enemyWaveInfo = enemyInfo;
 	//ウェーブを追加。
+	initData.m_enemyWaveInfo = enemyInfo;
 	m_waves.emplace_back(std::make_shared<Wave>(initData));
 	enemyInfo.clear();
 
@@ -292,6 +297,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKING, 900);
 	initData.m_enemyWaveInfo = enemyInfo;
 	//ウェーブを追加。
+	initData.m_enemyWaveInfo = enemyInfo;
 	m_waves.emplace_back(std::make_shared<Wave>(initData));
 	enemyInfo.clear();
 
