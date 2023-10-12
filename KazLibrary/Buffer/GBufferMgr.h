@@ -53,6 +53,10 @@ public:
 	{
 		return m_cameraPosBuffer;
 	}
+	const KazBufferHelper::BufferData& GetPlayerBuffer()
+	{
+		return m_playerBuffer;
+	}
 
 
 	/// <summary>
@@ -145,6 +149,7 @@ private:
 	std::vector<DXGI_FORMAT>m_gBufferFormatArray;
 
 	KazBufferHelper::BufferData m_cameraPosBuffer;
+	KazBufferHelper::BufferData m_playerBuffer;
 
 	//ç≈èIçáê¨åãâ 
 	KazBufferHelper::BufferData m_finalGBuffer;

@@ -119,6 +119,8 @@ private:
 	KazMath::Vec2<float> UI_HPBAR_POS = { 183.0f, 666.0f };
 	KazMath::Vec2<float> UI_HPBAR_SCALE = { 282.0f, 32.0f };
 
+	float m_groundCircle;
+
 
 public:
 

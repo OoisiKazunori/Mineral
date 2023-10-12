@@ -157,6 +157,7 @@ GBufferMgr::GBufferMgr()
 	}
 
 	m_cameraPosBuffer = KazBufferHelper::SetConstBufferData(sizeof(CameraEyePosBufferData));
+	m_playerBuffer = KazBufferHelper::SetConstBufferData(sizeof(DirectX::XMVECTOR));
 	m_lightBuffer = KazBufferHelper::SetConstBufferData(sizeof(LightConstData));
 	m_lightConstData.m_dirLight.m_dir = KazMath::Vec3<float>(0.0f, -0.4f, 0.8f).GetNormal();
 	m_lightConstData.m_dirLight.m_isActive = true;

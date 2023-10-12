@@ -10,6 +10,7 @@
 #include "../Game/ResultFlag.h"
 #include"../Game/Tutorial.h"
 #include"../Game/Effect/ShockWave.h"
+#include"../KazLibrary/Buffer/GBufferMgr.h"
 
 Player::Player()
 {
@@ -82,6 +83,8 @@ void Player::Init()
 
 	m_hpUI.m_transform.scale = UI_HPBAR_SCALE;
 	m_hpUI.m_transform.pos = UI_HPBAR_POS;
+
+	m_groundCircle = 29.7f;
 
 
 }
@@ -554,6 +557,20 @@ void Player::Update()
 		}
 
 	}
+
+	if (m_daipanStatus == DAIPAN_STATE::CHARGE) {
+		m_groundCircle += (30.5f - m_groundCircle) / 5.0f;
+	}
+	else {
+		m_groundCircle += (29.7f - m_groundCircle) / 5.0f;
+	}
+
+	KazMath::Vec4<float> playerPos;
+	playerPos.x = m_transform.pos.x;
+	playerPos.y = DEFAULT_Y;
+	playerPos.z = m_transform.pos.z;
+	playerPos.a = m_groundCircle;
+	GBufferMgr::Instance()->GetPlayerBuffer().bufferWrapper->TransData(&playerPos, sizeof(DirectX::XMVECTOR));
 
 }
 

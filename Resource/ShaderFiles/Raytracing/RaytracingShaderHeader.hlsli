@@ -111,6 +111,11 @@ struct ShockWaveParam
     ShockWave m_shockWave[8];
 };
 
+struct Player
+{
+    float3 m_pos;
+    float m_pad;
+};
 
 
 //各リソース等
@@ -128,6 +133,7 @@ ConstantBuffer<CameraEyePosConstData> cameraEyePos : register(b0);
 ConstantBuffer<LightData> lightData : register(b1);
 ConstantBuffer<ShockWaveParam> shockWaveData : register(b2);
 ConstantBuffer<DebugRaytracingParam> debugRaytracingParam : register(b3);
+ConstantBuffer<Player> playerInfo : register(b4);
 
 //GBuffer
 Texture2D<float4> albedoMap : register(t1);

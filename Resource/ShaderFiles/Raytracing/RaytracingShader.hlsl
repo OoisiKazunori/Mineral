@@ -208,27 +208,35 @@ void mainRayGen()
         
     
     //上向きの面だったら、プレイヤーの落下地点を表示する用のレイを飛ばす。
-    bool isFloor = 0.5f < normalColor.y;
-    if (isFloor)
+    bool isFloor = 0.5f < normalColor.y && worldColor.y <= 1.0f;
+    bool isNearPlayer = length(playerInfo.m_pos - worldColor.xyz) < playerInfo.m_pad;
+    if (isFloor && isNearPlayer)
     {
-            
-        //上方向にレイを飛ばす。
-        Payload payloadData;
-        payloadData.m_emissive = float3(0.0f, 0.0f, 0.0f);
-        payloadData.m_color = float3(0.0f, 0.0f, 0.0f); //色を真っ黒にしておく。レイを飛ばしてどこにもあたらなかった時に呼ばれるMissShaderが呼ばれたらそこで1を書きこむ。
-        payloadData.m_rayID = 3;
-        
-        //レイを撃つ
-        CastRay(payloadData, worldColor.xyz + normalColor.xyz, float3(0, 1, 0), 100.0f, MISS_LIGHTING, RAY_FLAG_NONE, gRtScene, 0x01);
-                
-        if (payloadData.m_color.x <= 0.9f)
-        {
-                
-            albedoColor = float4(0.76f, 0.24f, 0.25f, 1);
-                
-        }
-
+        const float3 NIGHT_SHADOW_COLOR = float3(0.10f, 0.12f, 0.18f);
+        const float3 DAY_SHADOW_COLOR = float3(0.24f, 0.15f, 0.17f);
+        albedoColor.xyz = DAY_SHADOW_COLOR * dayRate + NIGHT_SHADOW_COLOR * (1.0f - dayRate);
+        albedoColor = float4(0.76f, 0.24f, 0.25f, 1);
     }
+    //if (isFloor)
+    //{
+            
+    //    //上方向にレイを飛ばす。
+    //    Payload payloadData;
+    //    payloadData.m_emissive = float3(0.0f, 0.0f, 0.0f);
+    //    payloadData.m_color = float3(0.0f, 0.0f, 0.0f); //色を真っ黒にしておく。レイを飛ばしてどこにもあたらなかった時に呼ばれるMissShaderが呼ばれたらそこで1を書きこむ。
+    //    payloadData.m_rayID = 3;
+        
+    //    //レイを撃つ
+    //    CastRay(payloadData, worldColor.xyz + normalColor.xyz, float3(0, 1, 0), 100.0f, MISS_LIGHTING, RAY_FLAG_NONE, gRtScene, 0x01);
+                
+    //    if (payloadData.m_color.x <= 0.9f)
+    //    {
+                
+    //        albedoColor = float4(0.76f, 0.24f, 0.25f, 1);
+                
+    //    }
+
+    //}
     
     
     //マテリアルのIDをもとに、反射屈折のレイを飛ばす。
