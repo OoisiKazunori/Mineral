@@ -167,6 +167,11 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 		//ÇøÇÂÇ¡Ç∆Xé≤Ç…âÒì]Ç≥ÇπÇÈÅB
 		//m_shellTransform.quaternion = DirectX::XMQuaternionMultiply(m_shellTransform.quaternion, DirectX::XMQuaternionRotationAxis(TransformVec3({ 0,0,1 }, m_shellTransform.quaternion).ConvertXMVECTOR(), 0.1f));
 	}
+	if (!m_isActive) {
+
+		m_shellTransform.scale -= m_shellTransform.scale / 2.0f;
+
+	}
 
 	if (!m_isActive) {
 		return;
