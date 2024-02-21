@@ -53,9 +53,6 @@ void Player::Init()
 	m_isInputDaipan = false;
 	m_isDaipanStrong = false;
 	m_isStun = false;
-	m_isBreakUp = false;
-	m_isOldBreakUp = false;
-	m_isWaveHand = false;
 	m_daipanStatus = NONE;
 	m_daipanStartPosY = 0;
 	m_stanGravity = 0;
@@ -91,12 +88,6 @@ void Player::Init()
 
 void Player::Update()
 {
-
-	//回転を元に戻す。
-	if (!m_isWaveHand) {
-		m_baseQ = m_forwardQ;
-	}
-
 	//座標を保存しておく。
 	m_oldTransform = m_transform;
 
@@ -172,11 +163,6 @@ void Player::Update()
 		//台パンが入力されているか。
 		m_isOldInputDaipan = m_isInputDaipan;
 		m_isInputDaipan = KeyBoradInputManager::Instance()->InputState(DIK_SPACE) || ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_A);
-
-		//解散状態かを更新
-		m_isOldBreakUp = m_isBreakUp;
-		m_isBreakUp = KeyBoradInputManager::Instance()->InputState(DIK_T) || ControllerInputManager::Instance()->InputState(XINPUT_GAMEPAD_B);
-
 	}
 
 	//台パン中はカメラを追尾させない仕様を切るためのやつ。確認を取ったら正式に実装する。
@@ -532,30 +518,6 @@ void Player::Update()
 		{
 			Tutorial::Instance()->is_next = true;
 		}
-	}
-
-	//隊列解除のトリガーだったら
-	if (m_isBreakUp && !m_isOldBreakUp && !m_isWaveHand) {
-
-		m_isWaveHand = true;
-		m_waveHandTimer = 0;
-
-	}
-	if (m_isWaveHand) {
-
-		const float WAVE_HAND_TIMER = 0.4f;
-		m_waveHandTimer += WAVE_HAND_TIMER;
-
-		//手を振る。
-		const float WAVE_HANDLE = DirectX::XM_PI / 4.0f;
-		m_drawTransform.quaternion = DirectX::XMQuaternionMultiply(m_drawTransform.quaternion, DirectX::XMQuaternionRotationAxis({ 0,1,0,0 }, std::sinf(m_waveHandTimer) * WAVE_HANDLE));
-
-		if (DirectX::XM_2PI * 1.5f < m_waveHandTimer) {
-
-			m_isWaveHand = false;
-
-		}
-
 	}
 
 	if (m_daipanStatus == DAIPAN_STATE::CHARGE) {

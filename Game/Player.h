@@ -93,12 +93,6 @@ private:
 	float m_autoRecoveryDelayTimer;
 	const float AUTO_RECOVERY_DELAY_TIMER = 10.0f;
 
-	//ミネラル解散関連。
-	bool m_isBreakUp;
-	bool m_isOldBreakUp;
-	bool m_isWaveHand;
-	float m_waveHandTimer;
-
 	//立ち絵をかえるタイマー
 	int m_damageChangeDadanUITimer;
 	const int DAMAGE_CHANGE_DADAN_UI_TIMER = 60;
@@ -153,8 +147,6 @@ public:
 	bool GetIsDaipanTrigger() { return (m_isDaipanStrong ? DAIPAN_NOW_STRONG_TIMER : DAIPAN_NOW_TIMER) - 1.0f == m_daipanTimer; }
 	//強台パンか？
 	bool GetIsStrongDaipan() { return m_isDaipanStrong; }
-	//解散状態か？
-	bool GetIsBreakUP() { return m_isBreakUp; }
 
 	void Damage(int arg_damage);
 	bool GetIsStun() { return m_isStun; }

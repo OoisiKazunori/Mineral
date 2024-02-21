@@ -110,21 +110,6 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 
 	}
 
-	//解散状態だったら。
-	if (arg_player.lock()->GetIsBreakUP()) {
-
-		for (auto& index : m_minerals) {
-
-			//同じオブジェクトだったら飛ばす。
-			if (!index->GetIsAlive()) continue;
-			if (!index->GetIsGathering()) continue;
-
-			index->BreakUP(arg_player.lock()->GetForwardVec());
-
-		}
-
-	}
-
 	//プレイヤーが台パン状態だったら
 	if (arg_player.lock()->GetIsDaipanTrigger() && arg_mineralTarget.lock()->GetCanTarget()) {
 
