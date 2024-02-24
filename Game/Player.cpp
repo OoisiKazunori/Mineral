@@ -394,7 +394,7 @@ void Player::Update()
 	if (m_damageShake < 0.01f) {
 		m_damageShake = 0.0f;
 	}
-	if (m_damageShake < 0.3f)
+	if (m_damageShake < 0.7f)
 	{
 		m_color = KazMath::Color(255, 255, 255, 255);
 	}
