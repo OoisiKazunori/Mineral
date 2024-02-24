@@ -24,6 +24,7 @@ private:
 	int m_hp;
 	int m_deadTimer;
 	const int HP = 6;
+	const int TOGEKURI_HP = 30;
 	const float SCALE = 3.0f;
 
 	//状態ごとの変数
@@ -100,6 +101,7 @@ public:
 	/*オカモトゾーン*/
 	float damageAmount;
 	DrawCallSet m_hpBoxModel;
+	DrawCallSet m_gardHpBoxModel;
 	KazMath::Transform3D m_hpBoxTransform;
 	int m_hpBoxDrawTimer;
 	const int HP_BOX_DRAW_TIME_MAX = 60;

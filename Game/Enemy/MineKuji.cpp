@@ -18,6 +18,7 @@ MineKuji::MineKuji()
 	//m_togekuriHornModel.LoadOutline("Resource/Enemy/Togekuri/", "Togekuri_horn.gltf");
 	/*オカモトゾーン*/
 	m_hpBoxModel.LoadNoLighting("Resource/HpBox/", "Hp_Box.gltf");
+	m_gardHpBoxModel.LoadNoLighting("Resource/HpBox/", "Gard_Hp_Box.gltf");
 	/*オカモトゾーン*/
 	m_attackedScale = 0.0f;
 	m_scale = 0.0f;
@@ -71,7 +72,12 @@ void MineKuji::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_is
 	m_coreAttackDelayTimer = 0;
 	m_coreAttackDelay = KazMath::Rand(MIN_CORE_ATTACK_DELAY, MAX_CORE_ATTACK_DELAY);
 
-	m_hp = HP;
+	if (arg_isTogekuri) {
+		m_hp = TOGEKURI_HP;
+	}
+	else {
+		m_hp = HP;
+	}
 	m_attackedReactionVec = {};
 	m_attackedMineral.reset();
 	m_knockBackVec = {};
@@ -353,7 +359,12 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 
 	if (isDrawHpBox)
 	{
-		m_hpBoxModel.Draw(arg_rasterize, arg_blasVec, m_hpBoxTransform, 0, false);
+		if (m_isTogekuri) {
+			m_gardHpBoxModel.Draw(arg_rasterize, arg_blasVec, m_hpBoxTransform, 0, false);
+		}
+		else {
+			m_hpBoxModel.Draw(arg_rasterize, arg_blasVec, m_hpBoxTransform, 0, false);
+		}
 	}
 	/*オカモトゾーン*/
 
@@ -376,7 +387,12 @@ void MineKuji::Damage(std::weak_ptr<Mineral> arg_mineral, int arg_damage)
 	hpBoxEaseTime = HP_BOX_EASE_TIME_MAX;
 	/*オカモトゾーン*/
 
-	m_hp = std::clamp(m_hp - arg_damage, 0, HP);
+	if (m_isTogekuri) {
+		m_hp = std::clamp(m_hp - arg_damage, 0, TOGEKURI_HP);
+	}
+	else {
+		m_hp = std::clamp(m_hp - arg_damage, 0, HP);
+	}
 
 }
 
