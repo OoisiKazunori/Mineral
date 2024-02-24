@@ -138,6 +138,7 @@
     <ClCompile Include="Game\Effect\TimeZone.cpp" />
     <ClCompile Include="Game\Enemy\EnemyMgr.cpp" />
     <ClCompile Include="Game\Enemy\EnemyRoute.cpp" />
+    <ClCompile Include="Game\Enemy\Jump.cpp" />
     <ClCompile Include="Game\Enemy\MineKuji.cpp" />
     <ClCompile Include="Game\Enemy\MineTsumuri.cpp" />
     <ClCompile Include="Game\Enemy\VirusEnemy.cpp" />
@@ -312,6 +313,7 @@
     <ClInclude Include="Game\Enemy\EnemyData.h" />
     <ClInclude Include="Game\Enemy\EnemyMgr.h" />
     <ClInclude Include="Game\Enemy\EnemyRoute.h" />
+    <ClInclude Include="Game\Enemy\Jump.h" />
     <ClInclude Include="Game\Enemy\MineKuji.h" />
     <ClInclude Include="Game\Enemy\MineTsumuri.h" />
     <ClInclude Include="Game\Enemy\VirusEnemy.h" />

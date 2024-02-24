@@ -111,7 +111,7 @@ void MineTsumuri::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg
 
 	//出現地点をランダム化。
 	m_transform.pos += KazMath::Vec3<float>(KazMath::Rand(-RANDOM_SPAWN_RANGE, RANDOM_SPAWN_RANGE), 0.0f, KazMath::Rand(-RANDOM_SPAWN_RANGE, RANDOM_SPAWN_RANGE));
-
+	m_baseTransform = m_transform;
 }
 
 void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player)
@@ -182,6 +182,12 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 
 	//殻にこもっているときは何もしない。
 	if (!m_inShell) {
+
+		if (m_mode != m_oldMode)
+		{
+			m_attackPlayerFlag = false;
+		}
+		m_oldMode = m_mode;
 
 		//現在の状態によって処理を分ける。
 		switch (m_mode)
@@ -713,6 +719,20 @@ void MineTsumuri::AttackPlayer(std::weak_ptr<Player> arg_player)
 	{
 	case MineTsumuri::ATTACK:
 	{
+		if (!m_attackPlayerFlag)
+		{
+			m_jump.Active();
+		}
+		m_attackPlayerFlag = true;
+		//地面より下に行かないようにする
+		if (m_transform.pos.y <= m_baseTransform.pos.y)
+		{
+			m_transform.pos.y = m_baseTransform.pos.y;
+			m_jump.Finalize();
+		}
+		//ジャンプする
+		m_transform.pos.y = m_baseTransform.pos.y + m_jump.Update();
+
 		//移動速度を上げる。
 		m_coreAttackMoveSpeed = std::clamp(m_coreAttackMoveSpeed + ADD_CORE_ATTACK_SPEED, 0.0f, MAX_CORE_ATTACK_SPEED);
 
@@ -752,7 +772,6 @@ void MineTsumuri::AttackPlayer(std::weak_ptr<Player> arg_player)
 			ShakeMgr::Instance()->m_shakeAmount = 3.0;
 
 		}
-
 	}
 	break;
 	case MineTsumuri::STAY:

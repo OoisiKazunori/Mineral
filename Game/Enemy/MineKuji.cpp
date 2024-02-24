@@ -42,6 +42,7 @@ void MineKuji::Init()
 	m_hpBoxTransform.scale.x = static_cast<float> (HP);
 	/*オカモトゾーン*/
 	m_deadTimer = 0;
+	m_attackTimer = 0;
 }
 
 void MineKuji::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_isTutorialEnemy)
@@ -161,6 +162,12 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 	//座標を保存しておく。
 	m_oldTransform = m_transform;
+
+	if (m_mode != m_oldMode)
+	{
+		m_attackPlayerFlag = false;
+	}
+	m_oldMode = m_mode;
 
 	//現在の状態によって処理を分ける。
 	switch (m_mode)
@@ -592,11 +599,25 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 	{
 	case MineKuji::ATTACK:
 	{
+		const float dis = arg_player.lock()->GetTransform().pos.Distance(m_transform.pos);
+		float attackSpeedWhileJumping = 1.0f;//ジャンプ中の攻撃速度を上げる
+		if (!m_attackPlayerFlag && dis <= 30.0f)
+		{
+			m_jump.Active();
+			m_attackPlayerFlag = true;
+		}
+		if (m_attackPlayerFlag)
+		{
+			attackSpeedWhileJumping = 1.5f;
+		}
+		//ジャンプする
+		m_transform.pos.y += m_jump.Update();
+
 		//移動速度を上げる。
 		m_coreAttackMoveSpeed = std::clamp(m_coreAttackMoveSpeed + ADD_CORE_ATTACK_SPEED, 0.0f, MAX_CORE_ATTACK_SPEED);
 
 		//移動するベクトルを求める。
-		KazMath::Vec3<float> moveDir = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - m_transform.pos);
+		KazMath::Vec3<float> moveDir = KazMath::Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos);
 		float distance = moveDir.Length();
 		moveDir.Normalize();
 
@@ -604,10 +625,10 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 		m_coreAttackMoveSpeed = std::clamp(m_coreAttackMoveSpeed, 0.0f, distance);
 
 		//移動させる。
-		m_transform.pos += moveDir * m_coreAttackMoveSpeed;
+		m_transform.pos += moveDir * (m_coreAttackMoveSpeed * attackSpeedWhileJumping);
 
 		//距離が一定以下になったら待機状態へ
-		distance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - m_transform.pos).Length();
+		distance = KazMath::Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length();
 		if (distance <= arg_player.lock()->GetHitScale() + m_transform.scale.x) {
 
 			m_attackID = STAY;
@@ -627,10 +648,16 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 
 		}
 
+		if (120 <= m_attackTimer)
+		{
+			m_attackID = STAY;
+		}
+		++m_attackTimer;
 	}
 	break;
 	case MineKuji::STAY:
-
+		m_attackTimer = 0;
+		m_attackPlayerFlag = false;
 		m_coreAttackDelayTimer = std::clamp(m_coreAttackDelayTimer + 1, 0, m_coreAttackDelay);
 		if (m_coreAttackDelay <= m_coreAttackDelayTimer) {
 
@@ -862,6 +889,7 @@ void MineKuji::Move() {
 
 		m_gravity = 0.0f;
 		m_transform.pos.y = UNDER_Y;
+		m_jump.Finalize();
 
 	}
 
