@@ -1039,27 +1039,11 @@ void Mineral::UpdateAttack(std::weak_ptr<Player> arg_player, float& arg_moveSECo
 
 		m_isAttack = false;
 
-		//プレイヤーの影響範囲外だったら隊列状態を解除。
-		float playerDistance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length();
-		if (arg_player.lock()->GetMineralBreakUpRange() < playerDistance) {
-
-			m_isGathering = false;
-
-		}
-
 	}
 	//ミネクジのHPが0になっていたら攻撃を終える。
 	if (!m_attackTargetMineKuji.expired() && m_attackTargetMineKuji.lock()->GetHP() <= 0) {
 
 		m_isAttack = false;
-
-		//プレイヤーの影響範囲外だったら隊列状態を解除。
-		float playerDistance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length();
-		if (arg_player.lock()->GetMineralBreakUpRange() < playerDistance) {
-
-			m_isGathering = false;
-
-		}
 
 	}
 	//ミネクジのHPが0になっていたら攻撃を終える。
@@ -1067,27 +1051,11 @@ void Mineral::UpdateAttack(std::weak_ptr<Player> arg_player, float& arg_moveSECo
 
 		m_isAttack = false;
 
-		//プレイヤーの影響範囲外だったら隊列状態を解除。
-		float playerDistance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length();
-		if (arg_player.lock()->GetMineralBreakUpRange() < playerDistance) {
-
-			m_isGathering = false;
-
-		}
-
 	}
 	//木のHPが0になっていたら攻撃を終える。
 	if (!m_attackDestrutibleTree.expired() && m_attackDestrutibleTree.lock()->GetHP() <= 0) {
 
 		m_isAttack = false;
-
-		//プレイヤーの影響範囲外だったら隊列状態を解除。
-		float playerDistance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length();
-		if (arg_player.lock()->GetMineralBreakUpRange() < playerDistance) {
-
-			m_isGathering = false;
-
-		}
 
 	}
 
