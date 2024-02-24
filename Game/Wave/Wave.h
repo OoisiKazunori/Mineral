@@ -18,6 +18,7 @@ public:
 		MINEKUJI,
 		MINETSUMURI,
 		MINEKING,
+		TOGEKURI,
 	};
 
 	struct EnemyWaveInfo {

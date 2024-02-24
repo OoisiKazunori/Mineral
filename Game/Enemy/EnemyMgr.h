@@ -6,6 +6,7 @@
 
 class MineKuji;
 class MineTsumuri;
+class Togekuri;
 class Core;
 class Player;
 
@@ -15,6 +16,8 @@ private:
 
 	static const int MAX_MINEKUJI = 32;
 	std::array<std::shared_ptr<MineKuji>, MAX_MINEKUJI> m_minekujis;
+	static const int MAX_TOGEKURI = 32;
+	std::array<std::shared_ptr<Togekuri>, MAX_TOGEKURI> m_togekuri;
 	static const int MAX_MINETSUMURI = 16;
 	std::array<std::shared_ptr<MineTsumuri>, MAX_MINETSUMURI> m_minetsumuri;
 
@@ -27,6 +30,7 @@ public:
 	void DebugGenerate();
 
 	void GenerateMinekuji(EnemyRoute::ROUTE_ID arg_routeID, bool arg_isTutorialEnemy = false);
+	void GenerateTogekuri(EnemyRoute::ROUTE_ID arg_routeID);
 	void GenerateMinetsumuri(EnemyRoute::ROUTE_ID arg_routeID, bool arg_isKing);
 
 	//ノックバック判定
@@ -38,6 +42,7 @@ public:
 
 	int GetTargetMineKujiIndex(KazMath::Vec3<float> arg_playerPos, float arg_targetRange, float& arg_targetDistance);
 	int GetTargetMineTsumuriIndex(KazMath::Vec3<float> arg_playerPos, float arg_targetRange, float& arg_targetDistance);
+	int GetTargetTogekuriIndex(KazMath::Vec3<float> arg_playerPos, float arg_targetRange, float& arg_targetDistance);
 	KazMath::Vec3<float> GetMineKujiScale(int arg_index);
 	KazMath::Vec3<float> GetMineKujiTargetScale(int arg_index);
 	KazMath::Vec3<float> GetMineKujiPos(int arg_index);
