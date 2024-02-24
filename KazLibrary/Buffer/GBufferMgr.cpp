@@ -248,9 +248,9 @@ void GBufferMgr::ComposeLensFlareAndScene()
 	const float IROSHUUSA_MIN_X = 2.0f;
 	const float IROSHUUSA_MIN_Y = 4.0f;
 	const float IROSHUUSA_MIN_Z = 8.0f;
-	const float IROSHUUSA_MAX_X = 40.0f;
-	const float IROSHUUSA_MAX_Y = 80.0f;
-	const float IROSHUUSA_MAX_Z = 120.0f;
+	const float IROSHUUSA_MAX_X = 10.0f;
+	const float IROSHUUSA_MAX_Y = 20.0f;
+	const float IROSHUUSA_MAX_Z = 30.0f;
 
 	//色収差のやつを更新。
 	m_iroShuusa.x = IROSHUUSA_MIN_X + (IROSHUUSA_MAX_X - IROSHUUSA_MIN_X) * iroShuusaFacter;

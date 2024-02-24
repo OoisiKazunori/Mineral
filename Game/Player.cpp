@@ -570,6 +570,10 @@ void Player::Update()
 	playerPos.a = m_groundCircle;
 	GBufferMgr::Instance()->GetPlayerBuffer().bufferWrapper->TransData(&playerPos, sizeof(DirectX::XMVECTOR));
 
+	if (KeyBoradInputManager::Instance()->InputTrigger(DIK_0)) {
+		Damage(1);
+	}
+
 }
 
 void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec)
