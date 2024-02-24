@@ -169,7 +169,6 @@
     <ClCompile Include="Game\VFX\GPURipplesEffect.cpp" />
     <ClCompile Include="KazLibrary\Sound\KazSoundManager.cpp" />
     <ClCompile Include="Game\Cloud.cpp" />
-    <ClCompile Include="Game\Enemy\Togekuri.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Debug\ParameterMgr.h" />
@@ -364,7 +363,6 @@
     <ClInclude Include="Game\VFX\GPURipplesEffect.h" />
     <ClInclude Include="KazLibrary\Sound\KazSoundManager.h" />
     <ClInclude Include="Game\Cloud.h" />
-    <ClInclude Include="Game\Enemy\Togekuri.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

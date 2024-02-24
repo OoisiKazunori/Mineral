@@ -140,7 +140,6 @@
     <ClCompile Include="Game\Enemy\EnemyRoute.cpp" />
     <ClCompile Include="Game\Enemy\MineKuji.cpp" />
     <ClCompile Include="Game\Enemy\MineTsumuri.cpp" />
-    <ClCompile Include="Game\Enemy\Togekuri.cpp" />
     <ClCompile Include="Game\Enemy\VirusEnemy.cpp" />
     <ClCompile Include="Game\GameRenderTarget.cpp" />
     <ClCompile Include="Game\Helper\CameraWork.cpp" />
@@ -315,7 +314,6 @@
     <ClInclude Include="Game\Enemy\EnemyRoute.h" />
     <ClInclude Include="Game\Enemy\MineKuji.h" />
     <ClInclude Include="Game\Enemy\MineTsumuri.h" />
-    <ClInclude Include="Game\Enemy\Togekuri.h" />
     <ClInclude Include="Game\Enemy\VirusEnemy.h" />
     <ClInclude Include="Game\GameRenderTarget.h" />
     <ClInclude Include="Game\Helper\CameraWork.h" />

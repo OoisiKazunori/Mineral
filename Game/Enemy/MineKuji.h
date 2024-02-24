@@ -11,6 +11,7 @@ class MineKuji {
 
 private:
 	SoundData attack;
+	SoundData shell_slap;
 	//基本情報
 	DrawCallSet m_model;
 	KazMath::Transform3D m_oldTransform;
@@ -88,6 +89,11 @@ private:
 	KazMath::Vec3<float> m_knockBackVec;
 	const float KNOCKBACK_SPEED = 5.0f;
 
+	//トゲクリ関連
+	bool m_isTogekuri;
+	DrawCallSet m_togekuriModel;
+	DrawCallSet m_togekuriHornModel;
+
 	HideSmokeEmitter m_deadEffectEmitter;
 public:
 
@@ -109,7 +115,7 @@ public:
 
 	void Init();
 
-	void Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_isTutorialEnemy);
+	void Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_isTutorialEnemy, bool arg_isTogekuri);
 
 	void Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player);
 

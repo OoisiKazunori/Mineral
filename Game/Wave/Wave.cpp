@@ -130,7 +130,7 @@ void Wave::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 				}
 				else if (enemy.m_enemyID == ENEMY_ID::TOGEKURI) {
 
-					arg_enemyMgr.lock()->GenerateTogekuri(enemy.m_routeID);
+					arg_enemyMgr.lock()->GenerateMinekuji(enemy.m_routeID, false, true);
 
 				}
 

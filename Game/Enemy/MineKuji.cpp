@@ -14,6 +14,8 @@ MineKuji::MineKuji()
 {
 
 	m_model.LoadOutline("Resource/Enemy/MineKuji/", "Minekuzi.gltf");
+	m_togekuriModel.LoadOutline("Resource/Enemy/Togekuri/", "Togekuri.gltf");
+	//m_togekuriHornModel.LoadOutline("Resource/Enemy/Togekuri/", "Togekuri_horn.gltf");
 	/*オカモトゾーン*/
 	m_hpBoxModel.LoadNoLighting("Resource/HpBox/", "Hp_Box.gltf");
 	/*オカモトゾーン*/
@@ -21,6 +23,8 @@ MineKuji::MineKuji()
 	m_scale = 0.0f;
 	attack = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Attack.wav");
 	attack.volume = 0.1f;
+	shell_slap = SoundManager::Instance()->SoundLoadWave("Resource/Sound/Guard.wav");
+	shell_slap.volume = 0.07f;
 }
 
 void MineKuji::Init()
@@ -44,7 +48,7 @@ void MineKuji::Init()
 	m_deadTimer = 0;
 }
 
-void MineKuji::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_isTutorialEnemy)
+void MineKuji::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_isTutorialEnemy, bool arg_isTogekuri)
 {
 
 	m_route = arg_route;
@@ -86,6 +90,8 @@ void MineKuji::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_is
 
 	m_forwardVec = { 0,0,1 };
 	m_isAttackWall = false;
+
+	m_isTogekuri = arg_isTogekuri;
 
 
 	//出現地点をランダム化。
@@ -192,37 +198,42 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 			}
 
-			//近くにミネラルが居るか？
-			int mineralIndex = 0;
-			if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex)) {
+			//トゲクリの時は何にも攻撃しない
+			if (!m_isTogekuri) {
 
-				m_mode = MineralAttack;
-				m_isAttackedMineral = true;
-				m_isAttackMineral = false;
-				m_isAttackWall = false;
-				m_isAttackPlayer = false;
-				m_attackedMineral = MineralMgr::Instance()->GetMineral(mineralIndex);
-				break;
+				//近くにミネラルが居るか？
+				int mineralIndex = 0;
+				if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex)) {
 
-			}
+					m_mode = MineralAttack;
+					m_isAttackedMineral = true;
+					m_isAttackMineral = false;
+					m_isAttackWall = false;
+					m_isAttackPlayer = false;
+					m_attackedMineral = MineralMgr::Instance()->GetMineral(mineralIndex);
+					break;
 
-			//近くにプレイヤーが居るか？
-			if (!arg_player.lock()->GetIsStun() && KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length() <= ENEMY_SEARCH_RANGE) {
+				}
+
+				//近くにプレイヤーが居るか？
+				if (!arg_player.lock()->GetIsStun() && KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length() <= ENEMY_SEARCH_RANGE) {
 
 
-				m_mode = PlayerAttack;
-				m_isAttackedMineral = false;
-				m_isAttackMineral = false;
-				m_isAttackWall = false;
-				m_isAttackPlayer = true;
-				break;
+					m_mode = PlayerAttack;
+					m_isAttackedMineral = false;
+					m_isAttackMineral = false;
+					m_isAttackWall = false;
+					m_isAttackPlayer = true;
+					break;
 
-			}
+				}
 
-			//敵に攻撃されたらすぐに迎撃状態に入る。
-			if (m_isAttackedMineral) {
+				//敵に攻撃されたらすぐに迎撃状態に入る。
+				if (m_isAttackedMineral) {
 
-				m_mode = MineralAttack;
+					m_mode = MineralAttack;
+
+				}
 
 			}
 
@@ -305,15 +316,35 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 		return;
 	}
 
-	DessolveOutline outline;
-	outline.m_outline = KazMath::Vec4<float>(0.2f, 0, 0, 1);
-	m_model.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+	if (m_isTogekuri) {
 
-	m_model.m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
-	m_model.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
-	m_model.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+		DessolveOutline outline;
+		outline.m_outline = KazMath::Vec4<float>(0.2f, 0, 0, 1);
+		m_togekuriModel.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
 
-	m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+		m_togekuriModel.m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+		m_togekuriModel.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		m_togekuriModel.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+
+		auto trans = m_transform;
+		trans.scale = {8.0f, 8.0f, 8.0f};
+
+		m_togekuriModel.Draw(arg_rasterize, arg_blasVec, trans);
+
+	}
+	else {
+
+		DessolveOutline outline;
+		outline.m_outline = KazMath::Vec4<float>(0.2f, 0, 0, 1);
+		m_model.m_model.extraBufferArray[4].bufferWrapper->TransData(&outline, sizeof(DessolveOutline));
+
+		m_model.m_model.extraBufferArray.back() = GBufferMgr::Instance()->m_outlineBuffer;
+		m_model.m_model.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;
+		m_model.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
+
+		m_model.Draw(arg_rasterize, arg_blasVec, m_transform);
+
+	}
 
 	/*オカモトゾーン*/
 	m_hpBoxTransform.pos = m_transform.pos;
@@ -735,14 +766,25 @@ void MineKuji::CheckHitPlayer(std::weak_ptr<Player> arg_player)
 			dir.y = 0.0f;
 			dir.Normalize();
 
-			//HPを減らす。
-			hpBoxScaleStart = static_cast <float>(m_hp);
-			m_hp = std::clamp(m_hp - arg_player.lock()->GetDaipanDamage(), 0, HP);
+			//普通のミネクジだったらダメージを通す。 トゲクリだったら通さない。
+			if (m_isTogekuri) {
 
-			//攻撃の反動を追加。
-			m_attackedReactionVec = dir / 5.0f;
-			ShakeMgr::Instance()->m_shakeAmount = 2.0f;
-			m_attackedScale = ATTACKED_SCALE;
+				arg_player.lock()->Damage(1);
+				SoundManager::Instance()->SoundPlayerWave(shell_slap, 0);
+
+
+			}else{
+
+				//HPを減らす。
+				hpBoxScaleStart = static_cast <float>(m_hp);
+				m_hp = std::clamp(m_hp - arg_player.lock()->GetDaipanDamage(), 0, HP);
+
+				//攻撃の反動を追加。
+				m_attackedReactionVec = dir / 5.0f;
+				ShakeMgr::Instance()->m_shakeAmount = 2.0f;
+				m_attackedScale = ATTACKED_SCALE;
+
+			}
 
 			/*オカモトゾーン*/
 			damageAmount = 3.0f;
