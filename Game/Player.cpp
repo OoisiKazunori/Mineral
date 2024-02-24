@@ -397,6 +397,8 @@ void Player::Update()
 	if (m_damageShake < 0.7f)
 	{
 		m_color = KazMath::Color(255, 255, 255, 255);
+		UINT num = 1;
+		m_model.m_model.extraBufferArray[5].bufferWrapper->TransData(&num, sizeof(UINT));
 	}
 
 
@@ -717,5 +719,8 @@ void Player::Damage(int arg_damage) {
 	m_autoRecoveryDelayTimer = 0.0f;
 
 	m_color = KazMath::Color(255, 0, 0, 255);
+
+	UINT num = 0;
+	m_model.m_model.extraBufferArray[5].bufferWrapper->TransData(&num, sizeof(UINT));
 
 }

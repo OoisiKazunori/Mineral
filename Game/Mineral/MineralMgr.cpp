@@ -267,7 +267,7 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 		}
 
 		//近くに建材があった場合の処理
-		if(!mineralIndex->GetHaveMaterial()){
+		if (!mineralIndex->GetHaveMaterial()) {
 
 			float materialDistance = 0.0f;
 			int materialIndex = BuildingMaterialMgr::Instance()->GetTargetMaterialIndex(mineralIndex->GetPosZeroY(), SEARCH_RANGE, materialDistance);
@@ -296,7 +296,7 @@ void MineralMgr::Update(std::weak_ptr<Player> arg_player, std::weak_ptr<MineralT
 			if (mineral->GetIsAttack()) continue;
 			if (!mineral->GetIsGathering()) continue;
 
-			mineral->BreakUP({0,1,0});
+			mineral->BreakUP({ 0,1,0 });
 
 		}
 
@@ -317,7 +317,7 @@ void MineralMgr::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector&
 
 }
 
-bool MineralMgr::SearchNearMineral(KazMath::Vec3<float> arg_pos, float arg_searchRange, int& arg_mineralIndex) {
+bool MineralMgr::SearchNearMineral(KazMath::Vec3<float> arg_pos, float arg_searchRange, int& arg_mineralIndex, float& arg_distance) {
 
 	bool isHit = false;
 	float miniDistance = 1000000;
@@ -343,6 +343,7 @@ bool MineralMgr::SearchNearMineral(KazMath::Vec3<float> arg_pos, float arg_searc
 
 	if (isHit) {
 		arg_mineralIndex = mineralIndex;
+		arg_distance = miniDistance;
 	}
 
 	//インデックスが-1だったら当たってないことにする。

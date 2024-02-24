@@ -180,8 +180,6 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 		//コアの近くに居なかったらコアの方向に向かって移動させる。
 		if (CORE_ATTACK_RANGE < coreDistance) {
 
-
-
 			//チュートリアルの的だったら移動速度を早く。
 			float coreMoveDelay = CORE_MOVE_DELAY;
 			float coreMoveSpeed = CORE_MOVE_SPEED;
@@ -199,9 +197,16 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 			}
 
-			//近くにミネラルが居るか？
 			int mineralIndex = 0;
-			if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex)) {
+
+			float mineralDistance = 100000000.0f;
+			const bool isMineralNearFlag = MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex, mineralDistance);
+			float playerDistance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length();
+			const bool isPlayerNearFlag = !arg_player.lock()->GetIsStun() && playerDistance <= ENEMY_SEARCH_RANGE;
+
+			//近くにミネラルが居るか？
+			if (isMineralNearFlag && mineralDistance <= playerDistance)
+			{
 
 				m_mode = MineralAttack;
 				m_isAttackedMineral = true;
@@ -214,8 +219,8 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 			}
 
 			//近くにプレイヤーが居るか？
-			if (!arg_player.lock()->GetIsStun() && KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length() <= ENEMY_SEARCH_RANGE) {
-
+			if (isPlayerNearFlag && playerDistance <= mineralDistance)
+			{
 
 				m_mode = PlayerAttack;
 				m_isAttackedMineral = false;
@@ -269,7 +274,6 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 	break;
 	case MineKuji::PlayerAttack:
 	{
-
 		AttackPlayer(arg_player);
 
 	}
@@ -651,7 +655,7 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 			ShakeMgr::Instance()->m_shakeAmount = 3.0;
 
 		}
-
+		//120F経ったら追跡をやめる
 		if (120 <= m_attackTimer)
 		{
 			m_attackID = STAY;
@@ -932,6 +936,10 @@ void MineKuji::CheckHit(std::weak_ptr<Player> arg_player) {
 
 	}
 
+}
+
+void MineKuji::Search()
+{
 }
 
 void MineKuji::Rotation(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player) {

@@ -149,4 +149,5 @@ private:
 	void Rotation(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player);
 	void CheckHit(std::weak_ptr<Player> arg_player);
 
+	void Search();
 };

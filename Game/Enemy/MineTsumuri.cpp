@@ -219,7 +219,8 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 
 					//‹ß‚­‚Éƒ~ƒlƒ‰ƒ‹‚ª‹‚é‚©H
 					int mineralIndex = 0;
-					if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex)) {
+					float mineralDistance = 100000000.0f;
+					if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex, mineralDistance)) {
 
 						m_mode = MineralAttack;
 						m_isAttackedMineral = true;
