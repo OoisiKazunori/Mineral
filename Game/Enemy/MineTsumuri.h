@@ -121,6 +121,7 @@ private:
 	//ジャンプ
 	Jump m_jump;
 	bool m_attackPlayerFlag;
+	int m_attackTimer;		//攻撃している時間を計測する
 public:
 
 	/*オカモトゾーン*/

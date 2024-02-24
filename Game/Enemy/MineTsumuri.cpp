@@ -215,12 +215,18 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 
 				}
 
-				if (!m_isMineking) {
+				if (!m_isMineking)
+				{
+					int mineralIndex = 0;
+
+					float mineralDistance = 100000000.0f;
+					const bool isMineralNearFlag = MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex, mineralDistance);
+					float playerDistance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length();
+					const bool isPlayerNearFlag = !arg_player.lock()->GetIsStun() && playerDistance <= ENEMY_SEARCH_RANGE;
 
 					//近くにミネラルが居るか？
-					int mineralIndex = 0;
-					float mineralDistance = 100000000.0f;
-					if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex, mineralDistance)) {
+					if (isMineralNearFlag && mineralDistance <= playerDistance)
+					{
 
 						m_mode = MineralAttack;
 						m_isAttackedMineral = true;
@@ -233,8 +239,8 @@ void MineTsumuri::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg
 					}
 
 					//近くにプレイヤーが居るか？
-					if (!arg_player.lock()->GetIsStun() && KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length() <= ENEMY_SEARCH_RANGE) {
-
+					if (isPlayerNearFlag && playerDistance <= mineralDistance)
+					{
 
 						m_mode = PlayerAttack;
 						m_isAttackedMineral = false;
@@ -720,19 +726,19 @@ void MineTsumuri::AttackPlayer(std::weak_ptr<Player> arg_player)
 	{
 	case MineTsumuri::ATTACK:
 	{
-		if (!m_attackPlayerFlag)
+		const float dis = arg_player.lock()->GetTransform().pos.Distance(m_transform.pos);
+		float attackSpeedWhileJumping = 1.0f;//ジャンプ中の攻撃速度を上げる
+		if (!m_attackPlayerFlag && dis <= 40.0f)
 		{
 			m_jump.Active();
+			m_attackPlayerFlag = true;
 		}
-		m_attackPlayerFlag = true;
-		//地面より下に行かないようにする
-		if (m_transform.pos.y <= m_baseTransform.pos.y)
+		if (m_attackPlayerFlag)
 		{
-			m_transform.pos.y = m_baseTransform.pos.y;
-			m_jump.Finalize();
+			attackSpeedWhileJumping = 1.8f;
 		}
 		//ジャンプする
-		m_transform.pos.y = m_baseTransform.pos.y + m_jump.Update();
+		m_transform.pos.y += m_jump.Update();
 
 		//移動速度を上げる。
 		m_coreAttackMoveSpeed = std::clamp(m_coreAttackMoveSpeed + ADD_CORE_ATTACK_SPEED, 0.0f, MAX_CORE_ATTACK_SPEED);
@@ -746,12 +752,15 @@ void MineTsumuri::AttackPlayer(std::weak_ptr<Player> arg_player)
 		m_coreAttackMoveSpeed = std::clamp(m_coreAttackMoveSpeed, 0.0f, distance);
 
 		//移動させる。
-		m_transform.pos += moveDir * m_coreAttackMoveSpeed;
+		m_transform.pos += moveDir * (m_coreAttackMoveSpeed * attackSpeedWhileJumping);;
 
 		//距離が一定以下になったら待機状態へ
-		distance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - m_transform.pos).Length();
-		if (distance <= arg_player.lock()->GetHitScale() + m_transform.scale.x) {
-
+		distance = KazMath::Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length();
+		const bool HIT_FLAG = distance <= arg_player.lock()->GetHitScale() + m_transform.scale.x;
+		//当たったかつ20F経ったなら当てる
+		//下から攻撃する際に上に行かないのを阻止するため
+		if (HIT_FLAG && 20 <= m_attackTimer)
+		{
 			m_attackID = STAY;
 
 			//反動で吹き飛ばす。
@@ -768,11 +777,14 @@ void MineTsumuri::AttackPlayer(std::weak_ptr<Player> arg_player)
 			else {
 				arg_player.lock()->Damage(ATTACK_POWER);
 			}
-
-
 			ShakeMgr::Instance()->m_shakeAmount = 3.0;
-
 		}
+		//120F経ったら追跡をやめる
+		if (120 <= m_attackTimer)
+		{
+			m_attackID = STAY;
+		}
+		++m_attackTimer;
 	}
 	break;
 	case MineTsumuri::STAY:
@@ -1212,7 +1224,7 @@ void MineTsumuri::UpdateShell() {
 
 			m_shellGravity = 0.0f;
 			m_shellTransform.pos.y = UNDER_Y;
-
+			m_jump.Finalize();
 		}
 
 		//回転をかける。
