@@ -23,7 +23,7 @@ float Jump::Update()
 		return 0.0f;
 	}
 	//ƒWƒƒƒ“ƒv—Í
-	m_jumpVel += 1.0f;
+	m_jumpVel += 1.15f;
 	//—‰º‚·‚é
 	m_jumpVel += -m_gravity;
 	//d—Í‰ÁZ

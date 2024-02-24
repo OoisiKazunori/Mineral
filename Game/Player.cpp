@@ -86,7 +86,7 @@ void Player::Init()
 
 	m_groundCircle = 29.7f;
 
-
+	m_color = KazMath::Color(255, 255, 255, 255);
 }
 
 void Player::Update()
@@ -394,6 +394,10 @@ void Player::Update()
 	if (m_damageShake < 0.01f) {
 		m_damageShake = 0.0f;
 	}
+	if (m_damageShake < 0.3f)
+	{
+		m_color = KazMath::Color(255, 255, 255, 255);
+	}
 
 
 	m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, m_baseQ, 0.2f);
@@ -578,10 +582,10 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 	//プレイヤー本体を描画
 	m_drawTransform.scale = { 9.0f, 9.0f, 9.0f };
 	if (m_isDaipanStrong && m_daipanStatus != NONE) {
-		m_attackModel.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10);
+		m_attackModel.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, m_color);
 	}
 	else {
-		m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, KazMath::Color(255, 255, 255, 255));
+		m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, m_color);
 	}
 
 	//プレイヤーの台パンの範囲を描画
@@ -711,5 +715,7 @@ void Player::Damage(int arg_damage) {
 	//自動回復までの時間を初期化。
 	m_autoRecoveryStartTimer = 0.0f;
 	m_autoRecoveryDelayTimer = 0.0f;
+
+	m_color = KazMath::Color(255, 0, 0, 255);
 
 }

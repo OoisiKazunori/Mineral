@@ -601,14 +601,14 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 	{
 		const float dis = arg_player.lock()->GetTransform().pos.Distance(m_transform.pos);
 		float attackSpeedWhileJumping = 1.0f;//ジャンプ中の攻撃速度を上げる
-		if (!m_attackPlayerFlag && dis <= 30.0f)
+		if (!m_attackPlayerFlag && dis <= 40.0f)
 		{
 			m_jump.Active();
 			m_attackPlayerFlag = true;
 		}
 		if (m_attackPlayerFlag)
 		{
-			attackSpeedWhileJumping = 1.5f;
+			attackSpeedWhileJumping = 1.8f;
 		}
 		//ジャンプする
 		m_transform.pos.y += m_jump.Update();
