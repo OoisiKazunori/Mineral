@@ -629,7 +629,11 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 
 		//‹——£‚ªˆê’èˆÈ‰º‚É‚È‚Á‚½‚ç‘Ò‹@ó‘Ô‚Ö
 		distance = KazMath::Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length();
-		if (distance <= arg_player.lock()->GetHitScale() + m_transform.scale.x) {
+		const bool HIT_FLAG = distance <= arg_player.lock()->GetHitScale() + m_transform.scale.x;
+		//“–‚½‚Á‚½‚©‚Â20FŒo‚Á‚½‚È‚ç“–‚Ä‚é
+		//‰º‚©‚çUŒ‚‚·‚éÛ‚Éã‚És‚©‚È‚¢‚Ì‚ğ‘j~‚·‚é‚½‚ß
+		if (HIT_FLAG && 20 <= m_attackTimer)
+		{
 
 			m_attackID = STAY;
 
