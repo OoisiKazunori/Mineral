@@ -15,7 +15,7 @@ MineKuji::MineKuji()
 
 	m_model.LoadOutline("Resource/Enemy/MineKuji/", "Minekuzi.gltf");
 	m_togekuriModel.LoadOutline("Resource/Enemy/Togekuri/", "Togekuri.gltf");
-	//m_togekuriHornModel.LoadOutline("Resource/Enemy/Togekuri/", "Togekuri_horn.gltf");
+	m_togekuriHornModel.LoadOutline("Resource/Enemy/Togekuri/", "Togekuri_horn.gltf");
 	/*オカモトゾーン*/
 	m_hpBoxModel.LoadNoLighting("Resource/HpBox/", "Hp_Box.gltf");
 	m_gardHpBoxModel.LoadNoLighting("Resource/HpBox/", "Gard_Hp_Box.gltf");
