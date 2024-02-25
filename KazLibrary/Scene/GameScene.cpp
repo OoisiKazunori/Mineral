@@ -250,7 +250,7 @@ void GameScene::Update()
 	}
 
 	//ウェーブを更新。
-	WaveMgr::Instance()->Update(m_enemyMgr);
+	WaveMgr::Instance()->Update(m_enemyMgr, m_player);
 
 	//プレイヤーを更新。
 	m_player->Update();
@@ -327,9 +327,9 @@ void GameScene::Update()
 
 	//ウェーブが終わったらリザルトへ。
 	if (!ResultFlag::Instance()->m_isResult) {
-		ResultFlag::Instance()->m_isReadyResult = (WaveMgr::Instance()->GetIsFinishAllWave()) || m_goldCore->IsDead();
+		ResultFlag::Instance()->m_isReadyResult = (WaveMgr::Instance()->GetIsFinishAllWave()) || m_goldCore->IsDead() || m_player->IsDead();
 	}
-	if ((!ResultFlag::Instance()->m_isResult && WaveMgr::Instance()->GetIsFinishAllWave()) || m_goldCore->IsDead()) {
+	if ((!ResultFlag::Instance()->m_isResult && WaveMgr::Instance()->GetIsFinishAllWave()) || m_goldCore->IsDead() || m_player->IsDead()) {
 
 		++ResultFlag::Instance()->m_uiDeleteTime;
 		if (ResultFlag::Instance()->UI_DELETE_TIME <= ResultFlag::Instance()->m_uiDeleteTime) {

@@ -6,6 +6,7 @@
 #include "../Game/Tutorial.h"
 #include "../Game/UI/NumberFont.h"
 #include "../KazLibrary/Easing/easing.h"
+#include "../Player.h"
 #include <Imgui/imgui.h>
 
 void WaveMgr::Setting(std::weak_ptr<Core> m_core)
@@ -349,7 +350,7 @@ void WaveMgr::Init(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 }
 
-void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
+void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr, std::weak_ptr<Player> arg_player)
 {
 
 	//BGM関連
@@ -383,7 +384,9 @@ void WaveMgr::Update(std::weak_ptr<EnemyMgr> arg_enemyMgr)
 
 
 	//ウェーブを更新。
-	m_waves[m_nowWaveIndex]->Update(arg_enemyMgr);
+	if (!arg_player.lock()->IsDead()) {
+		m_waves[m_nowWaveIndex]->Update(arg_enemyMgr);
+	}
 
 	//現在のウェーブが終わっていたら次のウェーブへ
 	if (!m_waves[m_nowWaveIndex]->GetIsActiveWave()) {

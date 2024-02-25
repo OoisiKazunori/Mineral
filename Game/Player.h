@@ -164,6 +164,8 @@ public:
 		return m_isDaipanStrong ? STRONG_DAIPAN_DAMAGE : DAIPAN_DAMAGE;
 	}
 
+	bool IsDead() { return m_hp <= 0; }
+
 	KazMath::Vec3<float> TransformVec3(KazMath::Vec3<float> arg_value, DirectX::XMVECTOR arg_quaternion);
 
 };

@@ -430,20 +430,20 @@ void Player::Update()
 
 	}
 
-	//スタン中は回復するまでのタイマーを更新する。
-	if (m_isStun) {
+	////スタン中は回復するまでのタイマーを更新する。
+	//if (m_isStun) {
 
-		m_hpRecoveryTimer = std::clamp(m_hpRecoveryTimer + 1.0f, 0.0f, HP_RECOVERY_TIMER);
+	//	m_hpRecoveryTimer = std::clamp(m_hpRecoveryTimer + 1.0f, 0.0f, HP_RECOVERY_TIMER);
 
-		if (HP_RECOVERY_TIMER <= m_hpRecoveryTimer) {
+	//	if (HP_RECOVERY_TIMER <= m_hpRecoveryTimer) {
 
-			m_hp = HP;
-			m_hpRecoveryTimer = 0;
-			m_isStun = false;
+	//		m_hp = HP;
+	//		m_hpRecoveryTimer = 0;
+	//		m_isStun = false;
 
-		}
+	//	}
 
-	}
+	//}
 
 	//一定時間ダメージを受けていなかったら自動回復。
 	if (m_hp < HP) {

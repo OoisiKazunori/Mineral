@@ -7,6 +7,7 @@
 class Wave;
 class EnemyMgr;
 class Core;
+class Player;
 
 class WaveMgr : public ISingleton<WaveMgr> {
 
@@ -54,7 +55,7 @@ public:
 
 	void Init(std::weak_ptr<EnemyMgr> arg_enemyMgr);
 
-	void Update(std::weak_ptr<EnemyMgr> arg_enemyMgr);
+	void Update(std::weak_ptr<EnemyMgr> arg_enemyMgr, std::weak_ptr<Player> arg_player);
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
