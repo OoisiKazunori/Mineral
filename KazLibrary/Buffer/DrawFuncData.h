@@ -1419,7 +1419,7 @@ namespace DrawFuncData
 
 		return drawCall;
 	};
-	
+
 	static DrawCallData SetDefferdRenderingInstanceModel(std::shared_ptr<ModelInfomation>arg_model, std::vector<ShaderOptionData>arg_shader)
 	{
 		DrawCallData drawCall;
@@ -1556,6 +1556,13 @@ namespace DrawFuncData
 		);
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
 		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA5;
+
+		//ライティングの影響を受けるかどうか
+		drawCall.extraBufferArray.emplace_back(KazBufferHelper::SetConstBufferData(sizeof(UINT)));
+		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_CBV_VIEW;
+		drawCall.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_DATA6;
+		UINT num = 1;
+		drawCall.extraBufferArray.back().bufferWrapper->TransData(&num, sizeof(UINT));
 
 		drawCall.extraBufferArray.emplace_back();
 		drawCall.extraBufferArray.back().rangeType = GRAPHICS_RANGE_TYPE_UAV_DESC;

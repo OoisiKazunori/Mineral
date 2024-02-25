@@ -47,6 +47,7 @@ void MineKuji::Init()
 	m_hpBoxTransform.scale.x = static_cast<float> (HP);
 	/*オカモトゾーン*/
 	m_deadTimer = 0;
+	m_attackTimer = 0;
 }
 
 void MineKuji::Generate(std::vector<KazMath::Vec3<float>> arg_route, bool arg_isTutorialEnemy, bool arg_isTogekuri)
@@ -174,6 +175,12 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 	//座標を保存しておく。
 	m_oldTransform = m_transform;
 
+	if (m_mode != m_oldMode)
+	{
+		m_attackPlayerFlag = false;
+	}
+	m_oldMode = m_mode;
+
 	//現在の状態によって処理を分ける。
 	switch (m_mode)
 	{
@@ -184,8 +191,6 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 		float coreDistance = KazMath::Vec3<float>(arg_core.lock()->GetPosZeroY() - m_transform.pos).Length();
 		//コアの近くに居なかったらコアの方向に向かって移動させる。
 		if (CORE_ATTACK_RANGE < coreDistance) {
-
-
 
 			//チュートリアルの的だったら移動速度を早く。
 			float coreMoveDelay = CORE_MOVE_DELAY;
@@ -204,26 +209,37 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 			}
 
-			//トゲクリの時は何にも攻撃しない
-			if (!m_isTogekuri) {
+			int mineralIndex = 0;
 
-				//近くにミネラルが居るか？
-				int mineralIndex = 0;
-				if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex)) {
+			float mineralDistance = 100000000.0f;
+			const bool isMineralNearFlag = MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex, mineralDistance);
+			float playerDistance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length();
+			const bool isPlayerNearFlag = !arg_player.lock()->GetIsStun() && playerDistance <= ENEMY_SEARCH_RANGE;
 
-					m_mode = MineralAttack;
-					m_isAttackedMineral = true;
-					m_isAttackMineral = false;
-					m_isAttackWall = false;
-					m_isAttackPlayer = false;
-					m_attackedMineral = MineralMgr::Instance()->GetMineral(mineralIndex);
-					break;
+			//近くにミネラルが居るか？
+			if (isMineralNearFlag && mineralDistance <= playerDistance)
+			{
+				//トゲクリの時は何にも攻撃しない
+				if (!m_isTogekuri) {
 
+					//近くにミネラルが居るか？
+					int mineralIndex = 0;
+					if (MineralMgr::Instance()->SearchNearMineral(GetPosZeroY(), ENEMY_SEARCH_RANGE, mineralIndex, mineralDistance)) {
+
+						m_mode = MineralAttack;
+						m_isAttackedMineral = true;
+						m_isAttackMineral = false;
+						m_isAttackWall = false;
+						m_isAttackPlayer = false;
+						m_attackedMineral = MineralMgr::Instance()->GetMineral(mineralIndex);
+						break;
+
+					}
 				}
 
 				//近くにプレイヤーが居るか？
-				if (!arg_player.lock()->GetIsStun() && KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - GetPosZeroY()).Length() <= ENEMY_SEARCH_RANGE) {
-
+				if (isPlayerNearFlag && playerDistance <= mineralDistance)
+				{
 
 					m_mode = PlayerAttack;
 					m_isAttackedMineral = false;
@@ -279,7 +295,6 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 	break;
 	case MineKuji::PlayerAttack:
 	{
-
 		AttackPlayer(arg_player);
 
 	}
@@ -333,7 +348,7 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 		m_togekuriModel.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 		auto trans = m_transform;
-		trans.scale = {8.0f, 8.0f, 8.0f};
+		trans.scale = { 8.0f, 8.0f, 8.0f };
 
 		m_togekuriModel.Draw(arg_rasterize, arg_blasVec, trans);
 
@@ -639,11 +654,25 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 	{
 	case MineKuji::ATTACK:
 	{
+		const float dis = arg_player.lock()->GetTransform().pos.Distance(m_transform.pos);
+		float attackSpeedWhileJumping = 1.0f;//ジャンプ中の攻撃速度を上げる
+		if (!m_attackPlayerFlag && dis <= 40.0f)
+		{
+			m_jump.Active();
+			m_attackPlayerFlag = true;
+		}
+		if (m_attackPlayerFlag)
+		{
+			attackSpeedWhileJumping = 1.8f;
+		}
+		//ジャンプする
+		m_transform.pos.y += m_jump.Update();
+
 		//移動速度を上げる。
 		m_coreAttackMoveSpeed = std::clamp(m_coreAttackMoveSpeed + ADD_CORE_ATTACK_SPEED, 0.0f, MAX_CORE_ATTACK_SPEED);
 
 		//移動するベクトルを求める。
-		KazMath::Vec3<float> moveDir = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - m_transform.pos);
+		KazMath::Vec3<float> moveDir = KazMath::Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos);
 		float distance = moveDir.Length();
 		moveDir.Normalize();
 
@@ -651,11 +680,15 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 		m_coreAttackMoveSpeed = std::clamp(m_coreAttackMoveSpeed, 0.0f, distance);
 
 		//移動させる。
-		m_transform.pos += moveDir * m_coreAttackMoveSpeed;
+		m_transform.pos += moveDir * (m_coreAttackMoveSpeed * attackSpeedWhileJumping);
 
 		//距離が一定以下になったら待機状態へ
-		distance = KazMath::Vec3<float>(arg_player.lock()->GetPosZeroY() - m_transform.pos).Length();
-		if (distance <= arg_player.lock()->GetHitScale() + m_transform.scale.x) {
+		distance = KazMath::Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length();
+		const bool HIT_FLAG = distance <= arg_player.lock()->GetHitScale() + m_transform.scale.x;
+		//当たったかつ20F経ったなら当てる
+		//下から攻撃する際に上に行かないのを阻止するため
+		if (HIT_FLAG && 20 <= m_attackTimer)
+		{
 
 			m_attackID = STAY;
 
@@ -673,11 +706,17 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 			ShakeMgr::Instance()->m_shakeAmount = 3.0;
 
 		}
-
+		//120F経ったら追跡をやめる
+		if (120 <= m_attackTimer)
+		{
+			m_attackID = STAY;
+		}
+		++m_attackTimer;
 	}
 	break;
 	case MineKuji::STAY:
-
+		m_attackTimer = 0;
+		m_attackPlayerFlag = false;
 		m_coreAttackDelayTimer = std::clamp(m_coreAttackDelayTimer + 1, 0, m_coreAttackDelay);
 		if (m_coreAttackDelay <= m_coreAttackDelayTimer) {
 
@@ -789,7 +828,8 @@ void MineKuji::CheckHitPlayer(std::weak_ptr<Player> arg_player)
 				SoundManager::Instance()->SoundPlayerWave(shell_slap, 0);
 
 
-			}else{
+			}
+			else {
 
 				//HPを減らす。
 				hpBoxScaleStart = static_cast <float>(m_hp);
@@ -920,6 +960,7 @@ void MineKuji::Move() {
 
 		m_gravity = 0.0f;
 		m_transform.pos.y = UNDER_Y;
+		m_jump.Finalize();
 
 	}
 
@@ -958,6 +999,10 @@ void MineKuji::CheckHit(std::weak_ptr<Player> arg_player) {
 
 	}
 
+}
+
+void MineKuji::Search()
+{
 }
 
 void MineKuji::Rotation(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player) {

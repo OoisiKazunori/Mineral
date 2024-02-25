@@ -86,7 +86,7 @@ void Player::Init()
 
 	m_groundCircle = 29.7f;
 
-
+	m_color = KazMath::Color(255, 255, 255, 255);
 }
 
 void Player::Update()
@@ -394,6 +394,12 @@ void Player::Update()
 	if (m_damageShake < 0.01f) {
 		m_damageShake = 0.0f;
 	}
+	if (m_damageShake < 0.7f)
+	{
+		m_color = KazMath::Color(255, 255, 255, 255);
+		UINT num = 1;
+		m_model.m_model.extraBufferArray[5].bufferWrapper->TransData(&num, sizeof(UINT));
+	}
 
 
 	m_transform.quaternion = DirectX::XMQuaternionSlerp(m_transform.quaternion, m_baseQ, 0.2f);
@@ -463,7 +469,7 @@ void Player::Update()
 
 	//ダメージを受けてから一定フレームは立ち絵を変える。
 	m_damageChangeDadanUITimer = std::clamp(m_damageChangeDadanUITimer - 1, 0, DAMAGE_CHANGE_DADAN_UI_TIMER);
-
+	m_hp = HP;
 	float hpRate = m_hp / HP;
 	//UIの座標を設定。
 	m_hpFrameUI.m_transform.scale = UI_BASE_SCALE;
@@ -578,10 +584,10 @@ void Player::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg
 	//プレイヤー本体を描画
 	m_drawTransform.scale = { 9.0f, 9.0f, 9.0f };
 	if (m_isDaipanStrong && m_daipanStatus != NONE) {
-		m_attackModel.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10);
+		m_attackModel.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, m_color);
 	}
 	else {
-		m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, KazMath::Color(255, 255, 255, 255));
+		m_model.Draw(arg_rasterize, arg_blasVec, m_drawTransform, 10, true, m_color);
 	}
 
 	//プレイヤーの台パンの範囲を描画
@@ -711,5 +717,10 @@ void Player::Damage(int arg_damage) {
 	//自動回復までの時間を初期化。
 	m_autoRecoveryStartTimer = 0.0f;
 	m_autoRecoveryDelayTimer = 0.0f;
+
+	m_color = KazMath::Color(255, 0, 0, 255);
+
+	UINT num = 0;
+	m_model.m_model.extraBufferArray[5].bufferWrapper->TransData(&num, sizeof(UINT));
 
 }

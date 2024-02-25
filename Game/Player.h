@@ -120,7 +120,7 @@ private:
 	KazMath::Vec2<float> UI_HPBAR_SCALE = { 282.0f, 32.0f };
 
 	float m_groundCircle;
-
+	KazMath::Color m_color;
 
 public:
 

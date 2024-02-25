@@ -313,6 +313,11 @@ cbuffer Dissolve : register(b4)
     float4 m_outlineColor;
 }
 
+cbuffer Dissolve : register(b5)
+{
+    uint isNeedWritingFlag;
+}
+
 float3 ConvertToGrayscale(float3 arg_color, float arg_coefficient)
 {
     //係数を元の色とグレースケールとの間で補間して変換
@@ -381,7 +386,14 @@ GBufferOutput PSDefferdAnimationMainDissolve(PosUvNormalTangentBinormalOutput in
     GBufferOutput output;
     output.albedo = texColor * color;
     output.albedo.xyz = ConvertToGrayscale(output.albedo.xyz, m_dissolveStrength.w);
-    output.normal = float4(normal, 1.0f);
+    if(isNeedWritingFlag)
+    {
+        output.normal = float4(normal, 1.0f);
+    }
+    else
+    {
+        output.normal = float4(-1,-1,-1,1);
+    }
     output.metalnessRoughness = float4(mrColor.xyz, raytracingId);
     output.world = float4(input.worldPos, 1.0f);
     //output.emissive = float4(0, 0, 0, 0);

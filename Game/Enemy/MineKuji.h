@@ -2,6 +2,7 @@
 #include "../Game/DrawCallSet.h"
 #include "../KazLibrary/Sound/SoundManager.h"
 #include"../Game/VFX/HideSmokeEmitter.h"
+#include"Jump.h"
 
 class Core;
 class Player;
@@ -16,6 +17,7 @@ private:
 	DrawCallSet m_model;
 	KazMath::Transform3D m_oldTransform;
 	KazMath::Transform3D m_transform;
+	KazMath::Transform3D m_baseTransform;
 	KazMath::Vec3<float> m_forwardVec;
 	float m_scale;
 	bool m_isActive;
@@ -34,6 +36,7 @@ private:
 		WallAttack,
 		PlayerAttack,
 	}m_mode;
+	Mode m_oldMode;
 
 	//コアを攻撃する変数
 	const float CORE_ATTACK_RANGE = 60.0f;
@@ -96,6 +99,11 @@ private:
 	DrawCallSet m_togekuriHornModel;
 
 	HideSmokeEmitter m_deadEffectEmitter;
+
+	//ジャンプ
+	Jump m_jump;
+	bool m_attackPlayerFlag;
+	int m_attackTimer;		//攻撃している時間を計測する
 public:
 
 	/*オカモトゾーン*/
@@ -149,4 +157,5 @@ private:
 	void Rotation(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_player);
 	void CheckHit(std::weak_ptr<Player> arg_player);
 
+	void Search();
 };

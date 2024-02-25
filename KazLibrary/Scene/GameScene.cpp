@@ -427,9 +427,10 @@ void GameScene::Update()
 	}
 	KazSoundManager::Instance()->ChangeSoundMem(m_rainSoundSE, m_rainSoundSEVolume);
 
-
-
-	m_fireFlyParticle.Update(WaveMgr::Instance()->GetIsNight() && OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID != 1);
+	m_fireFlyParticle.Update(
+		WaveMgr::Instance()->GetIsNight() ||
+		OptionUI::Instance()->m_optionDetails[OptionUI::DEBUG_NAME::TIMEZONE].m_selectID == 1
+	);
 	m_rainVFX.Update(enableToRainFlag, m_player->GetPosZeroY());
 	m_ripplesVFX.Update(enableToRainFlag, m_player->GetPosZeroY());
 

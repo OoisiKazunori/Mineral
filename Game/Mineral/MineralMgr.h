@@ -35,7 +35,7 @@ public:
 
 	void Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& arg_blasVec);
 
-	bool SearchNearMineral(KazMath::Vec3<float> arg_pos, float arg_searchRange, int& arg_mineralIndex);
+	bool SearchNearMineral(KazMath::Vec3<float> arg_pos, float arg_searchRange, int& arg_mineralIndex, float& arg_distance);
 
 	std::weak_ptr<Mineral> GetMineral(int arg_index) { return m_minerals[arg_index]; }
 
