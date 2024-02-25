@@ -240,25 +240,25 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 					}
 				}
 
-				//近くにプレイヤーが居るか？
-				if (isPlayerNearFlag && playerDistance <= mineralDistance)
-				{
+			}
 
-					m_mode = PlayerAttack;
-					m_isAttackedMineral = false;
-					m_isAttackMineral = false;
-					m_isAttackWall = false;
-					m_isAttackPlayer = true;
-					break;
+			//近くにプレイヤーが居るか？
+			if (isPlayerNearFlag && playerDistance <= mineralDistance)
+			{
 
-				}
+				m_mode = PlayerAttack;
+				m_isAttackedMineral = false;
+				m_isAttackMineral = false;
+				m_isAttackWall = false;
+				m_isAttackPlayer = true;
+				break;
 
-				//敵に攻撃されたらすぐに迎撃状態に入る。
-				if (m_isAttackedMineral) {
+			}
 
-					m_mode = MineralAttack;
+			//敵に攻撃されたらすぐに迎撃状態に入る。
+			if (m_isAttackedMineral) {
 
-				}
+				m_mode = MineralAttack;
 
 			}
 
