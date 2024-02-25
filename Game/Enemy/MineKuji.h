@@ -26,7 +26,7 @@ private:
 	int m_hp;
 	int m_deadTimer;
 	const int HP = 6;
-	const int TOGEKURI_HP = 30;
+	const int TOGEKURI_HP = 50;
 	const float SCALE = 3.0f;
 
 	//状態ごとの変数
@@ -59,6 +59,7 @@ private:
 
 	//コアに向かっていく変数
 	const float CORE_MOVE_SPEED = 1.0f;	//コアに向かって行く初速度
+	const float TOGEKURI_CORE_MOVE_SPEED = 0.8f;
 	const float CORE_MOVE_DELAY = 50.0f;
 	float m_coreMoveDelayTimer;
 	float m_coreMoveSpeed;
