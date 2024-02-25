@@ -322,6 +322,11 @@ void Player::Update()
 		break;
 	}
 
+	//ノックバックの処理
+	KazMath::Larp(0.0f, &m_knockBackVel, 0.1f);
+	m_transform.pos += m_knockBackDir * m_knockBackVel;
+
+
 	//本来あるべきミネラルの中心点を計算する。
 	m_mineralCenterBasePos = m_transform.pos;
 	if (!m_isDaipanStrong) {
@@ -707,8 +712,8 @@ KazMath::Vec3<float> Player::TransformVec3(KazMath::Vec3<float> arg_value, Direc
 	return KazMath::Vec3<float>(val.m128_f32[0], val.m128_f32[1], val.m128_f32[2]);
 }
 
-void Player::Damage(int arg_damage) {
-
+void Player::Damage(int arg_damage, const KazMath::Vec3<float>& arg_vel)
+{
 	SoundManager::Instance()->SoundPlayerWave(damage, 0);
 	m_hp = std::clamp(m_hp - arg_damage, 0.0f, HP);
 	m_damageShake = DAMAGE_SHAKE;
@@ -723,4 +728,6 @@ void Player::Damage(int arg_damage) {
 	UINT num = 0;
 	m_model.m_model.extraBufferArray[5].bufferWrapper->TransData(&num, sizeof(UINT));
 
+	m_knockBackDir = arg_vel;
+	m_knockBackVel = 1.5f;
 }
