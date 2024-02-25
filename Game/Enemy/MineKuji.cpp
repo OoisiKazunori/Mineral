@@ -840,9 +840,11 @@ void MineKuji::CheckHitPlayer(std::weak_ptr<Player> arg_player)
 				checkHit.y = 0.0f;
 				if (checkHit.Length() <= 20.0f) {
 
-					arg_player.lock()->Damage(1);
+					KazMath::Vec3<float>dir(arg_player.lock()->GetPosZeroY() - GetPosZeroY());
+					//コアにダメージを与える。
+					arg_player.lock()->Damage(1, dir.GetNormal());
 					SoundManager::Instance()->SoundPlayerWave(shell_slap, 0);
-
+					
 				}
 
 
