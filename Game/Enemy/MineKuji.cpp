@@ -242,16 +242,21 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 
 			}
 
-			//近くにプレイヤーが居るか？
-			if (isPlayerNearFlag && playerDistance <= mineralDistance)
-			{
+			//トゲクリの時は何にも攻撃しない
+			if (!m_isTogekuri) {
 
-				m_mode = PlayerAttack;
-				m_isAttackedMineral = false;
-				m_isAttackMineral = false;
-				m_isAttackWall = false;
-				m_isAttackPlayer = true;
-				break;
+				//近くにプレイヤーが居るか？
+				if (isPlayerNearFlag && playerDistance <= mineralDistance)
+				{
+
+					m_mode = PlayerAttack;
+					m_isAttackedMineral = false;
+					m_isAttackMineral = false;
+					m_isAttackWall = false;
+					m_isAttackPlayer = true;
+					break;
+
+				}
 
 			}
 
