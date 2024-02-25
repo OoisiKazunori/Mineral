@@ -26,7 +26,7 @@ private:
 	int m_hp;
 	int m_deadTimer;
 	const int HP = 6;
-	const int TOGEKURI_HP = 50;
+	const int TOGEKURI_HP = 30;
 	const float SCALE = 3.0f;
 
 	//ó‘Ô‚²‚Æ‚Ì•Ï”

@@ -44,7 +44,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 
 	//1ウェーブ目 -----------------------------------------------------------------------------------------
-	initData.m_dayTime.m_time = 10;
+	initData.m_dayTime.m_time = 60;
 	initData.m_nightTime.m_time = 1800;
 	initData.m_dayTime.m_weather = SUNNY;
 	initData.m_nightTime.m_weather = SUNNY;
@@ -53,7 +53,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	initData.m_rock = {  };		//有効化時に生成される岩のIndex 1スタート
 	initData.m_mineralRock = { 1 };		//有効化時に生成されるミネラル岩のIndex 1スタート
 	//敵を追加していく。
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::TOGEKURI, 0);
+	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::TOGEKURI, 0);
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
 	/*
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
@@ -205,6 +205,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 0);
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 180);
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 360);
+	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::TOGEKURI, 720);
 
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINETSUMURI, 0);
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINETSUMURI, 180);
@@ -275,8 +276,8 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 180);
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 360);
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 0);
-	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 180);
-	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINEKUJI, 360);
+	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::TOGEKURI, 180);
+	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::TOGEKURI, 360);
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINETSUMURI, 720);
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINETSUMURI, 900);
 	enemyInfo.emplace_back(EnemyRoute::B, Wave::ENEMY_ID::MINETSUMURI, 1080);
@@ -285,7 +286,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 0);
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 180);
-	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 360);
+	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::TOGEKURI, 360);
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::TOGEKURI, 0);
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 180);
 	enemyInfo.emplace_back(EnemyRoute::C, Wave::ENEMY_ID::MINEKUJI, 360);
