@@ -86,7 +86,7 @@ private:
 	//HPŠÖ˜A
 	float m_hp;
 	bool m_isStun;
-	const float HP = 10;
+	const float HP = 20;
 	const float HIT_SCALE = 5.0f;
 	float m_autoRecoveryStartTimer;
 	const float AUTO_RECOVERY_START_TIMER = 300.0f;
