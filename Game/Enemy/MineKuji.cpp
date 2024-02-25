@@ -817,7 +817,8 @@ void MineKuji::CheckHitPlayer(std::weak_ptr<Player> arg_player)
 	if (arg_player.lock()->GetIsDaipanTrigger()) {
 
 		//当たり判定チェック
-		bool isHit = Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length() <= arg_player.lock()->GetMineralAffectStrongRange() + 30.0f;
+		float distance = Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos).Length();
+		bool isHit = distance <= arg_player.lock()->GetMineralAffectStrongRange() + 30.0f;
 		if (isHit) {
 
 			//ベクトルチェック。
@@ -828,8 +829,15 @@ void MineKuji::CheckHitPlayer(std::weak_ptr<Player> arg_player)
 			//普通のミネクジだったらダメージを通す。 トゲクリだったら通さない。
 			if (m_isTogekuri) {
 
-				arg_player.lock()->Damage(1);
-				SoundManager::Instance()->SoundPlayerWave(shell_slap, 0);
+				//再度当たり判定を行う。
+				Vec3<float> checkHit = Vec3<float>(arg_player.lock()->GetTransform().pos - m_transform.pos);
+				checkHit.y = 0.0f;
+				if (checkHit.Length() <= 20.0f) {
+
+					arg_player.lock()->Damage(1);
+					SoundManager::Instance()->SoundPlayerWave(shell_slap, 0);
+
+				}
 
 
 			}
