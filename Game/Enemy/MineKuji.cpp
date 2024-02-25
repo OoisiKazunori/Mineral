@@ -195,6 +195,9 @@ void MineKuji::Update(std::weak_ptr<Core> arg_core, std::weak_ptr<Player> arg_pl
 			//チュートリアルの的だったら移動速度を早く。
 			float coreMoveDelay = CORE_MOVE_DELAY;
 			float coreMoveSpeed = CORE_MOVE_SPEED;
+			if (m_isTogekuri) {
+				coreMoveSpeed = TOGEKURI_CORE_MOVE_SPEED;
+			}
 			if (m_isTutorialEnemy) {
 				coreMoveDelay = CORE_MOVE_DELAY / 2.0f;
 				coreMoveSpeed *= 2.0f;
@@ -348,7 +351,8 @@ void MineKuji::Draw(DrawingByRasterize& arg_rasterize, Raytracing::BlasVector& a
 		m_togekuriModel.m_model.extraBufferArray.back().rootParamType = GRAPHICS_PRAMTYPE_TEX;
 
 		auto trans = m_transform;
-		trans.scale = { 8.0f, 8.0f, 8.0f };
+		trans.scale = { 10.0f, 10.0f, 10.0f };
+		trans.pos.y += 2.0f;
 
 		m_togekuriModel.Draw(arg_rasterize, arg_blasVec, trans);
 

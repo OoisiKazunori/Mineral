@@ -53,7 +53,7 @@ void WaveMgr::Setting(std::weak_ptr<Core> m_core)
 	initData.m_rock = {  };		//有効化時に生成される岩のIndex 1スタート
 	initData.m_mineralRock = { 1 };		//有効化時に生成されるミネラル岩のIndex 1スタート
 	//敵を追加していく。
-	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
+	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::TOGEKURI, 0);
 	enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 0);
 	/*
 	//enemyInfo.emplace_back(EnemyRoute::A, Wave::ENEMY_ID::MINEKUJI, 360);
