@@ -469,7 +469,7 @@ void Player::Update()
 
 	//ダメージを受けてから一定フレームは立ち絵を変える。
 	m_damageChangeDadanUITimer = std::clamp(m_damageChangeDadanUITimer - 1, 0, DAMAGE_CHANGE_DADAN_UI_TIMER);
-	m_hp = HP;
+
 	float hpRate = m_hp / HP;
 	//UIの座標を設定。
 	m_hpFrameUI.m_transform.scale = UI_BASE_SCALE;
