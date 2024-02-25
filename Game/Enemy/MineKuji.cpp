@@ -708,8 +708,9 @@ void MineKuji::AttackPlayer(std::weak_ptr<Player> arg_player)
 			reactionDir.Normalize();
 			m_coreAttackReactionVec = reactionDir * (m_coreAttackMoveSpeed * 1.5f);
 
+			KazMath::Vec3<float>dir(arg_player.lock()->GetPosZeroY() - GetPosZeroY());
 			//コアにダメージを与える。
-			arg_player.lock()->Damage(1);
+			arg_player.lock()->Damage(1, dir.GetNormal());
 
 
 			ShakeMgr::Instance()->m_shakeAmount = 3.0;

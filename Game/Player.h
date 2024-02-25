@@ -122,6 +122,9 @@ private:
 	float m_groundCircle;
 	KazMath::Color m_color;
 
+	KazMath::Vec3<float>m_knockBackDir;
+	float m_knockBackVel;
+
 public:
 
 	const int DAIPAN_DAMAGE = 2;
@@ -156,7 +159,7 @@ public:
 	//âéUèÛë‘Ç©ÅH
 	bool GetIsBreakUP() { return m_isBreakUp; }
 
-	void Damage(int arg_damage);
+	void Damage(int arg_damage, const KazMath::Vec3<float>& arg_vel);
 	bool GetIsStun() { return m_isStun; }
 	float GetHitScale() { return HIT_SCALE; }
 

@@ -770,12 +770,13 @@ void MineTsumuri::AttackPlayer(std::weak_ptr<Player> arg_player)
 			reactionDir.Normalize();
 			m_coreAttackReactionVec = reactionDir * (m_coreAttackMoveSpeed * 1.5f);
 
+			KazMath::Vec3<float>dir(arg_player.lock()->GetPosZeroY() - GetPosZeroY());
 			//コアにダメージを与える。
 			if (m_isMineking) {
-				arg_player.lock()->Damage(ATTACK_POWER_KING);
+				arg_player.lock()->Damage(ATTACK_POWER_KING, dir.GetNormal());
 			}
 			else {
-				arg_player.lock()->Damage(ATTACK_POWER);
+				arg_player.lock()->Damage(ATTACK_POWER, dir.GetNormal());
 			}
 			ShakeMgr::Instance()->m_shakeAmount = 3.0;
 		}
